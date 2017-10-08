@@ -6,9 +6,13 @@ import android.app.Notification;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
@@ -48,18 +52,44 @@ import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
 
 public class MainActivity extends AppCompatActivity {
     // Konstanten
-    private static final int NO_BT_SUPPORT = 1;
-    private static final int BT_DISABLED = 2;
-    private static final int REQUEST_CONNECT_DEVICE_SECURE = 3;
-    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 4;
+    private static final String CLASS = MainActivity.class.getName();
     private static final int REQUEST_ENABLE_BT = 1234;
+
+    // Attribute
+    private boolean bluetoothEnabled = false;
+    private BluetoothAdapter btAdapter;
+    private BluetoothDevice btdevice;
+    private ObdService service;
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder binder) {
+            Log.e(CLASS, "Service connected");
+            service = ((ObdService) binder).getService();
+            try {
+                service.initObdConnection(btdevice.getAddress());
+                btn_connectDev.setText(getResources().getString(R.string.dev_connected));
+            } catch (IOException ioe) {
+                unbindService(serviceConnection);
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.e(CLASS, "Service disconnected");
+        }
+    };
+
+    private Button btn_activateBt;
+    private Button btn_connectDev;
+    private Button btn_startTrip;
+    private Button btn_stopTrip;
+
+
 
     private TextView btStatusText;
     private boolean obdDeviceConnected = false;
 
-
-
-    private BluetoothAdapter btAdapter;
     private BluetoothSocket socket;
     private Button btOilTemp;
     private Button btModVol;
@@ -78,18 +108,44 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btStatusText = (TextView) findViewById(R.id.btStatusText);
-        btStatusText.setText("Not connected");
 
-        activateBt();
-
-        btConnect = (Button)findViewById(R.id.btConnect);
-        btConnect.setOnClickListener(new View.OnClickListener() {
+        btn_activateBt = (Button) findViewById(R.id.btn_activateBt);
+        btn_activateBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                connectDevice();
+                activateBt();
             }
         });
+
+
+        btn_connectDev = (Button) findViewById(R.id.btn_connectDev);
+        btn_connectDev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectDevice();
+            }
+        });
+
+        btn_startTrip = (Button) findViewById(R.id.btn_startTrip);
+        btn_startTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startTrip();
+                btn_stopTrip.setEnabled(true);
+            }
+        });
+
+        btn_stopTrip = (Button) findViewById(R.id.btn_stopTrip);
+        btn_stopTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopTrip();
+            }
+        });
+
+
+
+
 
         btOilTemp = (Button) findViewById(R.id.btOilTmp);
         btOilTemp.setEnabled(false);
@@ -142,27 +198,26 @@ public class MainActivity extends AppCompatActivity {
     public void activateBt () {
         btAdapter = BluetoothAdapter.getDefaultAdapter();
         if(btAdapter == null) {
-            Toast.makeText(MainActivity.this, "Your device does not support Bluetooth", Toast.LENGTH_SHORT).show();
-        }
-
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
-        if(btAdapter == null) {
-            Toast.makeText(MainActivity.this, "No Bluetooth supported!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, getResources().getString(R.string.bt_support), Toast.LENGTH_SHORT).show();
+            Log.e(CLASS, "No Bluetooth support");
         } else {
             // Bluetooth ggf. aktivieren
             if (!btAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             } else {
-                Toast.makeText(MainActivity.this, "Bluetooth already enabled", Toast.LENGTH_SHORT).show();
-                btStatusText.setText("Connected");
+                Log.e(CLASS, "Bluetooth already enabled");
+                btn_connectDev.setEnabled(true);
+                bluetoothEnabled = true;
+                btn_activateBt.setText(getResources().getString(R.string.bt_enabled));
+                btn_activateBt.setEnabled(false);
             }
         }
     }
 
 
     // Liste der gekoppelten Geräte anzeigen und Verbindung zu ausgewähltem Gerät aufbauen
-    public void connectDevice() {
+    public void selectDevice() {
         final ArrayList deviceStr = new ArrayList();
         final ArrayList devices = new ArrayList();
 
@@ -185,9 +240,11 @@ public class MainActivity extends AppCompatActivity {
                     String deviceAddress = (String) devices.get(position);
                     String deviceData = (String) deviceStr.get(position);
 
-                    // Verbindung aufbauen
-                    BluetoothDevice device = btAdapter.getRemoteDevice(deviceAddress);
-                    UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+                    btdevice = btAdapter.getRemoteDevice(deviceAddress);
+                    Log.e(CLASS, "Selected device: " + btdevice);
+                    btn_connectDev.setText(getResources().getString(R.string.dev_selected));
+                    btn_connectDev.setEnabled(false);
+                    /*UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
                     try {
                         socket = device.createRfcommSocketToServiceRecord(uuid);
                         socket.connect();
@@ -251,10 +308,10 @@ public class MainActivity extends AppCompatActivity {
                             Log.e(MainActivity.class.getName(), "FuelLevel InterruptedException");
                         }
 
-                    }
+                    }*/
                 }
             });
-            btDialog.setTitle("Choose a device");
+            btDialog.setTitle(getResources().getString(R.string.dev_title));
             btDialog.setIcon(R.mipmap.ic_launcher);
             btDialog.show();
         }
@@ -265,11 +322,34 @@ public class MainActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_ENABLE_BT) {
             if(resultCode == RESULT_OK) {
-                Toast.makeText(MainActivity.this, "Bluetooth enabled", Toast.LENGTH_SHORT).show();
-                btStatusText.setText("Connected");
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.bt_enabled), Toast.LENGTH_SHORT).show();
+                Log.e(CLASS, "Bluetooth enabled");
+                btn_activateBt.setText(getResources().getString(R.string.bt_enabled));
+                btn_activateBt.setEnabled(false);
+                btn_connectDev.setEnabled(true);
+                bluetoothEnabled = true;
             } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(MainActivity.this, "Not able to activate Bluetooth", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, getResources().getString(R.string.bt_notEnabled), Toast.LENGTH_SHORT).show();
+                Log.e(CLASS, "Error while enabling Bluetooth");
             }
+        }
+    }
+
+    // OBDService binden
+    private void startTrip() {
+        Log.e(CLASS, "Bind OBD-Service");
+        Intent serviceIntent = new Intent(this, ObdService.class);
+        bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private void stopTrip() {
+        Log.e(CLASS, "Unbind Service");
+        unbindService(serviceConnection);
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e(CLASS, "Error while closing socket");
         }
     }
 }
