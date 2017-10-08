@@ -7,19 +7,48 @@
     tools:context="com.example.lukas.bluetoothtest.MainActivity">
 
 
-    <Button
-        android:id="@+id/bt_activation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Activate Bluetooth" />
+    <TextView
+        android:id="@+id/btStatus"
+        android:layout_width="131dp"
+        android:layout_height="26dp"
+        android:layout_weight="0.11"
+        android:text="Bluetooth"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp" />
 
     <Button
-        android:id="@+id/bt_search"
+        android:id="@+id/btOilTmp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        android:text="Search for devices"
-        android:enabled="false" />
+        android:layout_weight="0.11"
+        android:text="Oil Temerature" />
+
+    <Button
+        android:id="@+id/btModVol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.11"
+        android:text="Module Voltage" />
+
+    <Button
+        android:id="@+id/btConnect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.11"
+        android:text="Connect " />
+
+    <TextView
+        android:id="@+id/btStatusText"
+        android:layout_width="124dp"
+        android:layout_height="39dp"
+        android:layout_weight="1"
+        android:ems="10"
+        android:text="Not connected"
+        android:layout_marginTop="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/btStatus"
+        tools:layout_editor_absoluteX="16dp" />
+
 
 </LinearLayout>
