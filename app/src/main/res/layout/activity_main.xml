@@ -4,51 +4,86 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.lukas.bluetoothtest.MainActivity">
+    tools:context="com.example.lukas.bluetoothtest.MainActivity"
+    android:orientation="vertical">
 
 
-    <TextView
-        android:id="@+id/btStatus"
-        android:layout_width="131dp"
-        android:layout_height="26dp"
-        android:layout_weight="0.11"
-        android:text="Bluetooth"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btOilTmp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.11"
-        android:text="Oil Temerature" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/btModVol"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.11"
-        android:text="Module Voltage" />
+            <Button
+                android:id="@+id/btn_startTrip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/main_startTrip" />
 
-    <Button
-        android:id="@+id/btConnect"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.11"
-        android:text="Connect " />
+            <Button
+                android:id="@+id/btn_showTrips"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:gravity="center"
+                android:text="@string/main_showTrips" />
 
-    <TextView
-        android:id="@+id/btStatusText"
-        android:layout_width="124dp"
-        android:layout_height="39dp"
-        android:layout_weight="1"
-        android:ems="10"
-        android:text="Not connected"
-        android:layout_marginTop="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/btStatus"
-        tools:layout_editor_absoluteX="16dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tv_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Not used"
+                android:textSize="24sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/btn_activateBt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:drawable/stat_sys_data_bluetooth"
+                android:backgroundTint="@android:color/darker_gray"
+                android:gravity="center"
+                android:text="@string/main_bt_disabled" />
+
+            <Button
+                android:id="@+id/btn_selectDev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:enabled="false"
+                android:gravity="center"
+                android:text="@string/main_dev" />
+
+            <Button
+                android:id="@+id/btn_activateGps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@android:drawable/ic_menu_mylocation"
+                android:backgroundTint="@android:color/darker_gray"
+                android:text="@string/main_bt_disabled" />
+
+        </TableRow>
+
+    </TableLayout>
 
 
 </LinearLayout>

@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.lukas.bluetoothtest">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,8 +21,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".DeviceListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/devList_selDev"
+            android:theme="@android:style/Theme.Holo.Dialog" />
+
+        <service
+            android:name=".ObdService"
+            android:enabled="true"
+            android:exported="false"></service>
+
+        <activity
+            android:name=".StartYourTripActivity"
+            android:label="@string/title_activity_start_your_trip_acitivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" /></activity>
     </application>
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
 </manifest>

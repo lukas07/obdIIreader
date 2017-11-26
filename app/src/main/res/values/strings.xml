@@ -1,3 +1,34 @@
 <resources>
     <string name="app_name">BluetoothTest</string>
+    <string name="dev_select">Select Device</string>
+    <string name="dev_selected">Device selected</string>
+    <string name="dev_title">Choose a device</string>
+    <string name="dev_connected">Connected</string>
+
+
+    <!-- MainActivity -->
+    <string name="main_bt_enabled">Enabled</string>
+    <string name="main_bt_support">Your device does not support Bluetooth.</string>
+    <string name="main_bt_disabled">Disabled</string>
+    <string name="main_startTrip">Start your Trip!</string>
+    <string name="main_showTrips">Show your Trips!</string>
+    <string name="main_sel_dev">You have selected: </string>
+    <string name="main_dev">Device</string>
+
+    <!-- DeviceListActivity -->
+    <string name="devList_selDev">Select a device to connect</string>
+    <string name="devList_scanning">Scanning for devices...</string>
+    <string name="devList_noPaired">No devices have been paired</string>
+    <string name="devList_noFound">No devices found</string>
+    <string name="devList_titlePaired">Paired devices</string>
+    <string name="devList_titleSearch">Other available devices</string>
+    <string name="devList_scan">Scan for devices</string>
+    <string name="title_activity_start_your_trip_acitivity">StartYourTripActivity</string>
+
+    <!-- StartYourTripActivity -->
+    <string-array name="start_tripMode">
+        <item>Private Trip</item>
+        <item>Business Trip</item>
+    </string-array>
+    <string name="start_go">Go!</string>
 </resources>
