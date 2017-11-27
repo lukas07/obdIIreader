@@ -15,6 +15,8 @@ import android.util.Log;
 
 import com.github.pires.obd.commands.ObdCommand;
 import com.github.pires.obd.commands.SpeedCommand;
+import com.github.pires.obd.commands.engine.MassAirFlowCommand;
+import com.github.pires.obd.commands.fuel.FuelLevelCommand;
 import com.github.pires.obd.commands.protocol.EchoOffCommand;
 import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
 import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
@@ -27,6 +29,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.example.lukas.bluetoothtest.MainActivity.socket;
+
 /**
  * Created by Lukas on 08.10.2017.
  */
@@ -34,8 +38,8 @@ import java.util.List;
 public class ObdService extends Service {
     private static final String CLASS = ObdService.class.getName();
 
-    private BluetoothSocket socket;
-    private BluetoothDevice device;
+
+    private BluetoothSocket btSocket;
     private Handler handler;
 
     private ObdCommand[] initCmds = {new EchoOffCommand(), new LineFeedOffCommand(), new TimeoutCommand(60), new SelectProtocolCommand(ObdProtocols.AUTO)};
@@ -52,21 +56,21 @@ public class ObdService extends Service {
         }
     });
 
-    public void initObdConnection(BluetoothDevice btDevice) throws IOException {
-        device = btDevice;
-        try{
-            socket = BluetoothConnector.connectDevice(device);
-        } catch (IOException ioe) {
+    public void initObdConnection() throws IOException{
+        if (socket != null) {
+            this.btSocket = socket;
+        } else {
+            Log.e(CLASS, "No socket connected");
             throw new IOException();
         }
-
         // Initialisieren des OBD Adapters
         for (int i=0; i < initCmds.length; i++) {
             try {
-                initCmds[i].run(socket.getInputStream(), socket.getOutputStream());
+                initCmds[i].run(btSocket.getInputStream(), btSocket.getOutputStream());
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                Log.e(CLASS, "Error while Init off OBD Adapter: " + initCmds[i].getName());
+                Log.e(CLASS, "Error while Init of OBD Adapter: " + initCmds[i].getName());
+                new IOException();
             }
         }
 
@@ -89,17 +93,24 @@ public class ObdService extends Service {
         Message message;
 
         while(!Thread.currentThread().isInterrupted()) {
-            // TODO dauerhafte Abfrage der Daten --> UI-Update
-            ObdCommand speedCmd = new SpeedCommand();
+            SpeedCommand speedCmd = new SpeedCommand();
+            MassAirFlowCommand mafCmd = new MassAirFlowCommand();
             try {
                 speedCmd.run(socket.getInputStream(), socket.getOutputStream());
+                //mafCmd.run(socket.getInputStream(), socket.getOutputStream());
+
             } catch (IOException e) {
                 e.printStackTrace();
-                Log.e(CLASS, "Error in " + speedCmd.getName());
+                Log.e(CLASS, "Error while sending OBD commands");
                 Thread.currentThread().interrupt();
             }
-            String obdResult = speedCmd.getFormattedResult();
-            bundle.putString("result", obdResult);
+            String speed = speedCmd.getFormattedResult();
+            bundle.putString("speed", speed);
+
+            // Verbrauch berechnen: (3600*MAF)/(9069.90*VSS)
+            //int fuelConsumption = (int) ((int)(3600*mafCmd.getMAF())/(9069.90*speedCmd.getMetricSpeed()));
+            //bundle.putString("fuel", String.valueOf(fuelConsumption));
+
             message = new Message();
             message.setData(bundle);
             handler.sendMessage(message);

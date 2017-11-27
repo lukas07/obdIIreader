@@ -30,16 +30,30 @@
         <service
             android:name=".ObdService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
 
         <activity
             android:name=".StartYourTripActivity"
             android:label="@string/title_activity_start_your_trip_acitivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" /></activity>
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".RunningTripActivity"
+            android:label="@string/title_activity_running_trip"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".StoppedTripActivity"
+            android:label="@string/title_activity_stopped_trip"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
     </application>
 
 </manifest>

@@ -1,8 +1,12 @@
 package com.example.lukas.bluetoothtest;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.UUID;
@@ -14,8 +18,8 @@ import java.util.UUID;
 public class BluetoothConnector {
     private static final String CLASS = BluetoothConnector.class.getName();
 
-
     private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+
 
     public static BluetoothSocket connectDevice(BluetoothDevice device) throws IOException{
         BluetoothSocket socket = null;
@@ -24,7 +28,7 @@ public class BluetoothConnector {
             socket.connect();
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e(CLASS, "Error while establishinh bluetooth connection");
+            Log.e(CLASS, "Error while establishing bluetooth connection");
             throw new IOException();
         }
         return socket;

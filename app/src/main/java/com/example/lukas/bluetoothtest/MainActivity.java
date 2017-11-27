@@ -2,6 +2,7 @@ package com.example.lukas.bluetoothtest;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -30,44 +31,12 @@ public class MainActivity extends AppCompatActivity {
     private Button btn_selectDev;
     private Button btn_activateGps;
     private Button btn_startTrip;
-    private TextView tv_speed;
 
 
     private boolean bluetoothEnabled = false;
     private BluetoothAdapter btAdapter;
-    private BluetoothDevice btdevice;
-    private ObdService service;
-
-
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message message) {
-            // TODO Update UI nach dem Erhalt der Daten vom OBD Service
-            updateUI(message);
-        }
-    };
-
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder serviceBinder) {
-            Log.e(CLASS, "Service connected");
-            ObdService.ObdServiceBinder binder = (ObdService.ObdServiceBinder) serviceBinder;
-            service = binder.getService();
-            service.setHandler(handler);
-            try {
-                service.initObdConnection(btdevice);
-                btn_selectDev.setText(getResources().getString(R.string.dev_connected));
-            } catch (IOException ioe) {
-                unbindService(serviceConnection);
-            }
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            Log.e(CLASS, "Service disconnected");
-        }
-    };
-
+    public BluetoothDevice btdevice;
+    public static BluetoothSocket socket;
 
 
 
@@ -76,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        tv_speed = (TextView) findViewById(R.id.tv_speed);
 
         btn_activateBt = (Button) findViewById(R.id.btn_activateBt);
         btn_activateBt.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +106,6 @@ public class MainActivity extends AppCompatActivity {
                 btn_activateBt.setText(getResources().getString(R.string.main_bt_enabled));
                 btn_activateBt.setEnabled(false);
             }
-            btn_selectDev.setEnabled(true);
         }
     }
 
@@ -169,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(CLASS, "Bluetooth enabled");
                     btn_activateBt.setText(getResources().getString(R.string.main_bt_enabled));
                     btn_activateBt.setEnabled(false);
+                    btn_selectDev.setEnabled(true);
                     bluetoothEnabled = true;
                 } else if (resultCode == RESULT_CANCELED) {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.main_bt_disabled), Toast.LENGTH_SHORT).show();
@@ -183,6 +150,13 @@ public class MainActivity extends AppCompatActivity {
                     btdevice = btAdapter.getRemoteDevice(deviceAddress);
                     showToast(getResources().getString(R.string.main_sel_dev) + btdevice.getName(), Toast.LENGTH_SHORT);
                     Log.e(CLASS, "Selected device:" + btdevice.getAddress() + "; " + btdevice.getAddress());
+                    try{
+                        // Verbindung aufbauen
+                        socket = BluetoothConnector.connectDevice(btdevice);
+                    } catch (IOException ioe) {
+                    }
+                    btn_selectDev.setText(getResources().getString(R.string.main_sel));
+                    btn_selectDev.setEnabled(false);
                 } else {
                     Log.e(CLASS, "No device selected");
                 }
@@ -190,33 +164,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // OBDService binden
+    // Activity starten, in der der Nutzer zusätzliche Angaben machen muss
     private void startTrip() {
-        /*Log.e(CLASS, "Bind OBD-Service");
-        Intent serviceIntent = new Intent(this, ObdService.class);
-        bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-        btn_startTrip.setEnabled(false);*/
-
         Intent intent = new Intent(this, StartYourTripActivity.class);
         startActivity(intent);
     }
 
-    private void stopTrip() {
-        Log.e(CLASS, "Unbind Service");
-        unbindService(serviceConnection);
-        btn_startTrip.setEnabled(true);
-        try {
-            service.closeSocket();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e(CLASS, "Error while closing socket");
-        }
-    }
 
-    private void updateUI(Message message) {
-        Bundle bundle = message.getData();
-        String result = bundle.getString("result");
-
-        tv_speed.setText("Speed: " + result);
-    }
 }
