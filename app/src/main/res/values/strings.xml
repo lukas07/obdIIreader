@@ -26,15 +26,34 @@
     <string name="devList_scan">Scan for devices</string>
     <string name="title_activity_start_your_trip_acitivity">Start Your Trip</string>
 
-    <!-- StartYourTripActivity -->
+    <!-- StartTripActivity -->
     <string-array name="start_tripMode">
         <item>Private Trip</item>
         <item>Business Trip</item>
     </string-array>
     <string name="start_go">Go!</string>
     <string name="title_activity_running_trip">Your current Trip</string>
+    <string name="start_driver">Drivers Name</string>
+    <string name="start_odometer">Current odometer value</string>
+    <string name="start_driver_missing">You have to enter the name of the driver!</string>
+    <string name="start_odometer_missing">You have to enter your current odometer value!</string>
 
     <!-- RunningTripActivity -->
     <string name="run_stop">Stop!</string>
     <string name="title_activity_stopped_trip">Review of your Trip</string>
+
+    <!-- StoppedTripActivity -->
+    <string name="stop_odometer">Odometer value after Trip</string>
+    <string name="stop_save">Save Trip</string>
+    <string name="stop_inserted">Saved your Trip</string>
+    <string name="stop_insert_failed">Error while saving your Trip</string>
+    <string name="stop_odometer_missing">You have to enter your odometer value after your Trip!</string>
+    <string name="stop_button_menu">Back to menu</string>
+    <string name="stop_odometer_low">Your ending odometer value has to be higher than your starting one!</string>
+
+    <!-- Trip Entry -->
+    <string name="entry_init">No value found</string>
+
+    <!-- TripListActivity -->
+    <string name="list_title">Your Trips</string>
 </resources>

@@ -3,18 +3,12 @@ package com.example.lukas.bluetoothtest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -27,10 +21,11 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_BLUETOOTH_DEVICE = 1;
 
     // Attribute
-    private Button btn_activateBt;
-    private Button btn_selectDev;
-    private Button btn_activateGps;
-    private Button btn_startTrip;
+    private Button bt_activateBt;
+    private Button bt_selectDev;
+    private Button bt_activateGps;
+    private Button bt_startTrip;
+    private Button bt_showTrips;
 
 
     private boolean bluetoothEnabled = false;
@@ -46,40 +41,46 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btn_activateBt = (Button) findViewById(R.id.btn_activateBt);
-        btn_activateBt.setOnClickListener(new View.OnClickListener() {
+        // Referenzvariablen zu den Feldern deklarieren
+        bt_activateBt = (Button) findViewById(R.id.bt_activateBt);
+        bt_selectDev = (Button) findViewById(R.id.bt_selectDev);
+        bt_startTrip = (Button) findViewById(R.id.bt_startTrip);
+        bt_showTrips = (Button) findViewById(R.id.bt_showTrips);
+
+        // Clicklistener für die Buttons
+        bt_startTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startTrip();
+            }
+        });
+        bt_showTrips.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTrips();
+            }
+        });
+        bt_activateBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activateBt();
             }
         });
-
-
-        btn_selectDev = (Button) findViewById(R.id.btn_selectDev);
-        btn_selectDev.setOnClickListener(new View.OnClickListener() {
+        bt_selectDev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 selectDevice();
             }
         });
 
-  /*      btn_activateGps = (Button) findViewById(R.id.btn_activateGps);
-        btn_activateGps.setOnClickListener(new View.OnClickListener() {
+
+  /*      bt_activateGps = (Button) findViewById(R.id.bt_activateGps);
+        bt_activateGps.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activateGps();
             }
         });*/
-
-        btn_startTrip = (Button) findViewById(R.id.btn_startTrip);
-        btn_startTrip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startTrip();
-            }
-        });
-
-
     }
 
 
@@ -103,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 Log.e(CLASS, "Bluetooth already enabled");
                 bluetoothEnabled = true;
-                btn_activateBt.setText(getResources().getString(R.string.main_bt_enabled));
-                btn_activateBt.setEnabled(false);
+                bt_activateBt.setText(getResources().getString(R.string.main_bt_enabled));
+                bt_activateBt.setEnabled(false);
             }
         }
     }
@@ -133,9 +134,9 @@ public class MainActivity extends AppCompatActivity {
                     // Bluetooth erfolgreich aktiviert
                     //Toast.makeText(MainActivity.this, getResources().getString(R.string.bt_enabled), Toast.LENGTH_SHORT).show();
                     Log.e(CLASS, "Bluetooth enabled");
-                    btn_activateBt.setText(getResources().getString(R.string.main_bt_enabled));
-                    btn_activateBt.setEnabled(false);
-                    btn_selectDev.setEnabled(true);
+                    bt_activateBt.setText(getResources().getString(R.string.main_bt_enabled));
+                    bt_activateBt.setEnabled(false);
+                    bt_selectDev.setEnabled(true);
                     bluetoothEnabled = true;
                 } else if (resultCode == RESULT_CANCELED) {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.main_bt_disabled), Toast.LENGTH_SHORT).show();
@@ -155,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
                         socket = BluetoothConnector.connectDevice(btdevice);
                     } catch (IOException ioe) {
                     }
-                    btn_selectDev.setText(getResources().getString(R.string.main_sel));
-                    btn_selectDev.setEnabled(false);
+                    bt_selectDev.setText(getResources().getString(R.string.main_sel));
+                    bt_selectDev.setEnabled(false);
                 } else {
                     Log.e(CLASS, "No device selected");
                 }
@@ -166,9 +167,13 @@ public class MainActivity extends AppCompatActivity {
 
     // Activity starten, in der der Nutzer zusätzliche Angaben machen muss
     private void startTrip() {
-        Intent intent = new Intent(this, StartYourTripActivity.class);
+        Intent intent = new Intent(this, StartTripActivity.class);
         startActivity(intent);
     }
 
+    private void showTrips() {
+        Intent intent = new Intent(this, TripListActivity.class);
+        startActivity(intent);
+    }
 
 }

@@ -10,11 +10,13 @@ public class TripRecord {
 
     // Attribute
     private String driver;
-    private int mileage;
+    private int startMileage;
+    private int endMileage;
     private String driveMode;
     private long startTimestamp;
     private long endTimestamp;
     private String startAddress;
+    private String endAddress;
     // TODO Höchstgeschwindigkeit, GPS, irgendwas mit Spritverbrauch?
 
     private TripRecord() {
@@ -36,12 +38,20 @@ public class TripRecord {
         this.driver = driver;
     }
 
-    public int getMileage() {
-        return mileage;
+    public int getStartMileage() {
+        return startMileage;
     }
 
-    public void setMileage(int mileage) {
-        this.mileage = mileage;
+    public void setStartMileage(int startMileage) {
+        this.startMileage = startMileage;
+    }
+
+    public int getEndMileage() {
+        return endMileage;
+    }
+
+    public void setEndMileage(int endMileage) {
+        this.endMileage = endMileage;
     }
 
     public String getDriveMode() {
@@ -75,4 +85,13 @@ public class TripRecord {
     public void setStartAddress(String startAddress) {
         this.startAddress = startAddress;
     }
+
+    public String getEndAddress() {
+        return endAddress;
+    }
+
+    public void setEndAddress(String endAddress) {
+        this.endAddress = endAddress;
+    }
+
 }

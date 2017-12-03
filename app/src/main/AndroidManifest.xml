@@ -33,7 +33,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".StartYourTripActivity"
+            android:name=".StartTripActivity"
             android:label="@string/title_activity_start_your_trip_acitivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -54,6 +54,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <activity android:name=".TripListActivity"
+            android:label="@string/list_title"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+
+        <provider
+            android:name=".TripProvider"
+            android:authorities="com.example.lukas.bluetoothtest.provider"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 
 </manifest>

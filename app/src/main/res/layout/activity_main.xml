@@ -18,7 +18,7 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/btn_startTrip"
+                android:id="@+id/bt_startTrip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -26,11 +26,10 @@
                 android:text="@string/main_startTrip" />
 
             <Button
-                android:id="@+id/btn_showTrips"
+                android:id="@+id/bt_showTrips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:enabled="false"
                 android:gravity="center"
                 android:text="@string/main_showTrips" />
 
@@ -40,21 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/tv_speed"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="Not used"
-                android:textSize="24sp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
             <Button
-                android:id="@+id/btn_activateBt"
+                android:id="@+id/bt_activateBt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -64,7 +50,7 @@
                 android:text="@string/main_bt_disabled" />
 
             <Button
-                android:id="@+id/btn_selectDev"
+                android:id="@+id/bt_selectDev"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

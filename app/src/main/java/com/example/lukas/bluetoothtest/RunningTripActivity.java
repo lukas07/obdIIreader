@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.example.lukas.bluetoothtest.MainActivity.socket;
 
@@ -29,6 +31,8 @@ public class RunningTripActivity extends AppCompatActivity {
     private Button bt_stop;
 
     private ObdService service;
+
+    private TripRecord record;
 
 
     private Handler handler = new Handler() {
@@ -67,10 +71,12 @@ public class RunningTripActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Referenzvariablen zu den Feldern deklarieren
         tv_speed = (TextView) findViewById(R.id.tv_speed);
         tv_fuel = (TextView) findViewById(R.id.tv_fuel);
-
         bt_stop = (Button) findViewById(R.id.bt_stop);
+
+
         bt_stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,8 +117,17 @@ public class RunningTripActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.e(CLASS, "Error while closing socket");
         }
+        // Daten in Triprecord schreiben (Stopzeitpunkt, Endadresse,...)
+        record = record.getTripRecord();
+
+        SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        Long timestamp = Long.parseLong(timestampFormat.format(new Date()));
+        record.setEndTimestamp(timestamp);
+
+
         Intent intent = new Intent(RunningTripActivity.this, StoppedTripActivity.class);
         startActivity(intent);
+        finish();
     }
 
 }
