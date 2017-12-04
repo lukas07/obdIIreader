@@ -1,5 +1,6 @@
 package com.example.lukas.bluetoothtest;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
@@ -44,10 +45,18 @@ public class TripListActivity extends AppCompatActivity implements AdapterView.O
         adapter = new TripsAdapter(this, null);
         lv_trips.setAdapter(adapter);
         getLoaderManager().initLoader(0, null, this);
+        lv_trips.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                showDetails(id);
+            }
+        });
     }
 
     private void showDetails(long rowid) {
-        // TODO Detailansicht aufrufen
+        Intent intent = new Intent(TripListActivity.this, TripDetailActivity.class);
+        intent.putExtra("rowid", rowid);
+        startActivity(intent);
     }
 
     @Override

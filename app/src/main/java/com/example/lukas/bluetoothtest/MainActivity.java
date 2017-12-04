@@ -154,10 +154,11 @@ public class MainActivity extends AppCompatActivity {
                     try{
                         // Verbindung aufbauen
                         socket = BluetoothConnector.connectDevice(btdevice);
+                        bt_selectDev.setText(getResources().getString(R.string.main_sel));
+                        bt_selectDev.setEnabled(false);
                     } catch (IOException ioe) {
+                        showToast(getResources().getString(R.string.main_con_err), Toast.LENGTH_LONG);
                     }
-                    bt_selectDev.setText(getResources().getString(R.string.main_sel));
-                    bt_selectDev.setEnabled(false);
                 } else {
                     Log.e(CLASS, "No device selected");
                 }
