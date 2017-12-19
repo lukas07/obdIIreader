@@ -19,16 +19,17 @@
 
             <Button
                 android:id="@+id/bt_startTrip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:enabled="false"
                 android:text="@string/main_startTrip" />
 
             <Button
                 android:id="@+id/bt_showTrips"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/main_showTrips" />
@@ -41,8 +42,8 @@
 
             <Button
                 android:id="@+id/bt_activateBt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:drawable/stat_sys_data_bluetooth"
                 android:backgroundTint="@android:color/darker_gray"
@@ -51,8 +52,8 @@
 
             <Button
                 android:id="@+id/bt_selectDev"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:enabled="false"
                 android:gravity="center"
@@ -60,8 +61,8 @@
 
             <Button
                 android:id="@+id/btn_activateGps"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@android:drawable/ic_menu_mylocation"
                 android:backgroundTint="@android:color/darker_gray"

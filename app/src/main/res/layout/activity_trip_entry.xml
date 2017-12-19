@@ -27,7 +27,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/entry_init"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"/>
 
     <TextView
         android:id="@+id/tv_endTimestamp"
@@ -35,6 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/tv_startTimestamp"
-        android:text="@string/entry_init" />
+        android:text="@string/entry_init"
+        android:layout_marginRight="10dp"/>
 
 </RelativeLayout>

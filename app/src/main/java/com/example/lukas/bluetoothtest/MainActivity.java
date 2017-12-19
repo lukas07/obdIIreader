@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -29,11 +30,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private boolean bluetoothEnabled = false;
-    private BluetoothAdapter btAdapter;
+    private static BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();;
     public BluetoothDevice btdevice;
     public static BluetoothSocket socket;
 
-
+    public static boolean obd_initialized = false;
 
 
     @Override
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         bt_selectDev = (Button) findViewById(R.id.bt_selectDev);
         bt_startTrip = (Button) findViewById(R.id.bt_startTrip);
         bt_showTrips = (Button) findViewById(R.id.bt_showTrips);
+
 
         // Clicklistener für die Buttons
         bt_startTrip.setOnClickListener(new View.OnClickListener() {
@@ -73,6 +75,21 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Falls Bluetooth bereits eingeschaltet ist, Buttons setzen
+        if (BluetoothAdapter.getDefaultAdapter().isEnabled()) {
+            Log.e(CLASS, "Bluetooth already enabled");
+            bt_activateBt.setText(getResources().getString(R.string.main_bt_enabled));
+            bt_activateBt.setEnabled(false);
+            bt_selectDev.setEnabled(true);
+        }
+        if (socket != null) {
+            bt_startTrip.setEnabled(true);
+            bt_selectDev.setText(getResources().getString(R.string.main_sel));
+            bt_selectDev.setEnabled(false);
+
+            obd_initialized = true;
+        }
+
 
   /*      bt_activateGps = (Button) findViewById(R.id.bt_activateGps);
         bt_activateGps.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
 
     // Bluetooth-Verbindung wird aktiviert
     private void activateBt () {
-        btAdapter = BluetoothAdapter.getDefaultAdapter();
         // Prüfen, ob das Gerät Bluetooth unterstützt
         if(btAdapter == null) {
             Toast.makeText(MainActivity.this, getResources().getString(R.string.main_bt_support), Toast.LENGTH_SHORT).show();
@@ -154,6 +170,7 @@ public class MainActivity extends AppCompatActivity {
                     try{
                         // Verbindung aufbauen
                         socket = BluetoothConnector.connectDevice(btdevice);
+                        bt_startTrip.setEnabled(true);
                         bt_selectDev.setText(getResources().getString(R.string.main_sel));
                         bt_selectDev.setEnabled(false);
                     } catch (IOException ioe) {

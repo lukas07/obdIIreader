@@ -40,6 +40,7 @@ public class TripsAdapter extends CursorAdapter {
         // Inhalt der Textviews füllen
         tv_driver.setText(cursor.getString(col_driver));
         tv_startTimestamp.setText(convertDate(cursor.getLong(col_startTimestamp)));
+        String test = tv_startTimestamp.getText().toString();
         tv_endTimestamp.setText(convertDate(cursor.getLong(col_endTimestamp)));
     }
 

@@ -25,8 +25,6 @@ public class TripListActivity extends AppCompatActivity implements AdapterView.O
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_list);
 
-        //callbacks = this;
-
         // Back-Button hinzufügen
         ActionBar bar = getSupportActionBar();
         bar.setDisplayHomeAsUpEnabled(true);

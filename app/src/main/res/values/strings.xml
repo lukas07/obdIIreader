@@ -42,6 +42,7 @@
     <!-- RunningTripActivity -->
     <string name="run_stop">Stop!</string>
     <string name="title_activity_stopped_trip">Review of your Trip</string>
+    <string name="run_init_fail">Could not initialize the connection to OBD-Adapter</string>
 
     <!-- StoppedTripActivity -->
     <string name="stop_odometer">Odometer value after Trip</string>
