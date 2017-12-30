@@ -112,16 +112,17 @@ public class ObdService extends Service {
                 AvailablePidsCommand_41_60 pids3 = new AvailablePidsCommand_41_60();
                 try {
                     pids.run(socket.getInputStream(), socket.getOutputStream());
-                    String test = pids.getResult();
+                    String test = pids.getCalculatedResult();
                     pids2.run(socket.getInputStream(), socket.getOutputStream());
-                    test = pids2.getResult();
+                    test = pids2.getCalculatedResult();
                     pids3.run(socket.getInputStream(), socket.getOutputStream());
-                    test = pids3.getResult();
+                    test = pids3.getCalculatedResult();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 // dauerhafte Abfrage der OBD-Daten starten
                 t.start();
+                MainActivity.obd_initialized = true;
             }
         } else {
             t.start();
@@ -151,7 +152,7 @@ public class ObdService extends Service {
             try {
                 speedCmd.run(socket.getInputStream(), socket.getOutputStream());
                 //mafCmd.run(socket.getInputStream(), socket.getOutputStream());
-                consCmd.run(socket.getInputStream(), socket.getOutputStream());
+                //consCmd.run(socket.getInputStream(), socket.getOutputStream());
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -164,8 +165,8 @@ public class ObdService extends Service {
             // Verbrauch berechnen: (3600*MAF)/(9069.90*VSS)
             //int fuelConsumption = (int) ((int)(3600*mafCmd.getMAF())/(9069.90*speedCmd.getMetricSpeed()));
             //bundle.putString("fuel", String.valueOf(fuelConsumption));
-            String consumption = consCmd.getFormattedResult();
-            bundle.putString("consumption", consumption);
+            //String consumption = consCmd.getFormattedResult();
+            //bundle.putString("consumption", consumption);
 
             message = new Message();
             message.setData(bundle);

@@ -17,16 +17,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.github.pires.obd.commands.ObdCommand;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static com.example.lukas.bluetoothtest.MainActivity.socket;
-
 public class RunningTripActivity extends AppCompatActivity {
     private static final String CLASS = RunningTripActivity.class.getName();
+    private static final String STATE_TIMER = "timerValue";
 
     private TextView tv_speed;
     private TextView tv_fuel;
@@ -36,6 +33,7 @@ public class RunningTripActivity extends AppCompatActivity {
 
 
     private ObdService service;
+    private boolean serviceBound = false;
 
     private TripRecord record;
 
@@ -43,8 +41,10 @@ public class RunningTripActivity extends AppCompatActivity {
     final int MSG_START_TIMER = 0;
     final int MSG_STOP_TIMER = 1;
     final int MSG_UPDATE_TIMER = 2;
+    final int MSG_SET_TIMER = 3;
     Stopwatch timer = new Stopwatch();
     final int REFRESH_RATE = 1000;
+    private long timerValue = 0;
 
 
     // Handler, um den Timer auf der Oberfläche zu aktualisieren
@@ -56,6 +56,11 @@ public class RunningTripActivity extends AppCompatActivity {
             switch (msg.what) {
                 case MSG_START_TIMER:
                     timer.start(); //start timer
+                    clockHandler.sendEmptyMessage(MSG_UPDATE_TIMER);
+                    break;
+
+                case MSG_SET_TIMER:
+                    timer.setTimer(timerValue);
                     clockHandler.sendEmptyMessage(MSG_UPDATE_TIMER);
                     break;
 
@@ -74,7 +79,7 @@ public class RunningTripActivity extends AppCompatActivity {
     };
 
     // Handler, um die Daten des OBDII-Adapters zu empfangen und Aktualisierung aufzurufen
-    private Handler handler = new Handler() {
+    private Handler uiHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
             updateUI(message);
@@ -88,16 +93,18 @@ public class RunningTripActivity extends AppCompatActivity {
             Log.e(CLASS, "Service connected");
             ObdService.ObdServiceBinder binder = (ObdService.ObdServiceBinder) serviceBinder;
             service = binder.getService();
-            service.setHandler(handler);
+            serviceBound = true;
+            service.setHandler(uiHandler);
             try {
                 service.initObdConnection();
                 bt_stop.setEnabled(true);
                 pb_init.setVisibility(View.GONE);
                 // Timer zur Anzeige der Fahrzeit starten
-                clockHandler.sendEmptyMessage(MSG_START_TIMER);
+                startTimer();
             } catch (IOException ioe) {
                 pb_init.setVisibility(View.GONE);
                 unbindService(serviceConnection);
+                serviceBound = false;
                 Log.e(CLASS, "Service disconnected");
                 Toast.makeText(RunningTripActivity.this, getResources().getString(R.string.run_init_fail), Toast.LENGTH_LONG).show();
                 // Sonst wird der Timer noch kurz angezeigt
@@ -109,6 +116,7 @@ public class RunningTripActivity extends AppCompatActivity {
         @Override
         public void onServiceDisconnected(ComponentName name) {
             Log.e(CLASS, "Service disconnected");
+            serviceBound = false;
         }
     };
 
@@ -139,6 +147,10 @@ public class RunningTripActivity extends AppCompatActivity {
         Intent serviceIntent = new Intent(getApplicationContext(), ObdService.class);
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
 
+        // Falls der Timer bereits gelaufen ist, den Wert übernehmen
+        if(savedInstanceState != null) {
+            timerValue = savedInstanceState.getLong(STATE_TIMER);
+        }
 
     }
 
@@ -148,8 +160,10 @@ public class RunningTripActivity extends AppCompatActivity {
         String speed = bundle.getString("speed");
         String fuel = bundle.getString("consumption");
 
-        tv_speed.setText(speed);
-        tv_fuel.setText(fuel);
+        if(speed != null)
+            tv_speed.setText(speed);
+        if(fuel != null)
+            tv_fuel.setText(fuel);
     }
 
 
@@ -159,17 +173,13 @@ public class RunningTripActivity extends AppCompatActivity {
 
         Log.e(CLASS, "Unbind Service");
         service.stopSendOBDCommands();
-        unbindService(serviceConnection);
-        /*try {
-            if (socket != null) {
-                service.closeSocket();
-            } else {
-                Log.e(CLASS, "No socket available");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.e(CLASS, "Error while closing socket");
-        }*/
+        try {
+            unbindService(serviceConnection);
+            serviceBound = false;
+        } catch (Exception e) {
+            Log.e(CLASS, "Couldnt unbind");
+        }
+
         // Daten in Triprecord schreiben (Stopzeitpunkt, Endadresse,...)
         record = record.getTripRecord();
 
@@ -181,6 +191,30 @@ public class RunningTripActivity extends AppCompatActivity {
         Intent intent = new Intent(RunningTripActivity.this, StoppedTripActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void startTimer() {
+        if(timerValue == 0)
+            clockHandler.sendEmptyMessage(MSG_START_TIMER);
+        else
+            clockHandler.sendEmptyMessage(MSG_SET_TIMER);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(serviceBound) {
+            unbindService(serviceConnection);
+            serviceBound = false;
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState (Bundle savedInstanceState) {
+        // Den aktuellen Wert des Timers speichern
+        savedInstanceState.putLong(STATE_TIMER, timer.getStartTime());
+
+        super.onSaveInstanceState(savedInstanceState);
     }
 
 }

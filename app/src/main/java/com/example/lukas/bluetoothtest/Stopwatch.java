@@ -36,6 +36,15 @@ public class Stopwatch {
         this.running = false;
     }
 
+    public void setTimer(long startTime) {
+        this.startTime = startTime;
+        this.running = true;
+    }
+
+    public long getStartTime() {
+        return this.startTime;
+    }
+
     //elaspsed time in milliseconds
     public long getElapsedTimeMili() {
         long elapsed = 0;

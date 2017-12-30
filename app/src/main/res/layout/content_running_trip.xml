@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="--- km/h" />
+            android:text= "@string/run_init_tv" />
 
         <TextView
             android:id="@+id/tv_timer"
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="-,- l/100km " />
+            android:text="@string/run_init_tv" />
 
     </TableRow>
 
