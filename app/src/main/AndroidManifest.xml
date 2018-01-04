@@ -69,13 +69,15 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".TripDetailActivity"
+        <activity
+            android:name=".TripDetailActivity"
             android:label="@string/detail_title"
             android:parentActivityName=".TripListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".TripListActivity" />
         </activity>
+
     </application>
 
 </manifest>

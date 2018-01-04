@@ -8,16 +8,14 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import java.text.DateFormat;
-import java.util.Date;
-
 
 /**
  * Created by Lukas on 03.12.2017.
  */
 
 public class TripsAdapter extends CursorAdapter {
-    private int col_driver = 1, col_startTimestamp = 5, col_endTimestamp = 6;
+    private static final int col_rowid = 0, col_driver = 1, col_startTimestamp = 5, col_endTimestamp = 6;
+
 
     private LayoutInflater inflater;
 
@@ -57,4 +55,5 @@ public class TripsAdapter extends CursorAdapter {
         String test =  day + "." + month + "." + year + ' ' + hours + ":" + minutes;
         return test;
     }
+
 }

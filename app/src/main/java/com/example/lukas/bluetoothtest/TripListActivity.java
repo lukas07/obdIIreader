@@ -1,81 +1,19 @@
 package com.example.lukas.bluetoothtest;
 
-import android.content.Intent;
-import android.database.Cursor;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.support.v7.app.AppCompatActivity;
 
-public class TripListActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, LoaderManager.LoaderCallbacks<Cursor> {
-    private ListView lv_trips;
+/**
+ * Created by Lukas on 30.12.2017.
+ */
 
-    private TripOpenHelper helper;
-    private TripsAdapter adapter;
-    private Cursor cursor;
-
+public class TripListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trip_list);
-
-        // Back-Button hinzufügen
-        ActionBar bar = getSupportActionBar();
-        bar.setDisplayHomeAsUpEnabled(true);
-
-        // Referenzvariablen zu den Feldern deklarieren
-        lv_trips = (ListView) findViewById(R.id.lv_trips);
-
-        /*lv_trips.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showDetails(id);
-            }
-        });*/
-        //registerForContextMenu(lv_trips);
-
-        adapter = new TripsAdapter(this, null);
-        lv_trips.setAdapter(adapter);
-        getLoaderManager().initLoader(0, null, this);
-        lv_trips.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                showDetails(id);
-            }
-        });
-    }
-
-    private void showDetails(long rowid) {
-        Intent intent = new Intent(TripListActivity.this, TripDetailActivity.class);
-        intent.putExtra("rowid", rowid);
-        startActivity(intent);
-    }
-
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this,
-                TripProvider.CONTENT_URI, null, null, null, TripOpenHelper.COL_TS_START + " DESC");
-    }
-
-    @Override
-    public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
-        adapter.swapCursor(data);
-    }
-
-    @Override
-    public void onLoaderReset(android.content.Loader<Cursor> loader) {
-        adapter.swapCursor(null);
+        setContentView(R.layout.fragment_trip_list);
     }
 
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        showDetails(id);
-    }
 }

@@ -16,6 +16,8 @@
     <string name="main_dev">Device</string>
     <string name="main_sel">Selected</string>
     <string name="main_con_err">Could not establish bluetooth connection to the selected device</string>
+    <string name="main_bt_manual_enabled">Bluetooth has been enabled</string>
+    <string name="main_bt_manual_disabled">Bluetooth has been disabled</string>
 
     <!-- DeviceListActivity -->
     <string name="devList_selDev">Select a device to connect</string>

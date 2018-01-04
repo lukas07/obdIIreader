@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -25,6 +26,11 @@ public class RunningTripActivity extends AppCompatActivity {
     private static final String CLASS = RunningTripActivity.class.getName();
     private static final String STATE_TIMER = "timerValue";
 
+    // Ladebalken während der Initialisierung des OBD-Adapters anzeigen
+    private static final int INIT_STARTED = 1;
+    private static final int INIT_SUCCESS = 2;
+    private static final int INIT_STOPPED = 3;
+
     private TextView tv_speed;
     private TextView tv_fuel;
     private TextView tv_timer;
@@ -34,6 +40,8 @@ public class RunningTripActivity extends AppCompatActivity {
 
     private ObdService service;
     private boolean serviceBound = false;
+    private Thread initThread;
+    private int orientation;
 
     private TripRecord record;
 
@@ -45,8 +53,6 @@ public class RunningTripActivity extends AppCompatActivity {
     Stopwatch timer = new Stopwatch();
     final int REFRESH_RATE = 1000;
     private long timerValue = 0;
-
-
     // Handler, um den Timer auf der Oberfläche zu aktualisieren
     private Handler clockHandler = new Handler()
     {
@@ -78,11 +84,36 @@ public class RunningTripActivity extends AppCompatActivity {
         }
     };
 
-    // Handler, um die Daten des OBDII-Adapters zu empfangen und Aktualisierung aufzurufen
+    // Handler, um die Daten des OBDII-Adapters zu empfangen und Aktualisierung der UI durchzuführen
     private Handler uiHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            updateUI(message);
+            switch (message.what) {
+                case INIT_STARTED:
+                    pb_init.setVisibility(View.VISIBLE);
+                    break;
+                case INIT_STOPPED:
+                    pb_init.setVisibility(View.GONE);
+                    Toast.makeText(RunningTripActivity.this, getResources().getString(R.string.run_init_fail), Toast.LENGTH_LONG).show();
+                    // Sonst wird der Timer noch kurz angezeigt
+                    tv_timer.setVisibility(View.INVISIBLE);
+                    break;
+                case INIT_SUCCESS:
+                    pb_init.setVisibility(View.GONE);
+                    bt_stop.setEnabled(true);
+                    // Timer zur Anzeige der Fahrzeit starten
+                    startTimer();
+                    break;
+                default:
+                    Bundle bundle = message.getData();
+                    String speed = bundle.getString("speed");
+                    String fuel = bundle.getString("consumption");
+
+                    if(speed != null)
+                        tv_speed.setText(speed);
+                    if(fuel != null)
+                        tv_fuel.setText(fuel);
+            }
         }
     };
 
@@ -90,27 +121,30 @@ public class RunningTripActivity extends AppCompatActivity {
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder serviceBinder) {
+            orientation = getRequestedOrientation();
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+
             Log.e(CLASS, "Service connected");
             ObdService.ObdServiceBinder binder = (ObdService.ObdServiceBinder) serviceBinder;
             service = binder.getService();
             serviceBound = true;
             service.setHandler(uiHandler);
-            try {
-                service.initObdConnection();
-                bt_stop.setEnabled(true);
-                pb_init.setVisibility(View.GONE);
-                // Timer zur Anzeige der Fahrzeit starten
-                startTimer();
-            } catch (IOException ioe) {
-                pb_init.setVisibility(View.GONE);
-                unbindService(serviceConnection);
-                serviceBound = false;
-                Log.e(CLASS, "Service disconnected");
-                Toast.makeText(RunningTripActivity.this, getResources().getString(R.string.run_init_fail), Toast.LENGTH_LONG).show();
-                // Sonst wird der Timer noch kurz angezeigt
-                tv_timer.setVisibility(View.INVISIBLE);
-                finish();
-            }
+            // Auslagerung der Initialisierung in eigenen Thread, um UI gleichzeitig updaten zu können
+            initThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        service.initObdConnection();
+                    } catch (IOException ioe) {
+                        unbindService(serviceConnection);
+                        serviceBound = false;
+                        Log.e(CLASS, "Service disconnected");
+                        finish();
+                    }
+                    setRequestedOrientation(orientation);
+                }
+            });
+            initThread.start();
         }
 
         @Override
@@ -152,18 +186,6 @@ public class RunningTripActivity extends AppCompatActivity {
             timerValue = savedInstanceState.getLong(STATE_TIMER);
         }
 
-    }
-
-    // Aktualisiert die Anzeige der OBD-Daten
-    private void updateUI(Message message) {
-        Bundle bundle = message.getData();
-        String speed = bundle.getString("speed");
-        String fuel = bundle.getString("consumption");
-
-        if(speed != null)
-            tv_speed.setText(speed);
-        if(fuel != null)
-            tv_fuel.setText(fuel);
     }
 
 

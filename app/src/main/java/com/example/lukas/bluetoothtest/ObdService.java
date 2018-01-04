@@ -44,6 +44,10 @@ import static com.example.lukas.bluetoothtest.MainActivity.socket;
 public class ObdService extends Service {
     private static final String CLASS = ObdService.class.getName();
 
+    private static final int INIT_STOPPED = 0;
+    private static final int INIT_STARTED = 1;
+    private static final int INIT_SUCCESS = 2;
+
 
     private BluetoothSocket btSocket;
     private Handler handler;
@@ -92,18 +96,24 @@ public class ObdService extends Service {
         // Initialisieren des OBD Adapters beim erstmaligen Abrufen der Daten seitdem das Bluetooth-Socket vorhanden ist
         if(!MainActivity.obd_initialized) {
             initThread.start();
+            // Benachrichtigung an UI-Activity, um Ladebalken anzuzeigen
+            handler.sendEmptyMessage(INIT_STARTED);
+
             try {
                 // 10 Sekunden abwarten, ob Initialisierung abgeschlossen werden kann
                 initThread.join(10000);
-                Log.e(CLASS, "Initialization interrupted");
+                Log.e(CLASS, "Thread came out of join");
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 Log.e(CLASS, "Initialization has finished successfully");
             }
-            // Falls der Thread nach 10 Sekunden immer noch läuft --> abbrechen und Verbindung schließen
+
+            // Falls der Thread nach 10 Sekunden immer noch läuft --> abbrechen
             if(initThread.isAlive()) {
                 Log.e(CLASS, "Initialization still alive-->interrupt");
                 initThread.interrupt();
+                // Benachrichtigung an UI-Activity, dass Initialisierung abgebrochen wurde --> Ladebalken nicht mehr anzeigen
+                handler.sendEmptyMessage(INIT_STOPPED);
                 //socket.close();
                 throw new IOException();
             } else {
@@ -115,17 +125,20 @@ public class ObdService extends Service {
                     String test = pids.getCalculatedResult();
                     pids2.run(socket.getInputStream(), socket.getOutputStream());
                     test = pids2.getCalculatedResult();
-                    pids3.run(socket.getInputStream(), socket.getOutputStream());
-                    test = pids3.getCalculatedResult();
+                    //pids3.run(socket.getInputStream(), socket.getOutputStream());
+                    //test = pids3.getCalculatedResult();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 // dauerhafte Abfrage der OBD-Daten starten
                 t.start();
+                // Benachrichtigung an UI-Activity, dass Initialisierung erfolgreich war --> Ladebalken nicht mehr anzeigen, Stop-Button anzeigen
+                handler.sendEmptyMessage(INIT_SUCCESS);
                 MainActivity.obd_initialized = true;
             }
         } else {
             t.start();
+            handler.sendEmptyMessage(INIT_SUCCESS);
         }
 
     }
@@ -193,9 +206,10 @@ public class ObdService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.e(CLASS, "Destroying service");
-        if(t != null) {
+        if(initThread != null)
+            initThread.interrupt();
+        if(t != null)
             t.interrupt();
-        }
     }
 
     public class ObdServiceBinder extends Binder{
