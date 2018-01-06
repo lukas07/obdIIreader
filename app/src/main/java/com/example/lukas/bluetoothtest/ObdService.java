@@ -1,13 +1,10 @@
 package com.example.lukas.bluetoothtest;
 
 import android.app.Service;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -16,10 +13,8 @@ import android.util.Log;
 
 import com.github.pires.obd.commands.ObdCommand;
 import com.github.pires.obd.commands.SpeedCommand;
-import com.github.pires.obd.commands.engine.AbsoluteLoadCommand;
 import com.github.pires.obd.commands.engine.MassAirFlowCommand;
 import com.github.pires.obd.commands.fuel.ConsumptionRateCommand;
-import com.github.pires.obd.commands.fuel.FuelLevelCommand;
 import com.github.pires.obd.commands.protocol.AvailablePidsCommand_01_20;
 import com.github.pires.obd.commands.protocol.AvailablePidsCommand_21_40;
 import com.github.pires.obd.commands.protocol.AvailablePidsCommand_41_60;
@@ -28,12 +23,10 @@ import com.github.pires.obd.commands.protocol.LineFeedOffCommand;
 import com.github.pires.obd.commands.protocol.SelectProtocolCommand;
 import com.github.pires.obd.commands.protocol.TimeoutCommand;
 import com.github.pires.obd.enums.ObdProtocols;
+import com.github.pires.obd.exceptions.NoDataException;
+import com.github.pires.obd.exceptions.UnableToConnectException;
 
 import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static com.example.lukas.bluetoothtest.MainActivity.socket;
 
@@ -44,9 +37,14 @@ import static com.example.lukas.bluetoothtest.MainActivity.socket;
 public class ObdService extends Service {
     private static final String CLASS = ObdService.class.getName();
 
+    // Konstanten für den Handler
+        // Steuerung des Ladebalken
     private static final int INIT_STOPPED = 0;
     private static final int INIT_STARTED = 1;
     private static final int INIT_SUCCESS = 2;
+        // Exception-Meldungen für UI-Activity
+    private static final int NODATA_EXCEPTION = 10;
+    private static final int CONNECT_EXCEPTION = 11;
 
 
     private BluetoothSocket btSocket;
@@ -54,18 +52,20 @@ public class ObdService extends Service {
 
     private ObdCommand[] initCmds = {new EchoOffCommand(), new LineFeedOffCommand(), new TimeoutCommand(60), new SelectProtocolCommand(ObdProtocols.AUTO)};
 
-    Thread t = new Thread(new Runnable() {
+    // Thread, der das dauerhafte Senden der OBD Commands übernimmt
+    Thread sendThread = new Thread(new Runnable() {
         @Override
         public void run() {
             try {
                 sendObdCommands();
             } catch (InterruptedException e) {
-                t.interrupt();
+                sendThread.interrupt();
             }
 
         }
     });
 
+    // Sendet, die Initialisierungbefehle an den OBD-Adapter
     Thread initThread = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -85,6 +85,8 @@ public class ObdService extends Service {
         }
     });
 
+    // Beim erstmaligen Aufruf wird die OBD-Schnittstelle initialisiert und anschließend die dauerhafte Abfrage der Daten gestartet;
+    // bei wiederholenden Aufrufen wird nur die dauerhafte Abfrage gestartet (da Initialisierung nur einmal nötig ist)
     public void initObdConnection() throws IOException{
         if (socket != null) {
             this.btSocket = socket;
@@ -105,7 +107,7 @@ public class ObdService extends Service {
                 Log.e(CLASS, "Thread came out of join");
             } catch (InterruptedException e) {
                 e.printStackTrace();
-                Log.e(CLASS, "Initialization has finished successfully");
+                Log.e(CLASS, "Error in Thread.join");
             }
 
             // Falls der Thread nach 10 Sekunden immer noch läuft --> abbrechen
@@ -116,6 +118,7 @@ public class ObdService extends Service {
                 handler.sendEmptyMessage(INIT_STOPPED);
                 //socket.close();
                 throw new IOException();
+            // anders wird das dauerhafte Senden der OBD-Commands gestartet
             } else {
                 AvailablePidsCommand_01_20 pids = new AvailablePidsCommand_01_20();
                 AvailablePidsCommand_21_40 pids2 = new AvailablePidsCommand_21_40();
@@ -131,13 +134,14 @@ public class ObdService extends Service {
                     e.printStackTrace();
                 }
                 // dauerhafte Abfrage der OBD-Daten starten
-                t.start();
+                sendThread.start();
                 // Benachrichtigung an UI-Activity, dass Initialisierung erfolgreich war --> Ladebalken nicht mehr anzeigen, Stop-Button anzeigen
                 handler.sendEmptyMessage(INIT_SUCCESS);
                 MainActivity.obd_initialized = true;
             }
+        // bei wiederholenden Starten des Services wird nur das Senden der Commands gestartet (z.B. nach Orientierungswechsel)
         } else {
-            t.start();
+            sendThread.start();
             handler.sendEmptyMessage(INIT_SUCCESS);
         }
 
@@ -153,7 +157,7 @@ public class ObdService extends Service {
         }
     }
 
-
+    // Sendet die OBD-Befehle an den Adapter und meldet die Ergebnisse an die UI-Activity
     private void sendObdCommands() throws InterruptedException {
         Bundle bundle = new Bundle();
         Message message;
@@ -167,6 +171,16 @@ public class ObdService extends Service {
                 //mafCmd.run(socket.getInputStream(), socket.getOutputStream());
                 //consCmd.run(socket.getInputStream(), socket.getOutputStream());
 
+            } catch (NoDataException nde) {
+                nde.printStackTrace();
+                Log.e(CLASS, "No Data Exception thrown");
+                Thread.currentThread().interrupt();
+                handler.sendEmptyMessage(NODATA_EXCEPTION);
+            } catch (UnableToConnectException utce){
+                utce.printStackTrace();
+                Log.e(CLASS, "Connection to the OBD-Adapter has been interrupted");
+                Thread.currentThread().interrupt();
+                handler.sendEmptyMessage(CONNECT_EXCEPTION);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.e(CLASS, "Error while sending OBD commands");
@@ -188,7 +202,7 @@ public class ObdService extends Service {
     }
 
     public void stopSendOBDCommands() {
-        t.interrupt();
+        sendThread.interrupt();
     }
 
 
@@ -208,8 +222,8 @@ public class ObdService extends Service {
         Log.e(CLASS, "Destroying service");
         if(initThread != null)
             initThread.interrupt();
-        if(t != null)
-            t.interrupt();
+        if(sendThread != null)
+            sendThread.interrupt();
     }
 
     public class ObdServiceBinder extends Binder{

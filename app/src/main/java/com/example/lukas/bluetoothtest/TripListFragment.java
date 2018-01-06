@@ -113,7 +113,6 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
 
     @Override
     public void onListItemClick(ListView list, View v, int position, long id) {
-        // TODO rowid oder index??
         showDetails(position, id);
     }
 

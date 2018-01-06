@@ -24,12 +24,17 @@ import java.util.Date;
 
 public class RunningTripActivity extends AppCompatActivity {
     private static final String CLASS = RunningTripActivity.class.getName();
+    // Konstanten: SaveInstance
     private static final String STATE_TIMER = "timerValue";
 
-    // Ladebalken während der Initialisierung des OBD-Adapters anzeigen
+    // Konstanten: obdHandler
+        // Steuerung des Ladebalken
     private static final int INIT_STARTED = 1;
     private static final int INIT_SUCCESS = 2;
     private static final int INIT_STOPPED = 3;
+        // Exception-Meldungen für UI-Activity
+    private static final int NODATA_EXCEPTION = 10;
+    private static final int CONNECT_EXCEPTION = 11;
 
     private TextView tv_speed;
     private TextView tv_fuel;
@@ -85,7 +90,7 @@ public class RunningTripActivity extends AppCompatActivity {
     };
 
     // Handler, um die Daten des OBDII-Adapters zu empfangen und Aktualisierung der UI durchzuführen
-    private Handler uiHandler = new Handler() {
+    private Handler obdHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
             switch (message.what) {
@@ -96,7 +101,7 @@ public class RunningTripActivity extends AppCompatActivity {
                     pb_init.setVisibility(View.GONE);
                     Toast.makeText(RunningTripActivity.this, getResources().getString(R.string.run_init_fail), Toast.LENGTH_LONG).show();
                     // Sonst wird der Timer noch kurz angezeigt
-                    tv_timer.setVisibility(View.INVISIBLE);
+                    //tv_timer.setVisibility(View.INVISIBLE);
                     break;
                 case INIT_SUCCESS:
                     pb_init.setVisibility(View.GONE);
@@ -104,6 +109,14 @@ public class RunningTripActivity extends AppCompatActivity {
                     // Timer zur Anzeige der Fahrzeit starten
                     startTimer();
                     break;
+                case NODATA_EXCEPTION:
+                    Toast.makeText(RunningTripActivity.this, getResources().getString(R.string.run_no_data), Toast.LENGTH_LONG).show();
+                    // TODO Wenn keine Daten mehr empfangen werden oder die Bt-Verbindung unterbrochen wurde direkt zu MainActivity oder sofort den Trip beenden?
+                    finish();
+                    break;
+                case CONNECT_EXCEPTION:
+                    Toast.makeText(RunningTripActivity.this, getResources().getString(R.string.run_connect), Toast.LENGTH_LONG).show();
+                    finish();
                 default:
                     Bundle bundle = message.getData();
                     String speed = bundle.getString("speed");
@@ -128,7 +141,7 @@ public class RunningTripActivity extends AppCompatActivity {
             ObdService.ObdServiceBinder binder = (ObdService.ObdServiceBinder) serviceBinder;
             service = binder.getService();
             serviceBound = true;
-            service.setHandler(uiHandler);
+            service.setHandler(obdHandler);
             // Auslagerung der Initialisierung in eigenen Thread, um UI gleichzeitig updaten zu können
             initThread = new Thread(new Runnable() {
                 @Override

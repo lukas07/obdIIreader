@@ -47,7 +47,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".StoppedTripActivity"
-            android:label="@string/title_activity_stopped_trip"
+            android:label="@string/run_title"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
