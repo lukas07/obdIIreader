@@ -1,69 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.lukas.bluetoothtest.TripDetailActivity">
+    tools:activity="com.example.lukas.bluetoothtest.TripDetailActivity"
+    android:id="@+id/detail_container">
 
-    <ScrollView
-        android:layout_width="368dp"
-        android:layout_height="495dp"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp">
-
-        <LinearLayout
+    <TableRow>
+        <!--<ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="8dp">
 
-            <TextView
-                android:id="@+id/tv_detail_driver"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/entry_init" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">-->
 
-            <TextView
-                android:id="@+id/tv_detail_mode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/entry_init" />
+                <TextView
+                    android:id="@+id/tv_detail_driver"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/entry_init" />
 
-            <TextView
-                android:id="@+id/tv_detail_startTs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/entry_init" />
+                <TextView
+                    android:id="@+id/tv_detail_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/entry_init" />
 
-            <TextView
-                android:id="@+id/tv_detail_endTs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/entry_init" />
+                <TextView
+                    android:id="@+id/tv_detail_startTs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/entry_init" />
 
-            <TextView
-                android:id="@+id/tv_detail_startMil"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/entry_init" />
+                <TextView
+                    android:id="@+id/tv_detail_endTs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/entry_init" />
 
-            <TextView
-                android:id="@+id/tv_detail_endMil"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/entry_init" />
+                <TextView
+                    android:id="@+id/tv_detail_startMil"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/entry_init" />
 
-            <TextView
-                android:id="@+id/tv_detail_startAdd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/entry_init" />
+                <TextView
+                    android:id="@+id/tv_detail_endMil"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/entry_init" />
 
-            <TextView
-                android:id="@+id/tv_detail_endAdd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/entry_init" />
-        </LinearLayout>
-    </ScrollView>
-</android.support.constraint.ConstraintLayout>
+                <TextView
+                    android:id="@+id/tv_detail_startAdd"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/entry_init" />
+
+                <TextView
+                    android:id="@+id/tv_detail_endAdd"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/entry_init" />
+
+                <!--<TextView
+                    android:id="@+id/tv_detail_route"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/entry_init" /> -->
+
+    </TableRow>
+</TableLayout>

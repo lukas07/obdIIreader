@@ -38,11 +38,11 @@ public class ObdService extends Service {
     private static final String CLASS = ObdService.class.getName();
 
     // Konstanten für den Handler
-        // Steuerung des Ladebalken
-    private static final int INIT_STOPPED = 0;
+    // Steuerung des Ladebalken
     private static final int INIT_STARTED = 1;
     private static final int INIT_SUCCESS = 2;
-        // Exception-Meldungen für UI-Activity
+    private static final int INIT_STOPPED = 3;
+    // Exception-Meldungen für UI-Activity
     private static final int NODATA_EXCEPTION = 10;
     private static final int CONNECT_EXCEPTION = 11;
 
@@ -220,9 +220,9 @@ public class ObdService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.e(CLASS, "Destroying service");
-        if(initThread != null)
+        if(initThread.isAlive())
             initThread.interrupt();
-        if(sendThread != null)
+        if(sendThread.isAlive())
             sendThread.interrupt();
     }
 

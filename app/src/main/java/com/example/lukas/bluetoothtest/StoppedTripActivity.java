@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.icu.text.DateFormat;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -73,6 +75,12 @@ public class StoppedTripActivity extends AppCompatActivity {
         date = TripsAdapter.convertDate(record.getEndTimestamp());
         tv_tsEnd.setText(date);
 
+        // Google Map hinzufügen
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.stopped_container, new GoogleMapFragment());
+        fragmentTransaction.commit();
+
     }
 
     // Überprüfen der Eingaben und ggf. abspeichern des Trips in die DB
@@ -102,6 +110,7 @@ public class StoppedTripActivity extends AppCompatActivity {
             // TODO nur zum Testen, solange keine Adresse ermittelt wird
             values.put(TripOpenHelper.COL_ADDRESS_START, "start");
             values.put(TripOpenHelper.COL_ADDRESS_END, "end");
+            values.put(TripOpenHelper.COL_ROUTE_POINTS, record.getRoutePoints());
             getContentResolver().insert(TripProvider.CONTENT_URI, values);
             /*helper = helper.getHelper(this);
             helper.insert(record.getDriver(),
