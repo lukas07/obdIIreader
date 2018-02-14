@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorBluetooth">#3F51B5</color>
+
+    <color name="green">#00DB00</color>
+    <color name="darkGreen">#00C800</color>
 </resources>
