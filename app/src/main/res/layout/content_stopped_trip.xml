@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.lukas.bluetoothtest.StoppedTripActivity"
+    tools:activity="com.example.lukas.bluetoothtest.StoppedTripActivity"
     tools:showIn="@layout/activity_stopped_trip">
 
     <TextView
@@ -56,4 +56,9 @@
         android:text="@string/stop_save"
         app:layout_constraintRight_toRightOf="parent"
         tools:layout_editor_absoluteY="427dp" />
+
+    <FrameLayout
+        android:id="@+id/stopped_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </android.support.constraint.ConstraintLayout>

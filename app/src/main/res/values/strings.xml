@@ -18,6 +18,8 @@
     <string name="main_con_err">Could not establish bluetooth connection to the selected device</string>
     <string name="main_bt_manual_enabled">Bluetooth has been enabled</string>
     <string name="main_bt_manual_disabled">Bluetooth has been disabled</string>
+    <string name="main_gps_manual_disabled">GPS has been disabled</string>
+    <string name="main_gps_manual_enabled">GPS has been enabled</string>
 
     <!-- DeviceListActivity -->
     <string name="devList_selDev">Select a device to connect</string>
@@ -43,9 +45,11 @@
 
     <!-- RunningTripActivity -->
     <string name="run_stop">Stop!</string>
-    <string name="title_activity_stopped_trip">Review of your Trip</string>
+    <string name="run_title">Review of your Trip</string>
     <string name="run_init_fail">Could not initialize the connection to OBD-Adapter</string>
     <string name="run_init_tv">No Data</string>
+    <string name="run_no_data">Your device could not receive any data</string>
+    <string name="run_connect">The connection to the OBD-Adapter has been interrupted</string>
 
     <!-- StoppedTripActivity -->
     <string name="stop_odometer">Odometer value after Trip</string>

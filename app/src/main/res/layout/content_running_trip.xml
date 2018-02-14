@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.lukas.bluetoothtest.RunningTripActivity"
+    tools:activity="com.example.lukas.bluetoothtest.RunningTripActivity"
     tools:showIn="@layout/activity_running_trip">
 
     <TableRow
@@ -60,5 +60,11 @@
             android:layout_weight="1"
             android:visibility="gone" />
     </TableRow>
+
+    <FrameLayout
+        android:id="@+id/running_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 
 </TableLayout>

@@ -1,16 +1,17 @@
 package com.example.lukas.bluetoothtest;
 
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.app.ListFragment;
+
 import android.content.Intent;
 import android.database.Cursor;
-import android.app.LoaderManager;
-import android.content.CursorLoader;
-import android.content.Loader;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.view.View;
 import android.widget.ListView;
 
@@ -77,16 +78,21 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
         if(dualPane) {
             getListView().setItemChecked(position, true);
             TripDetailFragment detailFragment = (TripDetailFragment) fm.findFragmentById(R.id.details);
-            if(detailFragment == null || detailFragment.getShownIndex() != position) {
+            if((detailFragment == null || detailFragment.getShownIndex() != position) && rowid != 0) {
                 detailFragment = TripDetailFragment.newInstance(getActivity().getApplicationContext(), curCheckPosition, curCheckRowid);
                 FragmentTransaction ft = fm.beginTransaction();
-                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+                ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
                 ft.replace(R.id.details, detailFragment);
                 if(!uselessStackState)
                     ft.addToBackStack(null);
                 ft.commit();
+
+                GoogleMapFragment mapFragment = GoogleMapFragment.newInstance(getActivity().getApplicationContext(), rowid, GoogleMapFragment.MAP_MODE_DISPLAY );
+                ft = fm.beginTransaction();
+                ft.replace(R.id.map_container, mapFragment);
+                ft.commit();
             }
-        } else {
+        } else if (rowid != 0) {
             Intent intent = new Intent(getActivity(), TripDetailActivity.class);
             intent.putExtra("rowid", rowid);
             intent.putExtra("position", position);
@@ -102,18 +108,17 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
     }
 
     @Override
-    public void onLoadFinished(android.content.Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         adapter.swapCursor(data);
     }
 
     @Override
-    public void onLoaderReset(android.content.Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
     }
 
     @Override
     public void onListItemClick(ListView list, View v, int position, long id) {
-        // TODO rowid oder index??
         showDetails(position, id);
     }
 
