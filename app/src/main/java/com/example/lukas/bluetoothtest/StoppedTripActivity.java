@@ -76,9 +76,10 @@ public class StoppedTripActivity extends AppCompatActivity {
         tv_tsEnd.setText(date);
 
         // Google Map hinzufügen
+        GoogleMapFragment mapFragment = GoogleMapFragment.newInstance(getApplicationContext(), 0, GoogleMapFragment.MAP_MODE_DISPLAY);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.stopped_container, new GoogleMapFragment());
+        fragmentTransaction.replace(R.id.stopped_container, mapFragment);
         fragmentTransaction.commit();
 
     }
@@ -105,11 +106,8 @@ public class StoppedTripActivity extends AppCompatActivity {
             values.put(TripOpenHelper.COL_DRIVE_MODE, record.getDriveMode());
             values.put(TripOpenHelper.COL_TS_START, record.getStartTimestamp());
             values.put(TripOpenHelper.COL_TS_END, record.getEndTimestamp());
-            //values.put(TripOpenHelper.COL_ADDRESS_START, record.getStartAddress());
-            //values.put(TripOpenHelper.COL_ADDRESS_END, record.getEndAddress());
-            // TODO nur zum Testen, solange keine Adresse ermittelt wird
-            values.put(TripOpenHelper.COL_ADDRESS_START, "start");
-            values.put(TripOpenHelper.COL_ADDRESS_END, "end");
+            values.put(TripOpenHelper.COL_ADDRESS_START, record.getStartAddress());
+            values.put(TripOpenHelper.COL_ADDRESS_END, record.getEndAddress());
             values.put(TripOpenHelper.COL_ROUTE_POINTS, record.getRoutePoints());
             getContentResolver().insert(TripProvider.CONTENT_URI, values);
             /*helper = helper.getHelper(this);

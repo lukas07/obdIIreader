@@ -66,7 +66,7 @@ public class TripDetailFragment extends Fragment  {
         if(container == null) {
             return null;
         }
-        View v = inflater.inflate(R.layout.activity_trip_detail, container, false);
+        View v = inflater.inflate(R.layout.fragment_trip_detail, container, false);
 
         // Referenzvariablen zu den Feldern deklarieren
         tv_detail_driver = (TextView) v.findViewById(R.id.tv_detail_driver);

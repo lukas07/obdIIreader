@@ -15,6 +15,7 @@ public class TripDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_trip_detail);
 
         //Back-Button hinzufügen
         ActionBar bar = getSupportActionBar();
@@ -31,11 +32,11 @@ public class TripDetailActivity extends AppCompatActivity {
         if(savedInstanceState == null) {
             mapFragment = GoogleMapFragment.newInstance(getApplicationContext(), getIntent().getExtras().getLong("rowid"), GoogleMapFragment.MAP_MODE_DISPLAY);
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(android.R.id.content, mapFragment, "map").commit();
+            transaction.add(R.id.detail_map_container, mapFragment, "map").commit();
 
             detailFragment = TripDetailFragment.newInstance(getApplicationContext(), getIntent().getExtras().getInt("position"), getIntent().getExtras().getLong("rowid"));
             transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(android.R.id.content, detailFragment, "defrag");
+            transaction.add(R.id.detail_text_container, detailFragment, "defrag");
             transaction.commit();
         } else {
             mapFragment = (GoogleMapFragment) getSupportFragmentManager().findFragmentByTag("map");

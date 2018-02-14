@@ -100,8 +100,8 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
             ArrayList<LatLng> routePoints = gson.fromJson(routeString, type);
             args.putParcelableArrayList(TripOpenHelper.COL_ROUTE_POINTS, routePoints);
 
-            mapFragment.setArguments(args);
         }
+        mapFragment.setArguments(args);
 
         return mapFragment;
     }
@@ -109,7 +109,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         mapMode = getArguments().getInt("mode");
-        if(!getArguments().getParcelableArrayList(TripOpenHelper.COL_ROUTE_POINTS).isEmpty())
+        if(mapMode == MAP_MODE_DISPLAY)
             routePoints = getArguments().getParcelableArrayList(TripOpenHelper.COL_ROUTE_POINTS);
         else
             routePoints = new ArrayList<>();
