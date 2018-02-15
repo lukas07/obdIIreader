@@ -3,6 +3,7 @@ package com.example.lukas.bluetoothtest;
 import android.app.Service;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,8 +48,11 @@ public class ObdService extends Service {
     private static final int CONNECT_EXCEPTION = 11;
 
 
+    private SharedPref sharedPreferences;
     private BluetoothSocket btSocket;
     private Handler handler;
+
+    private int cnt_NoData = 0;
 
     private ObdCommand[] initCmds = {new EchoOffCommand(), new LineFeedOffCommand(), new TimeoutCommand(60), new SelectProtocolCommand(ObdProtocols.AUTO)};
 
@@ -96,7 +100,8 @@ public class ObdService extends Service {
         }
 
         // Initialisieren des OBD Adapters beim erstmaligen Abrufen der Daten seitdem das Bluetooth-Socket vorhanden ist
-        if(!MainActivity.obd_initialized) {
+        sharedPreferences  = new SharedPref(this);
+        if(!sharedPreferences.getObdInitialized()) {
             initThread.start();
             // Benachrichtigung an UI-Activity, um Ladebalken anzuzeigen
             handler.sendEmptyMessage(INIT_STARTED);
@@ -137,7 +142,10 @@ public class ObdService extends Service {
                 sendThread.start();
                 // Benachrichtigung an UI-Activity, dass Initialisierung erfolgreich war --> Ladebalken nicht mehr anzeigen, Stop-Button anzeigen
                 handler.sendEmptyMessage(INIT_SUCCESS);
-                MainActivity.obd_initialized = true;
+
+                // Initialisierungs-Kennzeichen auf true setzen
+                sharedPreferences.setObdInitialized(true);
+                //MainActivity.obd_initialized = true;
             }
         // bei wiederholenden Starten des Services wird nur das Senden der Commands gestartet (z.B. nach Orientierungswechsel)
         } else {
@@ -170,12 +178,15 @@ public class ObdService extends Service {
                 speedCmd.run(socket.getInputStream(), socket.getOutputStream());
                 //mafCmd.run(socket.getInputStream(), socket.getOutputStream());
                 //consCmd.run(socket.getInputStream(), socket.getOutputStream());
+                cnt_NoData = 0;
 
             } catch (NoDataException nde) {
                 nde.printStackTrace();
                 Log.e(CLASS, "No Data Exception thrown");
-                Thread.currentThread().interrupt();
-                handler.sendEmptyMessage(NODATA_EXCEPTION);
+                //Thread.currentThread().interrupt();
+                cnt_NoData++;
+                if(cnt_NoData > 5);
+                    handler.sendEmptyMessage(NODATA_EXCEPTION);
             } catch (UnableToConnectException utce){
                 utce.printStackTrace();
                 Log.e(CLASS, "Connection to the OBD-Adapter has been interrupted");

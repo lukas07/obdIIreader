@@ -76,7 +76,7 @@ public class StoppedTripActivity extends AppCompatActivity {
         tv_tsEnd.setText(date);
 
         // Google Map hinzufügen
-        GoogleMapFragment mapFragment = GoogleMapFragment.newInstance(getApplicationContext(), 0, GoogleMapFragment.MAP_MODE_DISPLAY);
+        GoogleMapFragment mapFragment = GoogleMapFragment.newInstance(getApplicationContext(), -1, GoogleMapFragment.MAP_MODE_DISPLAY);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.stopped_container, mapFragment);

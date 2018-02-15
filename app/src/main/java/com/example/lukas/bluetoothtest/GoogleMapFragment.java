@@ -85,7 +85,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         Bundle args = new Bundle();
         args.putInt("mode", mode);
 
-        if(rowid != 0) {
+        if(rowid > 0) {
             final Cursor cursor;
             cursor = context.getContentResolver().query(TripProvider.CONTENT_URI, null, "_id=?", new String[]{Long.toString(rowid)}, null);
             if (!cursor.moveToFirst()) {
@@ -100,6 +100,13 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
             ArrayList<LatLng> routePoints = gson.fromJson(routeString, type);
             args.putParcelableArrayList(TripOpenHelper.COL_ROUTE_POINTS, routePoints);
 
+        } else if (rowid == -1) {
+            // Die Route als String auslesen und in eine Arraylist konvertieren --> auf Map anzeigen
+            String routeString = TripRecord.getTripRecord().getRoutePoints();
+            Gson gson = new Gson();
+            Type type = new TypeToken<ArrayList<LatLng>>() {}.getType();
+            ArrayList<LatLng> routePoints = gson.fromJson(routeString, type);
+            args.putParcelableArrayList(TripOpenHelper.COL_ROUTE_POINTS, routePoints);
         }
         mapFragment.setArguments(args);
 
@@ -180,6 +187,18 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         lineOptions.color(Color.RED);
 
         mMap.addPolyline(lineOptions);
+        // Startposition Marker setzen
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(routePoints.get(0));
+        markerOptions.title("Start Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+        mCurrLocationMarker = mMap.addMarker(markerOptions);
+        mMap.addMarker(markerOptions);
+        // Endposition Marker setzen
+        markerOptions.position(routePoints.get(routePoints.size()-1));
+        markerOptions.title("End Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+        mMap.addMarker(markerOptions);
 
         // Kamera auf der Karte positionieren
         mMap.moveCamera(CameraUpdateFactory.newLatLng(routePoints.get(0)));
@@ -501,6 +520,10 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
             // other 'case' lines to check for other permissions this app might request.
             // You can add here other case statements according to your requirement.
         }
+    }
+
+    public ArrayList<LatLng> getRoutePoints() {
+        return routePoints;
     }
 
     @Override

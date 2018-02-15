@@ -2,9 +2,13 @@ package com.example.lukas.bluetoothtest;
 
 import android.Manifest;
 
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -12,12 +16,14 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -91,15 +97,11 @@ public class RunningTripActivity extends AppCompatActivity {
     private Thread initThread;
     private int orientation;
     private TripRecord record = TripRecord.getTripRecord();
+    private SharedPref sharedPref;
+
 
     // Google Map und GPS-Daten
-    private static final int MAP_CAM_ZOOM = 15;
-    private GoogleMap mMap;
-    private ArrayList<LatLng> routePoints;
-    private GoogleApiClient mGoogleApiClient;
-    private Location mLastLocation;
-    private Marker mCurrLocationMarker;
-    private LocationRequest mLocationRequest;
+    private GoogleMapFragment mapFragment;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Geocoder geocoder;
 
@@ -167,6 +169,7 @@ public class RunningTripActivity extends AppCompatActivity {
                     Toast.makeText(RunningTripActivity.this, getResources().getString(R.string.run_no_data), Toast.LENGTH_LONG).show();
                     // TODO Wenn keine Daten mehr empfangen werden oder die Bt-Verbindung unterbrochen wurde direkt zu MainActivity oder sofort den Trip beenden?
                     finish();
+                    sharedPref.setObdInitialized(false);
                     break;
                 case CONNECT_EXCEPTION:
                     Toast.makeText(RunningTripActivity.this, getResources().getString(R.string.run_connect), Toast.LENGTH_LONG).show();
@@ -220,11 +223,44 @@ public class RunningTripActivity extends AppCompatActivity {
         }
     };
 
+    private BroadcastReceiver bluetoothReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+
+            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+                switch(state) {
+                    case BluetoothAdapter.STATE_OFF:
+                        showToast(getResources().getString(R.string.main_bt_manual_disabled), Toast.LENGTH_LONG);
+                        finish();
+                        break;
+                }
+
+            }
+        }
+    };
+
+    private BroadcastReceiver gpsReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().matches(LocationManager.PROVIDERS_CHANGED_ACTION)) {
+                ContentResolver contentResolver = getApplicationContext().getContentResolver();
+                int mode = Settings.Secure.getInt(
+                        contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_OFF);
+                if(mode == Settings.Secure.LOCATION_MODE_OFF)
+                    showToast(getResources().getString(R.string.main_gps_manual_disabled), Toast.LENGTH_LONG);
+                finish();
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_running_trip);
 
+        sharedPref = new SharedPref(this);
 
         // Referenzvariablen zu den Feldern deklarieren
         tv_speed = (TextView) findViewById(R.id.tv_speed);
@@ -241,6 +277,13 @@ public class RunningTripActivity extends AppCompatActivity {
             }
         });
 
+        // Broadcast-Recevier, um Änderungen des Bluetooth-Status zu registrieren
+        IntentFilter filterBt = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(bluetoothReceiver, filterBt);
+        // Broadcast-Recevier, um Änderungen des GPS-Status zu registrieren
+        IntentFilter filterGps = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
+        registerReceiver(gpsReceiver, filterGps);
+
         // Werden zur Ermittlung der Endadresse benötigt, wenn der Trip gestoppt wird
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
@@ -256,7 +299,7 @@ public class RunningTripActivity extends AppCompatActivity {
         }
 
         // Google Map hinzufügen
-        GoogleMapFragment mapFragment = GoogleMapFragment.newInstance(getApplicationContext(), 0, GoogleMapFragment.MAP_MODE_LIVE);
+        mapFragment = GoogleMapFragment.newInstance(getApplicationContext(), 0, GoogleMapFragment.MAP_MODE_LIVE);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.running_container, mapFragment);
@@ -313,7 +356,7 @@ public class RunningTripActivity extends AppCompatActivity {
 
         // Arraylist der Locations wird in einen String gepackt, um diesen in die DB zu schreiben
         Gson gsonRoutePoints = new Gson();
-        String routeString = gsonRoutePoints.toJson(routePoints);
+        String routeString = gsonRoutePoints.toJson(mapFragment.getRoutePoints());
         Log.e(CLASS, "Route points: " + routeString);
         record.setRoutePoints(routeString);
 
@@ -341,6 +384,9 @@ public class RunningTripActivity extends AppCompatActivity {
         // Falls die Initliasisierung noch läuft abbrechen
         if(initThread.isAlive())
             initThread.interrupt();
+
+        unregisterReceiver(bluetoothReceiver);
+        unregisterReceiver(gpsReceiver);
     }
 
     @Override
@@ -349,6 +395,10 @@ public class RunningTripActivity extends AppCompatActivity {
         savedInstanceState.putLong(STATE_TIMER, timer.getStartTime());
 
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    private void showToast(String message, int duration) {
+        Toast.makeText(this, message, duration).show();
     }
 
 

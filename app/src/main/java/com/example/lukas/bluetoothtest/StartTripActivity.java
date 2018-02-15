@@ -59,7 +59,6 @@ public class StartTripActivity extends AppCompatActivity {
 
     private TripRecord record;
 
-    private AddressDetecter addressDetecter;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Geocoder geocoder;
 
@@ -115,7 +114,6 @@ public class StartTripActivity extends AppCompatActivity {
         registerReceiver(gpsReceiver, filterGps);
 
         // Werden zur Ermittlung der Startadresse benötigt, wenn der Trip gestartet wird
-        //addressDetecter = new AddressDetecter(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 

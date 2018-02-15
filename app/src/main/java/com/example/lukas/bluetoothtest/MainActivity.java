@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.PersistableBundle;
 import android.provider.Settings;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean btEnabled = false;
     private boolean gpsEnabled = false;
     public static boolean obd_initialized = false;
+    private SharedPref sharedPreferences;
 
 
     private BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();;
@@ -124,6 +126,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sharedPreferences = new SharedPref(this);
+
 
         // Broadcast-Recevier, um Änderungen des Bluetooth-Status zu registrieren
         IntentFilter filterBt = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -175,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
         btAdapter = BluetoothAdapter.getDefaultAdapter();
 
         checkConnections();
+        //sharedPreferences.setObdInitialized(false);
 
     }
 
@@ -265,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
                     bt_activateBt.setText(getResources().getString(R.string.main_bt_enabled));
                     bt_selectDev.setEnabled(true);*/
                 } else if (resultCode == RESULT_CANCELED) {
-                    showToast(getResources().getString(R.string.main_bt_disabled), Toast.LENGTH_SHORT);
+                    //showToast(getResources().getString(R.string.main_bt_disabled), Toast.LENGTH_SHORT);
                     Log.e(CLASS, "Error while enabling Bluetooth");
                 }
                 break;
@@ -314,10 +319,12 @@ public class MainActivity extends AppCompatActivity {
             bt_selectDev.setText(getResources().getString(R.string.main_sel));
             bt_selectDev.setEnabled(false);
             socket = null;
+            sharedPreferences.setObdInitialized(false);
+
         }
         if (socket != null) {
             btEnabled = true;
-            obd_initialized = true;
+            //obd_initialized = true;
 
             bt_selectDev.setText(getResources().getString(R.string.main_sel));
             bt_selectDev.setEnabled(false);

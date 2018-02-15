@@ -4,6 +4,8 @@
     <string name="dev_selected">Device selected</string>
     <string name="dev_title">Choose a device</string>
     <string name="dev_connected">Connected</string>
+    <string name="sharedPref">com.example.lukas.bluetoothtest.sharedPreferences</string>
+    <string name="pref_obd_initialized">obd_initialized</string>
 
 
     <!-- MainActivity -->
