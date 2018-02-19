@@ -83,8 +83,8 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
                 ft.replace(R.id.details, detailFragment);
-                if(!uselessStackState)
-                    ft.addToBackStack(null);
+                //if(!uselessStackState)
+                  //   ft.addToBackStack(null);
                 ft.commit();
 
                 GoogleMapFragment mapFragment = GoogleMapFragment.newInstance(getActivity().getApplicationContext(), rowid, GoogleMapFragment.MAP_MODE_DISPLAY );

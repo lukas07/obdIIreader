@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:activity="com.example.lukas.bluetoothtest.TripDetailFragment">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TableRow>
+            <TextView
+                android:id="@+id/tv_detail_driver"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/entry_init" />
+
+            <TextView
+                android:id="@+id/tv_detail_mode"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/entry_init" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/tv_detail_startTs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/entry_init" />
+
+            <TextView
+                android:id="@+id/tv_detail_endTs"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/entry_init" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/tv_detail_startMil"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/entry_init" />
+
+            <TextView
+                android:id="@+id/tv_detail_endMil"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/entry_init" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:id="@+id/tv_detail_startAdd"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/entry_init" />
+
+            <TextView
+                android:id="@+id/tv_detail_endAdd"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/entry_init" />
+        </TableRow>
+    </TableLayout>
+    <!--<TextView
+        android:id="@+id/tv_detail_route"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/entry_init" /> -->
+</FrameLayout>
