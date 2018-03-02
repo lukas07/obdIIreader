@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.activity;
+package com.example.lukas.trackyourtrips.activity;
 
 import android.Manifest;
 
@@ -34,12 +34,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lukas.bluetoothtest.io.BluetoothConnector;
-import com.example.lukas.bluetoothtest.fragment.GoogleMapFragment;
-import com.example.lukas.bluetoothtest.io.ObdService;
-import com.example.lukas.bluetoothtest.R;
-import com.example.lukas.bluetoothtest.io.Stopwatch;
-import com.example.lukas.bluetoothtest.trip.TripRecord;
+import com.example.lukas.trackyourtrips.io.BluetoothConnector;
+import com.example.lukas.trackyourtrips.fragment.GoogleMapFragment;
+import com.example.lukas.trackyourtrips.io.ObdService;
+import com.example.lukas.trackyourtrips.R;
+import com.example.lukas.trackyourtrips.io.Stopwatch;
+import com.example.lukas.trackyourtrips.trip.TripRecord;
 import com.github.pires.obd.enums.AvailableCommandNames;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -51,9 +51,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import static com.example.lukas.bluetoothtest.activity.MainActivity.btdevice;
-import static com.example.lukas.bluetoothtest.activity.MainActivity.socket;
 
 public class RunningTripActivity extends AppCompatActivity {
 
@@ -237,8 +234,8 @@ public class RunningTripActivity extends AppCompatActivity {
                                         Log.e(CLASS, "Reconnect...");
                                         BluetoothAdapter.getDefaultAdapter().enable();
                                         try {
-                                            socket = null;
-                                            socket = BluetoothConnector.connectDevice(btdevice);
+                                            MainActivity.socket = null;
+                                            MainActivity.socket = BluetoothConnector.connectDevice(MainActivity.btdevice);
                                             //socket.connect();
                                             try {
                                                 Thread.sleep(5000);
@@ -258,7 +255,7 @@ public class RunningTripActivity extends AppCompatActivity {
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                             Log.e(CLASS, "Could not connect to socket");
-                                            socket = null;
+                                            MainActivity.socket = null;
                                         }
                                     }
                                 });

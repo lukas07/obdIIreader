@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.trip;
+package com.example.lukas.trackyourtrips.trip;
 
 /**
  * Created by Lukas on 26.11.2017.

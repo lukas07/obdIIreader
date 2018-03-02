@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.io;
+package com.example.lukas.trackyourtrips.io;
 
 import com.google.android.gms.maps.model.LatLng;
 

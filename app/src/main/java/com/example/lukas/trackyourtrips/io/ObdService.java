@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.io;
+package com.example.lukas.trackyourtrips.io;
 
 import android.app.Service;
 import android.bluetooth.BluetoothSocket;
@@ -11,7 +11,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.example.lukas.bluetoothtest.R;
+import com.example.lukas.trackyourtrips.R;
 import com.github.pires.obd.commands.ObdCommand;
 import com.github.pires.obd.commands.SpeedCommand;
 import com.github.pires.obd.commands.engine.MassAirFlowCommand;
@@ -27,7 +27,7 @@ import com.github.pires.obd.exceptions.UnsupportedCommandException;
 
 import java.io.IOException;
 
-import static com.example.lukas.bluetoothtest.activity.MainActivity.socket;
+import static com.example.lukas.trackyourtrips.activity.MainActivity.socket;
 
 /**
  * Created by Lukas on 08.10.2017.

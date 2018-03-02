@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.fragment;
+package com.example.lukas.trackyourtrips.fragment;
 
 import android.Manifest;
 import android.content.Context;
@@ -19,11 +19,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lukas.bluetoothtest.R;
-import com.example.lukas.bluetoothtest.io.MapLocationParser;
-import com.example.lukas.bluetoothtest.trip.TripOpenHelper;
-import com.example.lukas.bluetoothtest.trip.TripProvider;
-import com.example.lukas.bluetoothtest.trip.TripRecord;
+import com.example.lukas.trackyourtrips.R;
+import com.example.lukas.trackyourtrips.io.MapLocationParser;
+import com.example.lukas.trackyourtrips.trip.TripOpenHelper;
+import com.example.lukas.trackyourtrips.trip.TripProvider;
+import com.example.lukas.trackyourtrips.trip.TripRecord;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -393,7 +393,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    protected synchronized void buildGoogleApiClient() {
+    public synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)

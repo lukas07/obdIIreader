@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.activity;
+package com.example.lukas.trackyourtrips.activity;
 
 import android.content.ContentValues;
 import android.os.Bundle;
@@ -13,12 +13,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.lukas.bluetoothtest.fragment.GoogleMapFragment;
-import com.example.lukas.bluetoothtest.R;
-import com.example.lukas.bluetoothtest.trip.TripOpenHelper;
-import com.example.lukas.bluetoothtest.trip.TripProvider;
-import com.example.lukas.bluetoothtest.trip.TripRecord;
-import com.example.lukas.bluetoothtest.trip.TripsAdapter;
+import com.example.lukas.trackyourtrips.fragment.GoogleMapFragment;
+import com.example.lukas.trackyourtrips.R;
+import com.example.lukas.trackyourtrips.trip.TripOpenHelper;
+import com.example.lukas.trackyourtrips.trip.TripProvider;
+import com.example.lukas.trackyourtrips.trip.TripRecord;
+import com.example.lukas.trackyourtrips.trip.TripsAdapter;
 
 
 public class StoppedTripActivity extends AppCompatActivity {

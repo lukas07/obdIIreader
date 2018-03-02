@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.activity;
+package com.example.lukas.trackyourtrips.activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -19,8 +19,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.example.lukas.bluetoothtest.io.BluetoothConnector;
-import com.example.lukas.bluetoothtest.R;
+import com.example.lukas.trackyourtrips.io.BluetoothConnector;
+import com.example.lukas.trackyourtrips.R;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;

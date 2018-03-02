@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.trip;
+package com.example.lukas.trackyourtrips.trip;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

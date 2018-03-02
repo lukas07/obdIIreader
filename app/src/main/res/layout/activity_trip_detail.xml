@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:activity="com.example.lukas.bluetoothtest.activity.TripDetailActivity"
+    tools:activity="com.example.lukas.trackyourtrips.activity.TripDetailActivity"
     android:orientation="vertical">
 
     <TableRow
@@ -45,7 +45,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:activity="com.example.lukas.bluetoothtest.activity.TripDetailActivity">
+    tools:activity="TripDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

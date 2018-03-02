@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.trip;
+package com.example.lukas.trackyourtrips.trip;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
-import com.example.lukas.bluetoothtest.R;
+import com.example.lukas.trackyourtrips.R;
 
 
 /**

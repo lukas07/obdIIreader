@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.activity;
+package com.example.lukas.trackyourtrips.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -6,9 +6,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
-import com.example.lukas.bluetoothtest.fragment.GoogleMapFragment;
-import com.example.lukas.bluetoothtest.R;
-import com.example.lukas.bluetoothtest.fragment.TripDetailFragment;
+import com.example.lukas.trackyourtrips.fragment.GoogleMapFragment;
+import com.example.lukas.trackyourtrips.R;
+import com.example.lukas.trackyourtrips.fragment.TripDetailFragment;
 
 /**
  * Created by Lukas on 30.12.2017.

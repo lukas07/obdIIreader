@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.activity;
+package com.example.lukas.trackyourtrips.activity;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
@@ -27,8 +27,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.lukas.bluetoothtest.R;
-import com.example.lukas.bluetoothtest.trip.TripRecord;
+import com.example.lukas.trackyourtrips.R;
+import com.example.lukas.trackyourtrips.trip.TripRecord;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;

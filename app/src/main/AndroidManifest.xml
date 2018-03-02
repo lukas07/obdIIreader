@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.lukas.bluetoothtest">
+    package="com.example.lukas.trackyourtrips">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -36,7 +36,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".activity.MainActivity">
+        <activity android:name="com.example.lukas.trackyourtrips.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,60 +44,60 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.DeviceListActivity"
+            android:name="com.example.lukas.trackyourtrips.activity.DeviceListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/devList_selDev"
             android:theme="@android:style/Theme.Holo.Dialog" />
 
         <service
-            android:name=".io.ObdService"
+            android:name="com.example.lukas.trackyourtrips.io.ObdService"
             android:enabled="true"
             android:exported="false" />
 
         <activity
-            android:name=".activity.StartTripActivity"
+            android:name="com.example.lukas.trackyourtrips.activity.StartTripActivity"
             android:label="@string/title_activity_start_your_trip_acitivity"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName="com.example.lukas.trackyourtrips.activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value="com.example.lukas.trackyourtrips.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.RunningTripActivity"
+            android:name="com.example.lukas.trackyourtrips.activity.RunningTripActivity"
             android:label="@string/title_activity_running_trip"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.StoppedTripActivity"
+            android:name="com.example.lukas.trackyourtrips.activity.StoppedTripActivity"
             android:label="@string/run_title"
-            android:parentActivityName=".activity.MainActivity"
+            android:parentActivityName="com.example.lukas.trackyourtrips.activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value="com.example.lukas.trackyourtrips.activity.MainActivity" />
         </activity>
         <activity
-            android:name=".activity.TripListActivity"
+            android:name="com.example.lukas.trackyourtrips.activity.TripListActivity"
             android:label="@string/list_title"
-            android:parentActivityName=".activity.MainActivity">
+            android:parentActivityName="com.example.lukas.trackyourtrips.activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.MainActivity" />
+                android:value="com.example.lukas.trackyourtrips.activity.MainActivity" />
         </activity>
 
         <provider
-            android:name=".trip.TripProvider"
-            android:authorities="com.example.lukas.bluetoothtest.provider"
+            android:name="com.example.lukas.trackyourtrips.trip.TripProvider"
+            android:authorities="com.example.lukas.trackyourtrips.provider"
             android:enabled="true"
             android:exported="true" />
 
         <activity
-            android:name=".activity.TripDetailActivity"
+            android:name="com.example.lukas.trackyourtrips.activity.TripDetailActivity"
             android:label="@string/detail_title"
-            android:parentActivityName=".activity.TripListActivity">
+            android:parentActivityName="com.example.lukas.trackyourtrips.activity.TripListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activity.TripListActivity" />
+                android:value="com.example.lukas.trackyourtrips.activity.TripListActivity" />
         </activity>
 
     </application>

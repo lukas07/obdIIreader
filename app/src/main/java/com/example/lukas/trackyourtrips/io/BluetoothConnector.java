@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.io;
+package com.example.lukas.trackyourtrips.io;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;

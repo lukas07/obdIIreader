@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.fragment;
+package com.example.lukas.trackyourtrips.fragment;
 
 
 
@@ -15,11 +15,11 @@ import android.support.v4.content.Loader;
 import android.view.View;
 import android.widget.ListView;
 
-import com.example.lukas.bluetoothtest.R;
-import com.example.lukas.bluetoothtest.activity.TripDetailActivity;
-import com.example.lukas.bluetoothtest.trip.TripOpenHelper;
-import com.example.lukas.bluetoothtest.trip.TripProvider;
-import com.example.lukas.bluetoothtest.trip.TripsAdapter;
+import com.example.lukas.trackyourtrips.R;
+import com.example.lukas.trackyourtrips.activity.TripDetailActivity;
+import com.example.lukas.trackyourtrips.trip.TripOpenHelper;
+import com.example.lukas.trackyourtrips.trip.TripProvider;
+import com.example.lukas.trackyourtrips.trip.TripsAdapter;
 
 public class TripListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, FragmentManager.OnBackStackChangedListener {
     private ListView lv_trips;

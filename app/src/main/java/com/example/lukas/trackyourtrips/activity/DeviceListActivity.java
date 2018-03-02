@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.activity;
+package com.example.lukas.trackyourtrips.activity;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -17,7 +17,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.lukas.bluetoothtest.R;
+import com.example.lukas.trackyourtrips.R;
 
 import java.util.ArrayList;
 import java.util.Set;

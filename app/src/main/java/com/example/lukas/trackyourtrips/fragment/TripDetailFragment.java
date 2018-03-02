@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest.fragment;
+package com.example.lukas.trackyourtrips.fragment;
 
 
 import android.support.v4.app.Fragment;
@@ -11,10 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.lukas.bluetoothtest.R;
-import com.example.lukas.bluetoothtest.trip.TripOpenHelper;
-import com.example.lukas.bluetoothtest.trip.TripProvider;
-import com.example.lukas.bluetoothtest.trip.TripsAdapter;
+import com.example.lukas.trackyourtrips.R;
+import com.example.lukas.trackyourtrips.trip.TripOpenHelper;
+import com.example.lukas.trackyourtrips.trip.TripProvider;
+import com.example.lukas.trackyourtrips.trip.TripsAdapter;
 import com.google.android.gms.maps.GoogleMap;
 
 public class TripDetailFragment extends Fragment  {
