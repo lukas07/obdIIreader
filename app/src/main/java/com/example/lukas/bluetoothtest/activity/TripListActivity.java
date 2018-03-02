@@ -1,7 +1,9 @@
-package com.example.lukas.bluetoothtest;
+package com.example.lukas.bluetoothtest.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.example.lukas.bluetoothtest.R;
 
 /**
  * Created by Lukas on 30.12.2017.

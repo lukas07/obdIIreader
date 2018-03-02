@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest;
+package com.example.lukas.bluetoothtest.activity;
 
 import android.Manifest;
 
@@ -7,29 +7,25 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -38,37 +34,26 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.example.lukas.bluetoothtest.io.BluetoothConnector;
+import com.example.lukas.bluetoothtest.fragment.GoogleMapFragment;
+import com.example.lukas.bluetoothtest.io.ObdService;
+import com.example.lukas.bluetoothtest.R;
+import com.example.lukas.bluetoothtest.io.Stopwatch;
+import com.example.lukas.bluetoothtest.trip.TripRecord;
+import com.github.pires.obd.enums.AvailableCommandNames;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+
+import static com.example.lukas.bluetoothtest.activity.MainActivity.btdevice;
+import static com.example.lukas.bluetoothtest.activity.MainActivity.socket;
 
 public class RunningTripActivity extends AppCompatActivity {
 
@@ -87,17 +72,21 @@ public class RunningTripActivity extends AppCompatActivity {
 
     private TextView tv_speed;
     private TextView tv_fuel;
+    private TextView tv_consumption;
     private TextView tv_timer;
+    private TextView tv_internet;
     private Button bt_stop;
     private ProgressBar pb_init;
 
+    private Context context = this;
 
     private ObdService service;
     private boolean serviceBound = false;
     private Thread initThread;
+    private Thread sendThread;
     private int orientation;
     private TripRecord record = TripRecord.getTripRecord();
-    private SharedPref sharedPref;
+    //private SharedPref sharedPref;
 
 
     // Google Map und GPS-Daten
@@ -166,23 +155,28 @@ public class RunningTripActivity extends AppCompatActivity {
                     startTimer();
                     break;
                 case NODATA_EXCEPTION:
-                    Toast.makeText(RunningTripActivity.this, getResources().getString(R.string.run_no_data), Toast.LENGTH_LONG).show();
-                    // TODO Wenn keine Daten mehr empfangen werden oder die Bt-Verbindung unterbrochen wurde direkt zu MainActivity oder sofort den Trip beenden?
-                    finish();
-                    sharedPref.setObdInitialized(false);
+                    Log.e(CLASS, "NODATA_EXCEPTION thrown");
+                    showErrorDialog(NODATA_EXCEPTION);
                     break;
                 case CONNECT_EXCEPTION:
-                    Toast.makeText(RunningTripActivity.this, getResources().getString(R.string.run_connect), Toast.LENGTH_LONG).show();
-                    finish();
+                    Log.e(CLASS, "CONNECT_EXCEPTION thrown");
+                    showErrorDialog(CONNECT_EXCEPTION);
+                    break;
                 default:
                     Bundle bundle = message.getData();
-                    String speed = bundle.getString("speed");
-                    String fuel = bundle.getString("consumption");
+                    String speed = bundle.getString(AvailableCommandNames.SPEED.getValue());
+                    String fuel = bundle.getString(AvailableCommandNames.MAF.getValue());
+                    //String consumption = bundle.getString(AvailableCommandNames.FUEL_CONSUMPTION_RATE.getValue());
 
                     if(speed != null)
                         tv_speed.setText(speed);
                     if(fuel != null)
                         tv_fuel.setText(fuel);
+
+                    //if(consumption != null)
+                    if (tv_internet.getVisibility() == View.VISIBLE)
+                        tv_internet.setVisibility(View.GONE);
+                    //  tv_consumption.setText(consumption);
             }
         }
     };
@@ -204,9 +198,10 @@ public class RunningTripActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     try {
-                        service.initObdConnection();
+
+                        service.startObdConnection();
                     } catch (IOException ioe) {
-                        unbindService(serviceConnection);
+                        //unbindService(serviceConnection);
                         serviceBound = false;
                         Log.e(CLASS, "Service disconnected");
                         finish();
@@ -232,8 +227,68 @@ public class RunningTripActivity extends AppCompatActivity {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
                 switch(state) {
                     case BluetoothAdapter.STATE_OFF:
-                        showToast(getResources().getString(R.string.main_bt_manual_disabled), Toast.LENGTH_LONG);
-                        finish();
+                        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                        alertDialogBuilder.setCancelable(false);
+                        alertDialogBuilder.setMessage(R.string.run_bt_off);
+                        alertDialogBuilder.setPositiveButton(R.string.run_reconnect,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface arg0, int arg1) {
+                                        Log.e(CLASS, "Reconnect...");
+                                        BluetoothAdapter.getDefaultAdapter().enable();
+                                        try {
+                                            socket = null;
+                                            socket = BluetoothConnector.connectDevice(btdevice);
+                                            //socket.connect();
+                                            try {
+                                                Thread.sleep(5000);
+                                            } catch (InterruptedException e) {
+                                                e.printStackTrace();
+                                            }
+                                            sendThread = new Thread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    service.startSendOBDCommands();
+                                                    Log.e(CLASS, "Test");
+                                                }
+                                            });
+                                            sendThread.start();
+                                            Log.e(CLASS, "Send thread started...");
+                                            //service.startSendOBDCommands();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                            Log.e(CLASS, "Could not connect to socket");
+                                            socket = null;
+                                        }
+                                    }
+                                });
+
+                        alertDialogBuilder.setNegativeButton(R.string.run_bt_stop,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Log.e(CLASS, "Stop tracking...");
+                                        stopTrip();
+                                    }
+                                });
+
+                        alertDialogBuilder.setNeutralButton(R.string.run_bt_menu,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Log.e(CLASS, "Go back to menu...");
+                                        service.stopSendOBDCommands();
+                                        mapFragment.onDestroy();
+                                        finish();
+                                    }
+                                });
+
+
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
+
+//                        showToast(getResources().getString(R.string.main_bt_manual_disabled), Toast.LENGTH_LONG);
+//                        finish();
                         break;
                 }
 
@@ -248,9 +303,45 @@ public class RunningTripActivity extends AppCompatActivity {
                 ContentResolver contentResolver = getApplicationContext().getContentResolver();
                 int mode = Settings.Secure.getInt(
                         contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_OFF);
-                if(mode == Settings.Secure.LOCATION_MODE_OFF)
-                    showToast(getResources().getString(R.string.main_gps_manual_disabled), Toast.LENGTH_LONG);
-                finish();
+                if(mode == Settings.Secure.LOCATION_MODE_OFF) {
+                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+                    alertDialogBuilder.setCancelable(false);
+                    alertDialogBuilder.setMessage(R.string.run_gps_off);
+                    alertDialogBuilder.setPositiveButton(R.string.run_reconnect,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface arg0, int arg1) {
+                                    // TODO
+                                    mapFragment.buildGoogleApiClient();
+                                }
+                            });
+
+                    alertDialogBuilder.setNegativeButton(R.string.run_bt_stop,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Log.e(CLASS, "Stop tracking...");
+                                    stopTrip();
+                                }
+                            });
+
+                    alertDialogBuilder.setNeutralButton(R.string.run_bt_menu,
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Log.e(CLASS, "Go back to menu...");
+                                    service.stopSendOBDCommands();
+                                    mapFragment.onDestroy();
+                                    finish();
+                                }
+                            });
+
+
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                }
+                    //showToast(getResources().getString(R.string.main_gps_manual_disabled), Toast.LENGTH_LONG);
+                //finish();
             }
         }
     };
@@ -260,12 +351,14 @@ public class RunningTripActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_running_trip);
 
-        sharedPref = new SharedPref(this);
+        //sharedPref = new SharedPref(this);
 
         // Referenzvariablen zu den Feldern deklarieren
         tv_speed = (TextView) findViewById(R.id.tv_speed);
         tv_fuel = (TextView) findViewById(R.id.tv_fuel);
+        tv_consumption = (TextView) findViewById(R.id.tv_consumption);
         tv_timer = (TextView) findViewById(R.id.tv_timer);
+        tv_internet = (TextView) findViewById(R.id.tv_internet);
         bt_stop = (Button) findViewById(R.id.bt_stop);
         pb_init = (ProgressBar) findViewById(R.id.pb_init);
 
@@ -307,6 +400,39 @@ public class RunningTripActivity extends AppCompatActivity {
 
     }
 
+    // Wenn der Adapter einen Fehler zurück gibt, wird ein Dialogfenster geöffnet, in dem der User entscheidet,
+    // ob er den Trip regulär stoppen will oder abbrechen
+    private void showErrorDialog(int errorType) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setCancelable(false);
+        if (errorType == NODATA_EXCEPTION)
+            alertDialogBuilder.setMessage(R.string.run_no_data);
+        else if (errorType == CONNECT_EXCEPTION)
+            alertDialogBuilder.setMessage(R.string.run_connect);
+        alertDialogBuilder.setPositiveButton(R.string.run_bt_stop,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        stopTrip();
+                    }
+        });
+
+        alertDialogBuilder.setNegativeButton(R.string.run_bt_menu,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        service.stopSendOBDCommands();
+                        mapFragment.onDestroy();
+                        finish();
+                    }
+        });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+
+        // Adapter muss bei nächster Aufzeichnung neu initialisiert werden ??
+        //sharedPref.setObdInitialized(false);
+    }
 
     private void stopTrip() {
         // Timer der Fahrzeit stoppen
@@ -323,7 +449,7 @@ public class RunningTripActivity extends AppCompatActivity {
         }
 
         // Updaten der GPS-Daten stoppen
-        // TODO GPS-Daten stoppen??
+        mapFragment.onDestroy();
 
         // Daten in Triprecord schreiben (Stopzeitpunkt, Endadresse,...)
         record = record.getTripRecord();
@@ -366,6 +492,36 @@ public class RunningTripActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setMessage(R.string.run_back_msg);
+        alertDialogBuilder.setPositiveButton(R.string.run_yes,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        Log.e(CLASS, "Stop tracking...");
+                        service.stopSendOBDCommands();
+                        mapFragment.onDestroy();
+                        finish();
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton(R.string.run_no,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.e(CLASS, "Continue tracking...");
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
     private void startTimer() {
         if(timerValue == 0)
             clockHandler.sendEmptyMessage(MSG_START_TIMER);
@@ -385,6 +541,12 @@ public class RunningTripActivity extends AppCompatActivity {
         if(initThread.isAlive())
             initThread.interrupt();
 
+        if (sendThread != null) {
+            if (sendThread.isAlive())
+                sendThread.interrupt();
+        }
+
+
         unregisterReceiver(bluetoothReceiver);
         unregisterReceiver(gpsReceiver);
     }
@@ -400,6 +562,7 @@ public class RunningTripActivity extends AppCompatActivity {
     private void showToast(String message, int duration) {
         Toast.makeText(this, message, duration).show();
     }
+
 
 
     /**

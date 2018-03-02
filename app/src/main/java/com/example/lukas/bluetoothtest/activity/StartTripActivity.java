@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest;
+package com.example.lukas.bluetoothtest.activity;
 
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
@@ -12,13 +12,10 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -30,27 +27,21 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.example.lukas.bluetoothtest.R;
+import com.example.lukas.bluetoothtest.trip.TripRecord;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationAvailability;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class StartTripActivity extends AppCompatActivity {
     private static final String CLASS = StartTripActivity.class.getName();
+    private static final int REQUEST_LOCATION = 1;
 
     private EditText et_driverName;
     private EditText et_mileageStart;
@@ -69,7 +60,7 @@ public class StartTripActivity extends AppCompatActivity {
 
             if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
                 final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-                switch(state) {
+                switch (state) {
                     case BluetoothAdapter.STATE_OFF:
                         showToast(getResources().getString(R.string.main_bt_manual_disabled), Toast.LENGTH_LONG);
                         finish();
@@ -87,7 +78,7 @@ public class StartTripActivity extends AppCompatActivity {
                 ContentResolver contentResolver = getApplicationContext().getContentResolver();
                 int mode = Settings.Secure.getInt(
                         contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_OFF);
-                if(mode == Settings.Secure.LOCATION_MODE_OFF)
+                if (mode == Settings.Secure.LOCATION_MODE_OFF)
                     showToast(getResources().getString(R.string.main_gps_manual_disabled), Toast.LENGTH_LONG);
                 finish();
             }
@@ -144,9 +135,10 @@ public class StartTripActivity extends AppCompatActivity {
 
             // Instanz des Triprecords
             record = record.getTripRecord();
+            // Record zurücksetzen
+            record.resetRecord();
 
             // Eingabewerte im Recordobjekt speichern
-            String mil = et_mileageStart.getText().toString();
             int mileage = Integer.parseInt(et_mileageStart.getText().toString());
             record.setStartMileage(mileage);
             record.setDriver(et_driverName.getText().toString());
@@ -160,25 +152,30 @@ public class StartTripActivity extends AppCompatActivity {
 
             // Die Startadresse ermitteln und im Record speichern
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-            fusedLocationProviderClient.getLastLocation()
-                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            if (location != null) {
-                                try {
-                                    // Die Adresse über den Geocoder ermitteln
-                                    List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                                    Log.e(CLASS, "Geocoder: " + addresses.toString());
-                                    record.setStartAddress(addresses.get(0).getAddressLine(0));
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    Log.e(CLASS, "Geocoder: " + e.toString());
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        REQUEST_LOCATION);
+                Log.e(CLASS, "GPS-Permission requested");
+                //return;
+            } else {
+                fusedLocationProviderClient.getLastLocation()
+                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                if (location != null) {
+                                    try {
+                                        // Die Adresse über den Geocoder ermitteln
+                                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                                        Log.e(CLASS, "Geocoder: " + addresses.toString());
+                                        record.setStartAddress(addresses.get(0).getAddressLine(0));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        Log.e(CLASS, "Geocoder: " + e.toString());
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+            }
 /*
             try {
                 String address = addressDetecter.getCurrentAddress();
@@ -196,15 +193,43 @@ public class StartTripActivity extends AppCompatActivity {
 
     private boolean checkInput() {
         // Fahrername fehlt
-        if(et_driverName.getText().length() == 0)  {
+        if (et_driverName.getText().length() == 0) {
             Toast.makeText(this, R.string.start_driver_missing, Toast.LENGTH_SHORT).show();
             return false;
-        // Kilometerstand fehlt
-        } else if(et_mileageStart.getText().length() == 0) {
+            // Kilometerstand fehlt
+        } else if (et_mileageStart.getText().length() == 0) {
             Toast.makeText(this, R.string.start_odometer_missing, Toast.LENGTH_SHORT).show();
             return false;
-        }  else {
+        } else {
             return true;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_LOCATION) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                fusedLocationProviderClient.getLastLocation()
+                        .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                            @Override
+                            public void onSuccess(Location location) {
+                                if (location != null) {
+                                    try {
+                                        // Die Adresse über den Geocoder ermitteln
+                                        List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                                        Log.e(CLASS, "Geocoder: " + addresses.toString());
+                                        record.setStartAddress(addresses.get(0).getAddressLine(0));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        Log.e(CLASS, "Geocoder: " + e.toString());
+                                    }
+                                }
+                            }
+                        });
+            }
         }
     }
 

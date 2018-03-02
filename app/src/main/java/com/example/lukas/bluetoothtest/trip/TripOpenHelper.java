@@ -1,14 +1,8 @@
-package com.example.lukas.bluetoothtest;
+package com.example.lukas.bluetoothtest.trip;
 
-import android.app.Service;
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Created by Lukas on 28.11.2017.

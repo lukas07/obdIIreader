@@ -1,7 +1,6 @@
-package com.example.lukas.bluetoothtest;
+package com.example.lukas.bluetoothtest.fragment;
 
 import android.Manifest;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -17,8 +16,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.lukas.bluetoothtest.R;
+import com.example.lukas.bluetoothtest.io.MapLocationParser;
+import com.example.lukas.bluetoothtest.trip.TripOpenHelper;
+import com.example.lukas.bluetoothtest.trip.TripProvider;
+import com.example.lukas.bluetoothtest.trip.TripRecord;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -57,6 +62,8 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
+    private static final String CLASS = GoogleMapFragment.class.getName();
+
     // Modus der Kartenanzeige
     private int mapMode;
     // Nur Anzeige einer Route (in StoppedTrip und TripDetail)
@@ -75,6 +82,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     private LocationRequest mLocationRequest;
 
     private MapView mapView;
+    private TextView tv_internet;
 
     public GoogleMapFragment () {
 
@@ -141,6 +149,8 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         mapView = (MapView) v.findViewById(R.id.map);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
+
+        tv_internet = (TextView) v.findViewById(R.id.tv_internet);
 
         return v;
     }
@@ -286,9 +296,13 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
             try {
                 // Fetching the data from web service
                 data = downloadUrl(url[0]);
+                missingInternetConnection(false);
                 Log.d("Background Task data", data.toString());
             } catch (Exception e) {
                 Log.d("Background Task", e.toString());
+                // Es können keine Daten empfangen werden
+                missingInternetConnection(true);
+                this.cancel(true);
             }
             return data;
         }
@@ -405,56 +419,81 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.e(CLASS, "ConnectionSuspended");
     }
 
     @Override
     public void onLocationChanged(Location location) {
         // Map wird nur aktualisiert, wenn der Standort 10 Meter entfernt von dem vorherigen liegt
-        if (routePoints.isEmpty() || mLastLocation.distanceTo(location) > 10) {
+        //if (routePoints.isEmpty() || mLastLocation.distanceTo(location) > 5) {
 
-            mLastLocation = location;
-            if (mCurrLocationMarker != null) {
-                mCurrLocationMarker.remove();
-            }
-
-            //Place current location marker
-            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-            MarkerOptions markerOptions = new MarkerOptions();
-            markerOptions.position(latLng);
-            markerOptions.title("Current Position");
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-            mCurrLocationMarker = mMap.addMarker(markerOptions);
-
-            //move map camera
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(MAP_CAM_ZOOM));
-
-            // Adding new item to the ArrayList
-            routePoints.add(latLng);
-
-            // Checks, whether start and end locations are captured
-            if (routePoints.size() >= 2) {
-                LatLng origin = routePoints.get(routePoints.size() - 2);
-                LatLng dest = routePoints.get(routePoints.size() - 1);
-
-                // Getting URL to the Google Directions API
-                String url = getUrl(origin, dest);
-                Log.d("newLocation", url.toString());
-                FetchUrl FetchUrl = new FetchUrl();
-
-                // Start downloading json data from Google Directions API
-                FetchUrl.execute(url);
-                //move map camera
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
-            }
+        //mLastLocation = location;
+        if (mCurrLocationMarker != null) {
+            mCurrLocationMarker.remove();
         }
+
+        //Place current location marker
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.position(latLng);
+        markerOptions.title("Current Position");
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+        mCurrLocationMarker = mMap.addMarker(markerOptions);
+
+        //move map camera
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(MAP_CAM_ZOOM));
+
+        // Checks, whether start and end locations are captured
+        if (routePoints.size() >= 2) {
+            //LatLng origin = routePoints.get(routePoints.size() - 2);
+            //LatLng dest = routePoints.get(routePoints.size() - 1);
+            LatLng origin = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            LatLng dest = latLng;
+
+            // Getting URL to the Google Directions API
+            String url = getUrl(origin, dest);
+            Log.d("newLocation", url.toString());
+            FetchUrl FetchUrl = new FetchUrl();
+
+            // Start downloading json data from Google Directions API
+            FetchUrl.execute(url);
+            //move map camera
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
+        }
+
+        // Adding new item to the ArrayList
+        if (routePoints.isEmpty() || mLastLocation.distanceTo(location) > 5) {
+            mLastLocation = location;
+            routePoints.add(latLng);
+        }
+        //}
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
     }
+
+    // Wenn keine Internetverbindung besteht, kann die Karte nicht aktualisiert werden --> TextView anzeigen
+    private void missingInternetConnection(boolean value) {
+        if (value == true) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tv_internet.setVisibility(View.VISIBLE);
+                }
+            });
+        } else if (value == false) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tv_internet.setVisibility(View.GONE);
+                }
+            });
+        }
+    }
+
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
     public boolean checkLocationPermission(){

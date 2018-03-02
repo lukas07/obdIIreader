@@ -1,8 +1,6 @@
-package com.example.lukas.bluetoothtest;
+package com.example.lukas.bluetoothtest.fragment;
 
 
-import android.graphics.Color;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,16 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
+import com.example.lukas.bluetoothtest.R;
+import com.example.lukas.bluetoothtest.trip.TripOpenHelper;
+import com.example.lukas.bluetoothtest.trip.TripProvider;
+import com.example.lukas.bluetoothtest.trip.TripsAdapter;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.Gson;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 
 public class TripDetailFragment extends Fragment  {
     private static final int MAP_CAM_ZOOM = 15;

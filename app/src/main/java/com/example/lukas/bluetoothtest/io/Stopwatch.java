@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest;/*
+package com.example.lukas.bluetoothtest.io;/*
  *  Copyright 2006 Corey Goldberg (cgoldberg _at_ gmail.com)
  *
  *  This file is part of NetPlot.
@@ -15,8 +15,10 @@ package com.example.lukas.bluetoothtest;/*
  */
 
 
+import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class Stopwatch {
     
@@ -56,7 +58,7 @@ public class Stopwatch {
 
     //elaspsed time in seconds
     public long getElapsedTimeSecs() {
-        long elapsed = 0;
+        long elapsed = 00;
         if (running) {
             elapsed = ((System.currentTimeMillis() - startTime) / 1000) % 60;
         }
@@ -65,7 +67,7 @@ public class Stopwatch {
 
     //elaspsed time in minutes
     public long getElapsedTimeMin() {
-        long elapsed = 0;
+        long elapsed = 00;
         if (running) {
             elapsed = (((System.currentTimeMillis() - startTime) / 1000) / 60 ) % 60;
         }
@@ -74,7 +76,7 @@ public class Stopwatch {
 
     //elaspsed time in hours
     public long getElapsedTimeHour() {
-        long elapsed = 0;
+        long elapsed = 00;
         if (running) {
             elapsed = ((((System.currentTimeMillis() - startTime) / 1000) / 60 ) / 60);
         }
@@ -82,8 +84,11 @@ public class Stopwatch {
     }
 
     public String toString() {
-        return getElapsedTimeHour() + ":" + getElapsedTimeMin() + ":"
-                + getElapsedTimeSecs();
+        String time = String.format("%02d:%02d:%02d",
+                TimeUnit.MILLISECONDS.toHours(System.currentTimeMillis() - startTime) % 24,
+                TimeUnit.MILLISECONDS.toMinutes(System.currentTimeMillis() - startTime) % 60,
+                TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - startTime) % 60);
+        return time;
     }
 }
 

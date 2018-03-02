@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:activity="com.example.lukas.bluetoothtest.RunningTripActivity"
+    tools:activity="com.example.lukas.bluetoothtest.activity.RunningTripActivity"
     tools:showIn="@layout/activity_running_trip">
 
     <TableRow
@@ -68,10 +68,23 @@
             android:visibility="gone" />
     </TableRow>
 
+    <android.support.constraint.ConstraintLayout>
     <FrameLayout
         android:id="@+id/running_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_width="368dp"
+        android:layout_height="0dp"
+        tools:layout_editor_absoluteY="8dp"
+        tools:layout_editor_absoluteX="8dp" />
 
+    <TextView
+        android:id="@+id/tv_internet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/run_no_internet"
+        android:visibility="gone"
+        tools:layout_editor_absoluteY="137dp"
+        tools:layout_editor_absoluteX="0dp" />
+    </android.support.constraint.ConstraintLayout>
 
 </TableLayout>

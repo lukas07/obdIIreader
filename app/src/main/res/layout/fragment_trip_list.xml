@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment class="com.example.lukas.bluetoothtest.TripListFragment"
+    <fragment class="com.example.lukas.bluetoothtest.fragment.TripListFragment"
         android:id="@+id/titles"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

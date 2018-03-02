@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest;
+package com.example.lukas.bluetoothtest.trip;
 
 /**
  * Created by Lukas on 26.11.2017.
@@ -10,9 +10,9 @@ public class TripRecord {
 
     // Attribute
     private String driver;
+    private String driveMode;
     private int startMileage;
     private int endMileage;
-    private String driveMode;
     private long startTimestamp;
     private long endTimestamp;
     private String startAddress;
@@ -29,6 +29,19 @@ public class TripRecord {
             instance = new TripRecord();
         }
         return instance;
+    }
+
+    // Setzt alle Attributwerte zurück
+    public void resetRecord () {
+        driver = null;
+        driveMode = null;
+        startMileage = 0;
+        endMileage = 0;
+        startTimestamp = 0;
+        endTimestamp = 0;
+        startAddress = null;
+        endAddress = null;
+        routePoints = null;
     }
 
     public String getDriver() {

@@ -55,6 +55,13 @@
     <string name="run_bt_stop">Stop Trip</string>
     <string name="run_bt_menu">Go to menu</string>
     <string name="run_no_internet">The map couldn\'t be updated since there is no internet connection</string>
+    <string name="run_back_msg">Do you really want to stop tracking the trip?</string>
+    <string name="run_yes">Yes</string>
+    <string name="run_no">No</string>
+    <string name="run_bt_off">The bluetooth connection has been closed!</string>
+    <string name="run_reconnect">Reconnect</string>
+    <string name="run_gps_off">GPS has been disabled!</string>
+
 
     <!-- OBD-Service -->
     <string name="obd_unsupported">Unsupported</string>

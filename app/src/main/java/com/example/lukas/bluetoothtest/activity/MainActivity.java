@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest;
+package com.example.lukas.bluetoothtest.activity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -6,16 +6,12 @@ import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.location.LocationManager;
-import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +19,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.lukas.bluetoothtest.io.BluetoothConnector;
+import com.example.lukas.bluetoothtest.R;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -54,11 +52,11 @@ public class MainActivity extends AppCompatActivity {
     private boolean btEnabled = false;
     private boolean gpsEnabled = false;
     public static boolean obd_initialized = false;
-    private SharedPref sharedPreferences;
+    //private SharedPref sharedPreferences;
 
 
     private BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();;
-    private BluetoothDevice btdevice;
+    public static BluetoothDevice btdevice;
     public static BluetoothSocket socket;
 
     // Receiver, der Veränderungen des Bluetooth-Status registriert
@@ -75,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
                         bt_activateBt.setEnabled(true);
                         bt_activateBt.setText(getResources().getString(R.string.main_bt_disabled));
                         bt_selectDev.setEnabled(false);
+                        bt_selectDev.setText(R.string.main_dev);
                         bt_startTrip.setEnabled(false);
+                        socket = null;
                         btEnabled = false;
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sharedPreferences = new SharedPref(this);
+        //sharedPreferences = new SharedPref(this);
 
 
         // Broadcast-Recevier, um Änderungen des Bluetooth-Status zu registrieren
@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
             bt_selectDev.setText(getResources().getString(R.string.main_sel));
             bt_selectDev.setEnabled(false);
             socket = null;
-            sharedPreferences.setObdInitialized(false);
+            //sharedPreferences.setObdInitialized(false);
 
         }
         if (socket != null) {
@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
             bt_activateGps.setText(R.string.main_bt_enabled);
             checkStartTrip();
         } else {
-            gpsEnabled = true;
+            gpsEnabled = false;
             bt_activateGps.setEnabled(true);
             bt_activateGps.setText(R.string.main_bt_disabled);
         }

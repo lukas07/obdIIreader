@@ -1,8 +1,6 @@
-package com.example.lukas.bluetoothtest;
+package com.example.lukas.bluetoothtest.activity;
 
 import android.content.ContentValues;
-import android.icu.text.DateFormat;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -15,10 +13,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import com.example.lukas.bluetoothtest.fragment.GoogleMapFragment;
+import com.example.lukas.bluetoothtest.R;
+import com.example.lukas.bluetoothtest.trip.TripOpenHelper;
+import com.example.lukas.bluetoothtest.trip.TripProvider;
+import com.example.lukas.bluetoothtest.trip.TripRecord;
+import com.example.lukas.bluetoothtest.trip.TripsAdapter;
 
 
 public class StoppedTripActivity extends AppCompatActivity {

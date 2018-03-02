@@ -1,4 +1,4 @@
-package com.example.lukas.bluetoothtest;
+package com.example.lukas.bluetoothtest.trip;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.example.lukas.bluetoothtest.R;
 
 public class TripProvider extends ContentProvider {
     private static final String AUTHORITY = "com.example.lukas.bluetoothtest.provider";
