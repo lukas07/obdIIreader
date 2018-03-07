@@ -190,13 +190,55 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
     // Fügt die Route des Trips auf der Karte ein
     public void drawRouteOnMap() {
+        int indexStart = 0;
+        while (indexStart < routePoints.size()) {
+            // Origin of route
+            LatLng origin = routePoints.get(indexStart);
+            String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+
+            // Waypoints
+            String waypoints = "waypoints=";
+            int i;
+            for (i=indexStart + 1; i<routePoints.size()-1 && i<indexStart+9; i++) {
+                LatLng point = routePoints.get(i);
+                waypoints += point.latitude + "," + point.longitude + "|";
+            }
+            // Remove last "|"
+            waypoints = waypoints.substring(0, waypoints.length()-1);
+
+
+            // Destination of route
+            LatLng dest = routePoints.get(i);
+            String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+
+            // Sensor enabled
+            String sensor = "sensor=false";
+
+            // Building the parameters to the web service
+            String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + waypoints;
+
+            // Output format
+            String output = "json";
+
+            // Building the url to the web service
+            String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+
+            Log.d("newLocation", url.toString());
+            FetchUrl FetchUrl = new FetchUrl();
+
+            FetchUrl.execute(url);
+
+            indexStart = i;
+        }
+
+/*
         PolylineOptions lineOptions = new PolylineOptions();
 
         lineOptions.addAll(routePoints);
         lineOptions.width(12);
         lineOptions.color(Color.RED);
 
-        mMap.addPolyline(lineOptions);
+        mMap.addPolyline(lineOptions);*/
         // Startposition Marker setzen
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(routePoints.get(0));
@@ -393,7 +435,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         }
     }
 
-    protected synchronized void buildGoogleApiClient() {
+    public synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
