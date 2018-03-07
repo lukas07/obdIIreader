@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_alignBottom="@+id/tv_endTimestamp"
+        android:layout_toLeftOf="@+id/tv_startTimestamp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_driver"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/tv_startTimestamp"
+            android:layout_toStartOf="@+id/tv_startTimestamp"
+
+            android:text="@string/entry_init" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_startTimestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/entry_init"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"/>
+
+    <TextView
+        android:id="@+id/tv_endTimestamp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tv_startTimestamp"
+        android:text="@string/entry_init"
+        android:layout_marginRight="10dp"/>
+
+</RelativeLayout>
