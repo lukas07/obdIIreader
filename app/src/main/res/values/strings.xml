@@ -80,6 +80,8 @@
 
     <!-- TripListActivity -->
     <string name="list_title">Your Trips</string>
+    <string name="list_pdf_title">Your Trips</string>
+    <string name="list_pdf_doc_name">Trips.pdf</string>
 
     <!-- TripDetailActivity -->
     <string name="detail_title">Trip details</string>
