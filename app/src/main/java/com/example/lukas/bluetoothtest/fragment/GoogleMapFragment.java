@@ -190,25 +190,27 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
     // Fügt die Route des Trips auf der Karte ein
     public void drawRouteOnMap() {
+/*
         int indexStart = 0;
-        while (indexStart < routePoints.size()) {
+        while (indexStart < routePoints.size()-1) {
             // Origin of route
             LatLng origin = routePoints.get(indexStart);
             String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
 
             // Waypoints
             String waypoints = "waypoints=";
-            int i;
-            for (i=indexStart + 1; i<routePoints.size()-1 && i<indexStart+9; i++) {
-                LatLng point = routePoints.get(i);
+            int index = indexStart+1;
+            for (int i=indexStart + 1; index<routePoints.size()-2 && i<indexStart+9; i++) {
+                LatLng point = routePoints.get(index);
                 waypoints += point.latitude + "," + point.longitude + "|";
+                index += 2;
             }
             // Remove last "|"
             waypoints = waypoints.substring(0, waypoints.length()-1);
 
 
             // Destination of route
-            LatLng dest = routePoints.get(i);
+            LatLng dest = routePoints.get(index);
             String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
 
             // Sensor enabled
@@ -228,17 +230,17 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
             FetchUrl.execute(url);
 
-            indexStart = i;
+            indexStart = index;
         }
+*/
 
-/*
         PolylineOptions lineOptions = new PolylineOptions();
 
         lineOptions.addAll(routePoints);
         lineOptions.width(12);
         lineOptions.color(Color.RED);
 
-        mMap.addPolyline(lineOptions);*/
+        mMap.addPolyline(lineOptions);
         // Startposition Marker setzen
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(routePoints.get(0));
@@ -505,7 +507,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         }
 
         // Adding new item to the ArrayList
-        if (routePoints.isEmpty() || mLastLocation.distanceTo(location) > 5) {
+        if (routePoints.isEmpty() || mLastLocation.distanceTo(location) > 50) {
             mLastLocation = location;
             routePoints.add(latLng);
         }
