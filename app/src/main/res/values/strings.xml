@@ -80,22 +80,23 @@
 
     <!-- TripListActivity -->
     <string name="list_title">Your Trips</string>
-    <string name="list_pdf_title">Your Trips</string>
+    <string name="list_pdf_title">Ihre Fahrten</string>
     <string name="list_pdf_doc_name">Trips</string>
     <string name="list_storage_access">You need to allow access to Storage</string>
     <string name="list_storage_denied">WRITE_EXTERNAL Permission Denied</string>
     <string name="list_storage_ok">OK</string>
     <string name="list_storage_cancel">Cancel</string>
     <string name="list_pdf_table_counter">No.</string>
-    <string name="list_pdf_table_driver">Driver</string>
-    <string name="list_pdf_table_mode">Mode</string>
-    <string name="list_pdf_table_odo_start">Odometer value - start</string>
-    <string name="list_pdf_table_odo_end">Odometer value - end</string>
-    <string name="list_pdf_table_date_start">Timestamp - start</string>
-    <string name="list_pdf_table_date_end">Timestamp - end</string>
-    <string name="list_pdf_table_address_start">Address - start</string>
-    <string name="list_pdf_table_address_end">Address - end</string>
+    <string name="list_pdf_table_driver">Fahrer</string>
+    <string name="list_pdf_table_mode">Modus</string>
+    <string name="list_pdf_table_odo_start">Km. Stand - Start</string>
+    <string name="list_pdf_table_odo_end">Km. Stand- Ende</string>
+    <string name="list_pdf_table_date_start">Datum - Start</string>
+    <string name="list_pdf_table_date_end">Datum - Ende</string>
+    <string name="list_pdf_table_address_start">Adresse - Start</string>
+    <string name="list_pdf_table_address_end">Adresse - Ende</string>
     <string name="list_pdf_table_noData">Es wurden noch keine Trips aufgezeichnet!</string>
+    <string name="list_pdf_header_app">Track your Trips</string>
 
     <!-- TripDetailActivity -->
     <string name="detail_title">Trip details</string>

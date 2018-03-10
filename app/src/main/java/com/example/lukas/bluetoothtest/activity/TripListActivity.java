@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.print.PrintHelper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -21,6 +22,8 @@ import android.widget.Toast;
 import com.example.lukas.bluetoothtest.R;
 import com.example.lukas.bluetoothtest.trip.TripOpenHelper;
 import com.example.lukas.bluetoothtest.trip.TripProvider;
+import com.example.lukas.bluetoothtest.trip.TripsAdapter;
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -28,9 +31,12 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfDocument;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfPageEventHelper;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import java.io.File;
@@ -151,7 +157,7 @@ public class TripListActivity extends AppCompatActivity {
 
     private void createPdf() throws DocumentException {
 
-        File docsFolder = new File(Environment.getExternalStorageDirectory() + "/Documents");
+        File docsFolder = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)));
         if (!docsFolder.exists()) {
             docsFolder.mkdir();
             Log.i(CLASS, "Created a new directory for PDF");
@@ -170,9 +176,12 @@ public class TripListActivity extends AppCompatActivity {
         document = new Document();
         // Dokument-Eigenschaften
         document.setPageSize(PageSize.A4.rotate());
-        document.setMargins(20, 20, 20, 20);
+        document.setMargins(20, 20, 40, 20);
 
-        PdfWriter.getInstance(document, output);
+        // Header des PDF's
+        PdfWriter writer = PdfWriter.getInstance(document, output);
+        PdfHeader header = new PdfHeader();
+        writer.setPageEvent(header);
 
         document.open();
 
@@ -193,20 +202,21 @@ public class TripListActivity extends AppCompatActivity {
 
     private void pdfAddContent() throws IOException, DocumentException {
         // Schriftarten des Dokumentes
-        times16Bold = new Font(Font.FontFamily.TIMES_ROMAN, 16, Font.BOLD);
+        times16Bold = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
         times12Bold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
-        times12 = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
-
+        times12 = new Font(Font.FontFamily.TIMES_ROMAN, 12);
 
         // Titel einfügen
-        Paragraph title = new Paragraph(getResources().getString(R.string.list_pdf_title));
+        Paragraph title = new Paragraph(getResources().getString(R.string.list_pdf_title), times16Bold);
         title.setAlignment(Element.ALIGN_CENTER);
-        title.setFont(times16Bold);
         document.add(title);
+        // Leerzeile einfügen
+        document.add(new Paragraph(" "));
 
         // Tabelle einfügen
         table  = new PdfPTable(9);
         table.setWidthPercentage(100);
+        table.setWidths(new int[]{1,2,2,1,1,2,2,3,3});
         table.addCell(getCell(getResources().getString(R.string.list_pdf_table_counter), times12Bold));
         table.addCell(getCell(getResources().getString(R.string.list_pdf_table_driver), times12Bold));
         table.addCell(getCell(getResources().getString(R.string.list_pdf_table_mode), times12Bold));
@@ -231,10 +241,13 @@ public class TripListActivity extends AppCompatActivity {
             table.addCell(getCell(cursor.getString(TripOpenHelper.COL_ID_MODE), times12));
             table.addCell(getCell(cursor.getString(TripOpenHelper.COL_ID_STARTMIL), times12));
             table.addCell(getCell(cursor.getString(TripOpenHelper.COL_ID_ENDMIL), times12));
-            table.addCell(getCell(cursor.getString(TripOpenHelper.COL_ID_STARTTS), times12));
-            table.addCell(getCell(cursor.getString(TripOpenHelper.COL_ID_ENDTS), times12));
+            String startts = TripsAdapter.convertDate(cursor.getLong(TripOpenHelper.COL_ID_STARTTS));
+            table.addCell(getCell(startts, times12));
+            String endts = TripsAdapter.convertDate(cursor.getLong(TripOpenHelper.COL_ID_STARTTS));
+            table.addCell(getCell(endts, times12));
             table.addCell(getCell(cursor.getString(TripOpenHelper.COL_ID_STARTADD), times12));
             table.addCell(getCell(cursor.getString(TripOpenHelper.COL_ID_ENDADD), times12));
+
         }
         // Falls noch keine Trips aufgezeichnet wurden
         if (counter == 0) {
@@ -272,6 +285,37 @@ public class TripListActivity extends AppCompatActivity {
             startActivity(intent);
         }else{
             Toast.makeText(this,"Download a PDF Viewer to see the generated PDF",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    // Erstellt die Kopfzeile des PDF'S, die dem Dokument beigefügt werden kann
+    class PdfHeader extends PdfPageEventHelper {
+        Font timesHeader = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.ITALIC, BaseColor.GRAY);
+
+        public void onEndPage(PdfWriter writer, Document document) {
+            PdfContentByte cb = writer.getDirectContent();
+            // Aktuelles Datum einfügen (links)
+            Date date = new Date() ;
+            String timeStamp = new SimpleDateFormat("dd.MM.yyyy").format(date);
+            Phrase headerDate = new Phrase(timeStamp, timesHeader);
+            ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
+                    headerDate,
+                    (document.left() + document.leftMargin() * 2),
+                    (document.top() + 15), 0);
+            // App-Name einfügen (zentriert)
+            Phrase headerName = new Phrase(getResources().getString(R.string.list_pdf_header_app), timesHeader);
+            ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
+                    headerName,
+                    (document.right() - document.left()) / 2 + document.leftMargin(),
+                    document.top() + 15, 0);
+            // Seitenzahl einfügen (rechts)
+            String page = String.valueOf(document.getPageNumber());
+            Phrase headerPage = new Phrase(page, timesHeader);
+            ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
+                    headerPage,
+                    (document.right() - document.rightMargin() *2),
+                    document.top() + 15, 0);
         }
     }
 
