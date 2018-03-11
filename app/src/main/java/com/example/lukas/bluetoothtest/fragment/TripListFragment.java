@@ -22,6 +22,8 @@ import com.example.lukas.bluetoothtest.trip.TripProvider;
 import com.example.lukas.bluetoothtest.trip.TripsAdapter;
 
 public class TripListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, FragmentManager.OnBackStackChangedListener {
+    private static final String KEY_MODE_MAIN_ACTIVITY = "MODE";
+
     private ListView lv_trips;
 
     private TripOpenHelper helper;
@@ -33,6 +35,20 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
     private long curCheckRowid = 0;
     private boolean dualPane;
     private boolean uselessStackState = true;
+
+
+    private boolean modeMainActivity = false;
+
+
+    public static TripListFragment newInstance (boolean modeMainActivity) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(KEY_MODE_MAIN_ACTIVITY, modeMainActivity);
+
+        TripListFragment tripListFragment = new TripListFragment();
+        tripListFragment.setArguments(bundle);
+
+        return tripListFragment;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +64,10 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        // Falls Fragment in der MainActivity angezeigt wird --> nur ersten 4 Sätze anzeigen; wird über boolean gesteuert
+        if (getArguments() != null)
+            modeMainActivity = getArguments().getBoolean(KEY_MODE_MAIN_ACTIVITY);
+
         fm = getFragmentManager();
         fm.addOnBackStackChangedListener(this);
 
@@ -55,8 +75,12 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
         setListAdapter(adapter);
         getLoaderManager().initLoader(0, null, this);
 
-        // Im Landscape-Modus den Bildschirm geteilt anzeigen
-        dualPane = getActivity().findViewById(R.id.details) != null;
+        // Wenn nicht in der MainActivity angezeigt wird
+        if (!modeMainActivity)
+            // Im Landscape-Modus den Bildschirm geteilt anzeigen
+            dualPane = getActivity().findViewById(R.id.details) != null;
+        else
+            dualPane = false;
         if(dualPane) {
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             showDetails(curCheckPosition, curCheckRowid);
@@ -109,8 +133,16 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getActivity(),
-                TripProvider.CONTENT_URI, null, null, null, TripOpenHelper.COL_TS_START + " DESC");
+        CursorLoader loader;
+        // In der MainActivity nur die ersten 5 Sätze anzeigen
+        if (modeMainActivity) {
+             loader = new CursorLoader(getActivity(),
+                    TripProvider.CONTENT_URI, null, null, null, TripOpenHelper.COL_TS_START + " DESC, " + "ROWID LIMIT 5");
+        } else {
+            loader = new CursorLoader(getActivity(),
+                    TripProvider.CONTENT_URI, null, null, null, TripOpenHelper.COL_TS_START + " DESC");
+        }
+        return loader;
     }
 
     @Override

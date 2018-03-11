@@ -12,6 +12,7 @@ import android.content.IntentSender;
 import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.lukas.bluetoothtest.fragment.TripListFragment;
 import com.example.lukas.bluetoothtest.io.BluetoothConnector;
 import com.example.lukas.bluetoothtest.R;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_BLUETOOTH_DEVICE = 2;
     private static final int REQUEST_CHECK_SETTINGS = 10;
+    private static final String KEY_TRIPLIST_FRAGMENT = "triplist";
 
     // Attribute
     private Button bt_activateBt;
@@ -126,8 +129,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //sharedPreferences = new SharedPref(this);
-
 
         // Broadcast-Recevier, um Änderungen des Bluetooth-Status zu registrieren
         IntentFilter filterBt = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -179,7 +180,16 @@ public class MainActivity extends AppCompatActivity {
         btAdapter = BluetoothAdapter.getDefaultAdapter();
 
         checkConnections();
-        //sharedPreferences.setObdInitialized(false);
+
+        // Tripanzeige hinzufügen
+        TripListFragment tripListFragment;
+        if (savedInstanceState == null) {
+            tripListFragment = TripListFragment.newInstance(true);
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.triplist_container, tripListFragment, KEY_TRIPLIST_FRAGMENT).commit();
+        } else {
+            tripListFragment = (TripListFragment) getSupportFragmentManager().findFragmentByTag(KEY_TRIPLIST_FRAGMENT);
+        }
 
     }
 

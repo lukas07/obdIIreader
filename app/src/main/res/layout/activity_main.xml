@@ -54,16 +54,14 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="382dp"
+    <FrameLayout
+        android:id="@+id/triplist_container"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="6"
-        android:text="Hier stehen die Trips
-Trip 1
-Trip 2"
-        android:textSize="20sp" />
+        android:layout_weight="6">
+
+    </FrameLayout>
 
 
         <Button
