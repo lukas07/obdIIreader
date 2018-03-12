@@ -82,6 +82,7 @@ public class DeviceListActivity extends Activity {
         ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
         pairedListView.setAdapter(pairedDevicesArrayAdapter);
         pairedListView.setOnItemClickListener(deviceClickListener);
+        pairedListView.setSelectionFromTop(0, 0);
 
         // ListView für neue Geräte
         ListView newDevicesListView = (ListView) findViewById(R.id.new_devices);

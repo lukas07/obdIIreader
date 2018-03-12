@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:activity="com.example.lukas.bluetoothtest.TripListActivity">
+    tools:activity="com.example.lukas.bluetoothtest.TripListActivity"
+    android:background="@drawable/background_image">
 
     <ListView
         android:id="@+id/lv_trips"

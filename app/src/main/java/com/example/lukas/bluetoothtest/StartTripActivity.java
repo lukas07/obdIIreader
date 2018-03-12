@@ -99,8 +99,8 @@ public class StartTripActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_your_trip_acitivity);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
 
         // Back-Button hinzufügen
         ActionBar bar = getSupportActionBar();
@@ -160,6 +160,7 @@ public class StartTripActivity extends AppCompatActivity {
 
             // Die Startadresse ermitteln und im Record speichern
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.e(CLASS, "Test");
                 return;
             }
             fusedLocationProviderClient.getLastLocation()

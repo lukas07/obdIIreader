@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.example.lukas.bluetoothtest"
-        minSdkVersion 17
+        minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -17,6 +17,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets { main { res.srcDirs = ['src/main/res', 'src/main/res/drawable'] } }
 }
 
 dependencies {
@@ -32,5 +33,14 @@ dependencies {
     //compile 'com.google.android.gms:play-services-common:11.0.4'
     compile 'com.github.pires:obd-java-api:1.0'
     compile 'com.android.support:design:25.3.1'
+
+    compile 'com.android.support.constraint:constraint-layout:1.0.2' //for constraint layout
+    implementation 'com.android.support:recyclerview-v7:25.1.0' // for recyclerview
+
     testCompile 'junit:junit:4.12'
+}
+repositories {
+    maven {
+        url 'https://maven.google.com'  //for constraint Layout
+    }
 }

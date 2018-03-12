@@ -23,7 +23,8 @@
         tools:layout_editor_absoluteX="8dp"
         android:id="@+id/textInputLayout"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="212dp">
+        android:layout_marginTop="212dp"
+        tools:ignore="MissingConstraints">
 
         <EditText
             android:id="@+id/et_driverName"
