@@ -75,12 +75,9 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
         setListAdapter(adapter);
         getLoaderManager().initLoader(0, null, this);
 
-        // Wenn nicht in der MainActivity angezeigt wird
-        if (!modeMainActivity)
-            // Im Landscape-Modus den Bildschirm geteilt anzeigen
-            dualPane = getActivity().findViewById(R.id.details) != null;
-        else
-            dualPane = false;
+
+        // Im Landscape-Modus den Bildschirm geteilt anzeigen
+        dualPane = getActivity().findViewById(R.id.details) != null;
         if(dualPane) {
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             showDetails(curCheckPosition, curCheckRowid);
