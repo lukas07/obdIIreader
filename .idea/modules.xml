@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BluetoothTest.iml" filepath="$PROJECT_DIR$/BluetoothTest.iml" />
+      <module fileurl="file://C:\Users\berit\Documents\DHBW\Studienarbeit\Android zeug\AndroidStudioProjects\obdIIreader\BluetoothTest.iml" filepath="C:\Users\berit\Documents\DHBW\Studienarbeit\Android zeug\AndroidStudioProjects\obdIIreader\BluetoothTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/obdIIreader.iml" filepath="$PROJECT_DIR$/obdIIreader.iml" />
     </modules>
   </component>
 </project>
