@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <!--
      The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
      Google Maps Android API v2, but you must specify either coarse or fine
@@ -36,7 +39,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,60 +47,60 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DeviceListActivity"
+            android:name=".activity.DeviceListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/devList_selDev"
             android:theme="@android:style/Theme.Holo.Dialog" />
 
         <service
-            android:name=".ObdService"
+            android:name=".io.ObdService"
             android:enabled="true"
             android:exported="false" />
 
         <activity
-            android:name=".StartTripActivity"
+            android:name=".activity.StartTripActivity"
             android:label="@string/title_activity_start_your_trip_acitivity"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
-            android:name=".RunningTripActivity"
+            android:name=".activity.RunningTripActivity"
             android:label="@string/title_activity_running_trip"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".StoppedTripActivity"
+            android:name=".activity.StoppedTripActivity"
             android:label="@string/run_title"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
         <activity
-            android:name=".TripListActivity"
+            android:name=".activity.TripListActivity"
             android:label="@string/list_title"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".activity.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".activity.MainActivity" />
         </activity>
 
         <provider
-            android:name=".TripProvider"
+            android:name=".trip.TripProvider"
             android:authorities="com.example.lukas.bluetoothtest.provider"
             android:enabled="true"
             android:exported="true" />
 
         <activity
-            android:name=".TripDetailActivity"
+            android:name=".activity.TripDetailActivity"
             android:label="@string/detail_title"
-            android:parentActivityName=".TripListActivity">
+            android:parentActivityName=".activity.TripListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".TripListActivity" />
+                android:value=".activity.TripListActivity" />
         </activity>
 
     </application>

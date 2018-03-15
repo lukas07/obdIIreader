@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:activity="com.example.lukas.bluetoothtest.StoppedTripActivity"
+    tools:activity="com.example.lukas.bluetoothtest.activity.StoppedTripActivity"
     tools:showIn="@layout/activity_stopped_trip">
 
 
@@ -30,7 +30,6 @@
         android:layout_width="172dp"
         android:layout_height="27dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:text="Timestamp_End"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -54,7 +53,6 @@
         android:layout_width="383dp"
         android:layout_height="279dp"
         android:layout_marginBottom="116dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
