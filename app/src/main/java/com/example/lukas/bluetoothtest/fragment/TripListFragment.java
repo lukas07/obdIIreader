@@ -2,7 +2,9 @@ package com.example.lukas.bluetoothtest.fragment;
 
 
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
@@ -38,6 +40,7 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
 
 
     private boolean modeMainActivity = false;
+    private boolean detailsSelected = false;
 
 
     public static TripListFragment newInstance (boolean modeMainActivity) {
@@ -60,6 +63,7 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
         }
     }
 
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -76,9 +80,12 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
         getLoaderManager().initLoader(0, null, this);
 
         // Wenn nicht in der MainActivity angezeigt wird
-        if (!modeMainActivity)
+        //if (!modeMainActivity)
             // Im Landscape-Modus den Bildschirm geteilt anzeigen
-            dualPane = getActivity().findViewById(R.id.details) != null;
+        if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && detailsSelected
+                || getActivity().findViewById(R.id.details) != null)
+            dualPane = true;
+            // dualPane = getActivity().findViewById(R.id.details) != null;
         else
             dualPane = false;
         if(dualPane) {
@@ -127,6 +134,8 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
             intent.putExtra("rowid", rowid);
             intent.putExtra("position", position);
             startActivity(intent);
+            if(modeMainActivity)
+                detailsSelected = true;
         }
         uselessStackState = false;
     }
