@@ -51,6 +51,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import static com.example.lukas.bluetoothtest.activity.MainActivity.btdevice;
 import static com.example.lukas.bluetoothtest.activity.MainActivity.socket;
@@ -237,14 +238,13 @@ public class RunningTripActivity extends AppCompatActivity {
                                         Log.e(CLASS, "Reconnect...");
                                         BluetoothAdapter.getDefaultAdapter().enable();
                                         try {
-                                            socket = null;
+                                            Thread.sleep(1000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        try {
                                             socket = BluetoothConnector.connectDevice(btdevice);
-                                            //socket.connect();
-                                            try {
-                                                Thread.sleep(5000);
-                                            } catch (InterruptedException e) {
-                                                e.printStackTrace();
-                                            }
+
                                             sendThread = new Thread(new Runnable() {
                                                 @Override
                                                 public void run() {
@@ -258,7 +258,6 @@ public class RunningTripActivity extends AppCompatActivity {
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                             Log.e(CLASS, "Could not connect to socket");
-                                            socket = null;
                                         }
                                     }
                                 });
