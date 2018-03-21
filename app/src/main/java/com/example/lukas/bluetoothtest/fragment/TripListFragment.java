@@ -40,7 +40,7 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
 
 
     private boolean modeMainActivity = false;
-    private boolean detailsSelected = false;
+    private boolean detailsSelected;
 
 
     public static TripListFragment newInstance (boolean modeMainActivity) {
@@ -60,6 +60,7 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
         if(savedInstanceState != null) {
             curCheckPosition = savedInstanceState.getInt("curPos", 0);
             curCheckRowid = savedInstanceState.getLong("curRow", 0);
+            detailsSelected = savedInstanceState.getBoolean("details", false);
         }
     }
 
@@ -89,8 +90,12 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
         else
             dualPane = false;
         if(dualPane) {
+            getActivity().setContentView(R.layout.fragment_trip_list);
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             showDetails(curCheckPosition, curCheckRowid);
+        } else {
+            detailsSelected = false;
+            //getActivity().setContentView(R.layout.activity_main);
         }
     }
 
@@ -99,6 +104,7 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
         super.onSaveInstanceState(outState);
         outState.putInt("curPos", curCheckPosition);
         outState.putLong("curRow", curCheckRowid);
+        outState.putBoolean("details", detailsSelected);
     }
 
     @Override
@@ -123,7 +129,6 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
                 //if(!uselessStackState)
                   //   ft.addToBackStack(null);
                 ft.commit();
-
                 GoogleMapFragment mapFragment = GoogleMapFragment.newInstance(getActivity().getApplicationContext(), rowid, GoogleMapFragment.MAP_MODE_DISPLAY );
                 ft = fm.beginTransaction();
                 ft.replace(R.id.map_container, mapFragment);
@@ -166,7 +171,12 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
 
     @Override
     public void onListItemClick(ListView list, View v, int position, long id) {
+        if(modeMainActivity && getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getActivity().setContentView(R.layout.fragment_trip_list);
+            detailsSelected = true;
+        }
         showDetails(position, id);
+
     }
 
 }
