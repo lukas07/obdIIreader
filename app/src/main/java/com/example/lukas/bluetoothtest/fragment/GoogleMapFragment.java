@@ -80,6 +80,8 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     private Location mLastLocation;
     private Marker mCurrLocationMarker;
     private LocationRequest mLocationRequest;
+    private FetchUrl fetchUrl;
+    private ParserTask parserTask;
 
     private MapView mapView;
     private TextView tv_internet;
@@ -355,7 +357,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            ParserTask parserTask = new ParserTask();
+            parserTask = new ParserTask();
 
             // Invokes the thread for parsing the JSON data
             parserTask.execute(result);
@@ -398,6 +400,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         protected void onPostExecute(List<List<HashMap<String, String>>> result) {
             ArrayList<LatLng> points;
             PolylineOptions lineOptions = null;
+            Log.d("onPostExecute", "onPostExecute: result: " + result.toString());
 
             // Traversing through all the routes
             for (int i = 0; i < result.size(); i++) {
@@ -418,7 +421,10 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
                     points.add(position);
                 }
 
+                //routePoints.addAll(points);
+
                 // Adding all the points in the route to LineOptions
+                Log.d("onPostExecute", "onPostExecute: Points: " + points.toString());
                 lineOptions.addAll(points);
                 lineOptions.width(12);
                 lineOptions.color(Color.RED);
@@ -485,11 +491,20 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         mCurrLocationMarker = mMap.addMarker(markerOptions);
 
         //move map camera
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        if(routePoints.isEmpty()) {
+            mLastLocation = location;
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        } else {
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+        }
         mMap.animateCamera(CameraUpdateFactory.zoomTo(MAP_CAM_ZOOM));
 
+        // Adding new item to the ArrayList
+        routePoints.add(latLng);
+
+
         // Checks, whether start and end locations are captured
-        if (routePoints.size() >= 2) {
+        if (routePoints.size() >= 2 && mLastLocation.distanceTo(location) > 300) {
             //LatLng origin = routePoints.get(routePoints.size() - 2);
             //LatLng dest = routePoints.get(routePoints.size() - 1);
             LatLng origin = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
@@ -498,20 +513,16 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
             // Getting URL to the Google Directions API
             String url = getUrl(origin, dest);
             Log.d("newLocation", url.toString());
-            FetchUrl FetchUrl = new FetchUrl();
+            fetchUrl = new FetchUrl();
 
             // Start downloading json data from Google Directions API
-            FetchUrl.execute(url);
+            fetchUrl.execute(url);
             //move map camera
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(origin));
+
+            mLastLocation = location;
         }
 
-        // Adding new item to the ArrayList
-        if (routePoints.isEmpty() || mLastLocation.distanceTo(location) > 50) {
-            mLastLocation = location;
-            routePoints.add(latLng);
-        }
-        //}
     }
 
     @Override
@@ -525,14 +536,16 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    tv_internet.setVisibility(View.VISIBLE);
+                    if(tv_internet != null)
+                        tv_internet.setVisibility(View.VISIBLE);
                 }
             });
-        } else if (value == false) {
+        } else if (value == false ) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    tv_internet.setVisibility(View.GONE);
+                    if(tv_internet != null)
+                        tv_internet.setVisibility(View.GONE);
                 }
             });
         }
@@ -630,6 +643,11 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         if (mGoogleApiClient != null) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
+        // Laufende Asynk-Tasks stoppen
+        if(fetchUrl != null)
+            fetchUrl.cancel(true);
+        if(parserTask != null)
+            parserTask.cancel(true);
     }
 
     @Override
