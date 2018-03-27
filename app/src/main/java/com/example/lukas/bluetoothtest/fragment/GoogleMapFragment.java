@@ -192,57 +192,43 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
     // Fügt die Route des Trips auf der Karte ein
     public void drawRouteOnMap() {
-/*
-        int indexStart = 0;
-        while (indexStart < routePoints.size()-1) {
-            // Origin of route
-            LatLng origin = routePoints.get(indexStart);
-            String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-
-            // Waypoints
-            String waypoints = "waypoints=";
-            int index = indexStart+1;
-            for (int i=indexStart + 1; index<routePoints.size()-2 && i<indexStart+9; i++) {
-                LatLng point = routePoints.get(index);
-                waypoints += point.latitude + "," + point.longitude + "|";
-                index += 2;
+        int index = 1;
+        while(index<routePoints.size()) {
+            // Build the path
+            String parameters = "";
+            // Reduce index value to start next Roads-Request with the last location of the previous request
+            index--;
+            for (int i = 0; i < 100 && index < routePoints.size(); i++) {
+                parameters += String.valueOf(routePoints.get(index).latitude) + ',' + String.valueOf(routePoints.get(index).longitude) + "|";
+                index++;
             }
-            // Remove last "|"
-            waypoints = waypoints.substring(0, waypoints.length()-1);
+            // Remove the last "|"
+            parameters = parameters.substring(0, parameters.length() - 1);
 
+            // Interpolate the route
+            String interpolate = "interpolate=true";
 
-            // Destination of route
-            LatLng dest = routePoints.get(index);
-            String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
-
-            // Sensor enabled
-            String sensor = "sensor=false";
-
-            // Building the parameters to the web service
-            String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + waypoints;
-
-            // Output format
-            String output = "json";
 
             // Building the url to the web service
-            String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+            String url = "https://roads.googleapis.com/v1/snapToRoads?path=" + parameters + "&" + interpolate + "&" + "key=AIzaSyDwrfTLkZVf94qS2ow5xN5voU7EaQ1Lhe8";
+
 
             Log.d("newLocation", url.toString());
             FetchUrl FetchUrl = new FetchUrl();
 
             FetchUrl.execute(url);
 
-            indexStart = index;
+            // Reduce index value to start next Roads-Request with the last location of the previous request
         }
-*/
+
 
         PolylineOptions lineOptions = new PolylineOptions();
 
-        lineOptions.addAll(routePoints);
+        //lineOptions.addAll(routePoints);
         lineOptions.width(12);
         lineOptions.color(Color.RED);
 
-        mMap.addPolyline(lineOptions);
+        //mMap.addPolyline(lineOptions);
         // Startposition Marker setzen
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(routePoints.get(0));
@@ -267,23 +253,22 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     private String getUrl(LatLng origin, LatLng dest) {
 
         // Origin of route
-        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        String str_origin = origin.latitude + "," + origin.longitude;
 
         // Destination of route
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        String str_dest = dest.latitude + "," + dest.longitude;
 
-
-        // Sensor enabled
-        String sensor = "sensor=false";
 
         // Building the parameters to the web service
-        String parameters = str_origin + "&" + str_dest + "&" + sensor;
+        String parameters = str_origin + "|" + str_dest;
 
-        // Output format
-        String output = "json";
+        // Interpolate the route
+        String interpolate = "interpolate=true";
+
 
         // Building the url to the web service
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+        String url = "https://roads.googleapis.com/v1/snapToRoads?path=" + parameters + "&" + interpolate + "&" + "key=AIzaSyDwrfTLkZVf94qS2ow5xN5voU7EaQ1Lhe8";
+        Log.d("URL: " , url);
 
 
         return url;
@@ -368,14 +353,14 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     /**
      * A class to parse the Google Places in JSON format
      */
-    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+    private class ParserTask extends AsyncTask<String, Integer, List<HashMap<String, String>>> {
 
         // Parsing the data in non-ui thread
         @Override
-        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
+        protected List<HashMap<String, String>> doInBackground(String... jsonData) {
 
             JSONObject jObject;
-            List<List<HashMap<String, String>>> routes = null;
+            List<HashMap<String, String>> route = null;
 
             try {
                 jObject = new JSONObject(jsonData[0]);
@@ -384,54 +369,44 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
                 Log.d("ParserTask", parser.toString());
 
                 // Starts parsing data
-                routes = parser.parse(jObject);
+                route = parser.parse(jObject);
                 Log.d("ParserTask","Executing routes");
-                Log.d("ParserTask",routes.toString());
+                Log.d("ParserTask",route.toString());
 
             } catch (Exception e) {
                 Log.d("ParserTask",e.toString());
                 e.printStackTrace();
             }
-            return routes;
+            return route;
         }
 
         // Executes in UI thread, after the parsing process
         @Override
-        protected void onPostExecute(List<List<HashMap<String, String>>> result) {
-            ArrayList<LatLng> points;
-            PolylineOptions lineOptions = null;
+        protected void onPostExecute(List<HashMap<String, String>> result) {
+            ArrayList<LatLng> points = new ArrayList<>();
+            PolylineOptions lineOptions = new PolylineOptions();
             Log.d("onPostExecute", "onPostExecute: result: " + result.toString());
 
-            // Traversing through all the routes
-            for (int i = 0; i < result.size(); i++) {
-                points = new ArrayList<>();
-                lineOptions = new PolylineOptions();
+            // Fetching all the points in  route
+            for (int j = 0; j < result.size(); j++) {
+                HashMap<String, String> point = result.get(j);
 
-                // Fetching i-th route
-                List<HashMap<String, String>> path = result.get(i);
+                double lat = Double.parseDouble(point.get("lat"));
+                double lng = Double.parseDouble(point.get("lng"));
+                LatLng position = new LatLng(lat, lng);
 
-                // Fetching all the points in i-th route
-                for (int j = 0; j < path.size(); j++) {
-                    HashMap<String, String> point = path.get(j);
-
-                    double lat = Double.parseDouble(point.get("lat"));
-                    double lng = Double.parseDouble(point.get("lng"));
-                    LatLng position = new LatLng(lat, lng);
-
-                    points.add(position);
-                }
-
-                //routePoints.addAll(points);
-
-                // Adding all the points in the route to LineOptions
-                Log.d("onPostExecute", "onPostExecute: Points: " + points.toString());
-                lineOptions.addAll(points);
-                lineOptions.width(12);
-                lineOptions.color(Color.RED);
-
-                Log.d("onPostExecute","onPostExecute lineoptions decoded");
-
+                points.add(position);
             }
+
+            //routePoints.addAll(points);
+
+            // Adding all the points in the route to LineOptions
+            Log.d("onPostExecute", "onPostExecute: Points: " + points.toString());
+            lineOptions.addAll(points);
+            lineOptions.width(12);
+            lineOptions.color(Color.RED);
+
+            Log.d("onPostExecute","onPostExecute lineoptions decoded");
 
             // Drawing polyline in the Google Map for the i-th route
             if(lineOptions != null) {
@@ -493,29 +468,32 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         //move map camera
         if(routePoints.isEmpty()) {
             mLastLocation = location;
+            routePoints.add(latLng);
             mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         } else {
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         }
         mMap.animateCamera(CameraUpdateFactory.zoomTo(MAP_CAM_ZOOM));
 
-        // Adding new item to the ArrayList
-        routePoints.add(latLng);
+
 
 
         // Checks, whether start and end locations are captured
-        if (routePoints.size() >= 2 && mLastLocation.distanceTo(location) > 300) {
-            //LatLng origin = routePoints.get(routePoints.size() - 2);
-            //LatLng dest = routePoints.get(routePoints.size() - 1);
-            LatLng origin = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-            LatLng dest = latLng;
+        if (routePoints.size() >= 1 && mLastLocation.distanceTo(location) > 10) {
+            // Adding new item to the ArrayList
+            routePoints.add(latLng);
+
+            LatLng origin = routePoints.get(routePoints.size() - 2);
+            LatLng dest = routePoints.get(routePoints.size() - 1);
+            //LatLng origin = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
+            //LatLng dest = latLng;
 
             // Getting URL to the Google Directions API
             String url = getUrl(origin, dest);
             Log.d("newLocation", url.toString());
             fetchUrl = new FetchUrl();
 
-            // Start downloading json data from Google Directions API
+            // Start downloading json data from Google Roads API
             fetchUrl.execute(url);
             //move map camera
             mMap.animateCamera(CameraUpdateFactory.newLatLng(origin));
