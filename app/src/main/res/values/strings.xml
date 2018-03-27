@@ -48,13 +48,19 @@
     <!-- RunningTripActivity -->
     <string name="run_stop">Stop!</string>
     <string name="run_title">Review of your Trip</string>
-    <string name="run_init_fail">Die Verbindung zu dem OBD2-Adapter konnte nicht initialisiert werden</string>
+    <string name="run_init_fail">Could not initialize the connection to OBD-Adapter</string>
     <string name="run_init_tv">No Data</string>
     <string name="run_no_data">Your device could not receive any data</string>
-    <string name="run_connect">Die Verbindung zu dem OBD-Adapter wurde unterbrochen</string>
-    <string name="run_bt_stop">Trip beenden</string>
-    <string name="run_bt_menu">Menü</string>
-    <string name="run_no_internet">Die Map kann leider nicht aktualisiert werden, da keine Verbindung zum Internet besteht</string>
+    <string name="run_connect">The connection to the OBD-Adapter has been interrupted</string>
+    <string name="run_bt_stop">Stop Trip</string>
+    <string name="run_bt_menu">Go to menu</string>
+    <string name="run_no_internet">The map couldn\'t be updated since there is no internet connection</string>
+    <string name="run_back_msg">Do you really want to stop tracking the trip?</string>
+    <string name="run_yes">Yes</string>
+    <string name="run_no">No</string>
+    <string name="run_bt_off">The bluetooth connection has been closed!</string>
+    <string name="run_reconnect">Reconnect</string>
+    <string name="run_gps_off">GPS has been disabled!</string>
 
     <!-- OBD-Service -->
     <string name="obd_unsupported">Unsupported</string>
@@ -71,9 +77,26 @@
     <!-- Trip Entry -->
     <string name="entry_init">No value found</string>
 
-    <!-- TripListActivity -->
-    <string name="list_title">Alle Trips</string>
 
+    <!-- TripListActivity -->
+    <string name="list_title">Your Trips</string>
+    <string name="list_pdf_title">Ihre Fahrten</string>
+    <string name="list_pdf_doc_name">Trips</string>
+    <string name="list_storage_access">You need to allow access to Storage</string>
+    <string name="list_storage_denied">WRITE_EXTERNAL Permission Denied</string>
+    <string name="list_storage_ok">OK</string>
+    <string name="list_storage_cancel">Cancel</string>
+    <string name="list_pdf_table_counter">No.</string>
+    <string name="list_pdf_table_driver">Fahrer</string>
+    <string name="list_pdf_table_mode">Modus</string>
+    <string name="list_pdf_table_odo_start">Km. Stand - Start</string>
+    <string name="list_pdf_table_odo_end">Km. Stand- Ende</string>
+    <string name="list_pdf_table_date_start">Datum - Start</string>
+    <string name="list_pdf_table_date_end">Datum - Ende</string>
+    <string name="list_pdf_table_address_start">Adresse - Start</string>
+    <string name="list_pdf_table_address_end">Adresse - Ende</string>
+    <string name="list_pdf_table_noData">Es wurden noch keine Trips aufgezeichnet!</string>
+    <string name="list_pdf_header_app">Track your Trips</string>
     <!-- TripDetailActivity -->
     <string name="detail_title">Tripdetails</string>
 </resources>

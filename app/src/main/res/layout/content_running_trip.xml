@@ -21,10 +21,10 @@
         android:text="@string/run_init_tv"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.733"
+        app:layout_constraintHorizontal_bias="0.723"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.135" />
+        app:layout_constraintVertical_bias="0.133" />
 
     <TextView
         android:id="@+id/tv_timer"
@@ -34,10 +34,9 @@
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.017" />
 
     <TextView
         android:id="@+id/tv_fuel"
@@ -53,7 +52,7 @@
         app:layout_constraintHorizontal_bias="0.727"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tv_timer"
-        app:layout_constraintVertical_bias="0.053" />
+        app:layout_constraintVertical_bias="0.027" />
 
     <TextView
         android:id="@+id/tv_consumption"
@@ -66,10 +65,10 @@
         android:text="@string/run_init_tv"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.729"
+        app:layout_constraintHorizontal_bias="0.72"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.214" />
+        app:layout_constraintVertical_bias="0.204" />
 
 
     <ProgressBar
@@ -102,13 +101,15 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="364dp" />
 
-    <Button
+    <ImageButton
         android:id="@+id/bt_stop"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="420dp"
         android:enabled="false"
         android:text="@string/run_stop"
+        android:src="@drawable/stopbtn"
+        android:background="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"

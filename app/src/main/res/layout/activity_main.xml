@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_image"
-    tools:context="com.example.lukas.bluetoothtest.MainActivity">
+    tools:context="com.example.lukas.bluetoothtest.activity.MainActivity">
 
 
     <ImageButton
@@ -43,7 +43,6 @@
         android:id="@+id/bt_selectDev"
         android:layout_width="99dp"
         android:layout_height="61dp"
-        android:layout_marginEnd="36dp"
         android:background="@android:color/transparent"
         android:enabled="false"
         android:gravity="center"
@@ -71,13 +70,15 @@
         app:layout_constraintVertical_bias="0.419" />
 
 
-    <Button
+    <ImageButton
         android:id="@+id/bt_showTrips"
         android:layout_width="308dp"
         android:layout_height="58dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:background="@android:color/transparent"
         android:text="@string/main_showTrips"
+        android:src="@drawable/alltripsbtn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
