@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -46,7 +47,7 @@ public class StartTripActivity extends AppCompatActivity {
     private EditText et_driverName;
     private EditText et_mileageStart;
     private Spinner sp_tripMode;
-    private Button bt_Go;
+    private ImageButton bt_Go;
 
     private TripRecord record;
 
@@ -90,8 +91,8 @@ public class StartTripActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_your_trip_acitivity);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+      //  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+       // setSupportActionBar(toolbar);
 
         // Back-Button hinzufügen
         ActionBar bar = getSupportActionBar();
@@ -112,7 +113,7 @@ public class StartTripActivity extends AppCompatActivity {
         et_driverName = (EditText) findViewById(R.id.et_driverName);
         et_mileageStart = (EditText) findViewById(R.id.et_mileageStart);
         sp_tripMode = (Spinner) findViewById(R.id.sp_tripMode);
-        bt_Go = (Button) findViewById(R.id.bt_Go);
+        bt_Go = (ImageButton) findViewById(R.id.bt_Go);
 
         // Adapter für das DropDown Menü der Trip-Art hinzufügen
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.start_tripMode, android.R.layout.simple_spinner_item);

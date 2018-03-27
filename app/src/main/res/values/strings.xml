@@ -12,8 +12,8 @@
     <string name="main_bt_enabled">Enabled</string>
     <string name="main_bt_support">Your device does not support Bluetooth.</string>
     <string name="main_bt_disabled">Disabled</string>
-    <string name="main_startTrip">Start your Trip!</string>
-    <string name="main_showTrips">Show your Trips!</string>
+    <string name="main_startTrip">Start your Trip</string>
+    <string name="main_showTrips">Show all Trips</string>
     <string name="main_sel_dev">You have selected: </string>
     <string name="main_dev">Device</string>
     <string name="main_sel">Selected</string>
@@ -39,11 +39,11 @@
         <item>Business Trip</item>
     </string-array>
     <string name="start_go">Go!</string>
-    <string name="title_activity_running_trip">Your current Trip</string>
-    <string name="start_driver">Drivers Name</string>
-    <string name="start_odometer">Current odometer value</string>
-    <string name="start_driver_missing">You have to enter the name of the driver!</string>
-    <string name="start_odometer_missing">You have to enter your current odometer value!</string>
+    <string name="title_activity_running_trip">Dein aktueller Trip</string>
+    <string name="start_driver">Name des Fahrers:</string>
+    <string name="start_odometer">Aktueller Kilometerstand</string>
+    <string name="start_driver_missing">Bitte gebe zunächst den Namen des Fahrers an!</string>
+    <string name="start_odometer_missing">Bitte gebe zunächst den aktuellen Kilometerstand an!</string>
 
     <!-- RunningTripActivity -->
     <string name="run_stop">Stop!</string>
@@ -62,25 +62,41 @@
     <string name="run_reconnect">Reconnect</string>
     <string name="run_gps_off">GPS has been disabled!</string>
 
-
     <!-- OBD-Service -->
     <string name="obd_unsupported">Unsupported</string>
 
     <!-- StoppedTripActivity -->
-    <string name="stop_odometer">Odometer value after Trip</string>
-    <string name="stop_save">Save Trip</string>
-    <string name="stop_inserted">Saved your Trip</string>
-    <string name="stop_insert_failed">Error while saving your Trip</string>
-    <string name="stop_odometer_missing">You have to enter your odometer value after your Trip!</string>
-    <string name="stop_button_menu">Back to menu</string>
-    <string name="stop_odometer_low">Your ending odometer value has to be higher than your starting one!</string>
+    <string name="stop_odometer">Neuer Kilometerstand</string>
+    <string name="stop_save">Trip speichern</string>
+    <string name="stop_inserted">Trip wurde gespeichert</string>
+    <string name="stop_insert_failed">Ups! Beim Speichern des Trips ist wohl etwas schief gelaufen</string>
+    <string name="stop_odometer_missing">Bitte geben zunächst deinen neuen Kilometerstand an</string>
+    <string name="stop_button_menu">Menü</string>
+    <string name="stop_odometer_low">Ups! Dein aktueller Kilometerstand ist niedriger als der zu Beginn des Trips</string>
 
     <!-- Trip Entry -->
     <string name="entry_init">No value found</string>
 
+
     <!-- TripListActivity -->
     <string name="list_title">Your Trips</string>
-
+    <string name="list_pdf_title">Ihre Fahrten</string>
+    <string name="list_pdf_doc_name">Trips</string>
+    <string name="list_storage_access">You need to allow access to Storage</string>
+    <string name="list_storage_denied">WRITE_EXTERNAL Permission Denied</string>
+    <string name="list_storage_ok">OK</string>
+    <string name="list_storage_cancel">Cancel</string>
+    <string name="list_pdf_table_counter">No.</string>
+    <string name="list_pdf_table_driver">Fahrer</string>
+    <string name="list_pdf_table_mode">Modus</string>
+    <string name="list_pdf_table_odo_start">Km. Stand - Start</string>
+    <string name="list_pdf_table_odo_end">Km. Stand- Ende</string>
+    <string name="list_pdf_table_date_start">Datum - Start</string>
+    <string name="list_pdf_table_date_end">Datum - Ende</string>
+    <string name="list_pdf_table_address_start">Adresse - Start</string>
+    <string name="list_pdf_table_address_end">Adresse - Ende</string>
+    <string name="list_pdf_table_noData">Es wurden noch keine Trips aufgezeichnet!</string>
+    <string name="list_pdf_header_app">Track your Trips</string>
     <!-- TripDetailActivity -->
-    <string name="detail_title">Trip details</string>
+    <string name="detail_title">Tripdetails</string>
 </resources>

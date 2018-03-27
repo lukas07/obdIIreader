@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#1C66B0</color>
+    <color name="colorPrimaryDark">#184C8C</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorBluetooth">#3F51B5</color>
-
     <color name="green">#00DB00</color>
     <color name="darkGreen">#00C800</color>
 </resources>
