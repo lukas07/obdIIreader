@@ -13,6 +13,34 @@ import java.util.List;
 public class MapLocationParser {
 
     /** Receives a JSONObject and returns a list of lists containing latitude and longitude */
+    public List<HashMap<String,String>> parse(JSONObject jObject){
+
+        List<HashMap<String, String>> route = new ArrayList<>() ;
+        JSONArray jRoute;
+
+        try {
+
+            jRoute = jObject.getJSONArray("snappedPoints");
+
+            for(int i=0; i<jRoute.length();i++) {
+                HashMap<String, String> hm = new HashMap<>();
+                Double lat = (Double)((JSONObject)((JSONObject)jRoute.get(i)).get("location")).get("latitude");
+                Double lng = (Double)((JSONObject)((JSONObject)jRoute.get(i)).get("location")).get("longitude");
+                hm.put("lat", String.valueOf(lat));
+                hm.put("lng", String .valueOf(lng));
+                route.add(hm);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+        return route;
+    }
+/*
+    *//** Receives a JSONObject and returns a list of lists containing latitude and longitude *//*
     public List<List<HashMap<String,String>>> parse(JSONObject jObject){
 
         List<List<HashMap<String, String>>> routes = new ArrayList<>() ;
@@ -24,22 +52,22 @@ public class MapLocationParser {
 
             jRoutes = jObject.getJSONArray("routes");
 
-            /** Traversing all routes */
+            *//** Traversing all routes *//*
             for(int i=0;i<jRoutes.length();i++){
                 jLegs = ( (JSONObject)jRoutes.get(i)).getJSONArray("legs");
                 List path = new ArrayList<>();
 
-                /** Traversing all legs */
+                *//** Traversing all legs *//*
                 for(int j=0;j<jLegs.length();j++){
                     jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");
 
-                    /** Traversing all steps */
+                    *//** Traversing all steps *//*
                     for(int k=0;k<jSteps.length();k++){
                         String polyline = "";
                         polyline = (String)((JSONObject)((JSONObject)jSteps.get(k)).get("polyline")).get("points");
                         List<LatLng> list = decodePoly(polyline);
 
-                        /** Traversing all points */
+                        *//** Traversing all points *//*
                         for(int l=0;l<list.size();l++){
                             HashMap<String, String> hm = new HashMap<>();
                             hm.put("lat", Double.toString((list.get(l)).latitude) );
@@ -58,7 +86,8 @@ public class MapLocationParser {
 
 
         return routes;
-    }
+    }*/
+
 
 
     /**
