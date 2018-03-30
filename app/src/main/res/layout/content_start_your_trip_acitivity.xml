@@ -29,9 +29,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/start_odometer"
                 android:inputType="numberSigned"
-                android:maxLength="9"
-
-                android:text="999" />
+                android:maxLength="9"/>
 
         </android.support.design.widget.TextInputLayout>
 
