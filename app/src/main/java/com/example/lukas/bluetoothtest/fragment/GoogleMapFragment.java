@@ -218,17 +218,8 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
             FetchUrl.execute(url);
 
-            // Reduce index value to start next Roads-Request with the last location of the previous request
         }
 
-
-        PolylineOptions lineOptions = new PolylineOptions();
-
-        //lineOptions.addAll(routePoints);
-        lineOptions.width(12);
-        lineOptions.color(Color.RED);
-
-        //mMap.addPolyline(lineOptions);
         // Startposition Marker setzen
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(routePoints.get(0));

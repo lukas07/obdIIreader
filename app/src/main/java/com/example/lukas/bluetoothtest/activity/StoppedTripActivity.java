@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,7 +28,7 @@ public class StoppedTripActivity extends AppCompatActivity {
     private EditText et_mileageEnd;
     private TextView tv_tsStart;
     private TextView tv_tsEnd;
-    private Button bt_save;
+    private ImageButton bt_save;
 
     private TripRecord record;
     private TripOpenHelper helper;
@@ -44,13 +45,13 @@ public class StoppedTripActivity extends AppCompatActivity {
 
         // Back-Button hinzufügen
         ActionBar bar = getSupportActionBar();
-        bar.setDisplayHomeAsUpEnabled(true);
+        //bar.setDisplayHomeAsUpEnabled(true);
 
         // Referenzvariablen zu den Feldern deklarieren
         et_mileageEnd = (EditText) findViewById(R.id.et_mileageEnd);
         tv_tsStart = (TextView) findViewById(R.id.tv_tsStart);
         tv_tsEnd = (TextView) findViewById(R.id.tv_tsEnd);
-        bt_save = (Button) findViewById(R.id.bt_save);
+        bt_save = (ImageButton) findViewById(R.id.bt_save);
 
         // Listener für den Save-Button
         bt_save.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +120,7 @@ public class StoppedTripActivity extends AppCompatActivity {
                     record.getEndTimestamp(),
                     record.getStartAddress(),
                     record.getEndAddress());*/
-            bt_save.setText(R.string.stop_button_menu);
+            //bt_save.setText(R.string.stop_button_menu);
             // Flag, um den Button anzupassen (--> man gelangt anschließend ins Hauptmenü zurück)
             bt_change_menu = true;
         }
