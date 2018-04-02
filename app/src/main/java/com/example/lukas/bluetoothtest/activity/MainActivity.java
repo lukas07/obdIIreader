@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton bt_selectDev;
     private ImageButton bt_activateGps;
     private ImageButton bt_startTrip;
-    private Button bt_showTrips;
+    private ImageButton bt_showTrips;
 
     // Nur wenn beide auf true gesetzt sind, kann die Tripaufzeichnung gestartet werden
     private boolean btEnabled = false;
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         bt_selectDev = (ImageButton) findViewById(R.id.bt_selectDev);
         bt_activateGps = (ImageButton) findViewById(R.id.bt_activateGps);
         bt_startTrip = (ImageButton) findViewById(R.id.bt_startTrip);
-        bt_showTrips = (Button) findViewById(R.id.bt_showTrips);
+        bt_showTrips = (ImageButton) findViewById(R.id.bt_showTrips);
 
 
         // Clicklistener für die Buttons

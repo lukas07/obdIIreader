@@ -30,7 +30,7 @@
                 android:hint="@string/start_odometer"
                 android:inputType="numberSigned"
                 android:maxLength="9"
-
+                android:textColor="@color/dark_green"
                 android:text="999" />
 
         </android.support.design.widget.TextInputLayout>
@@ -41,30 +41,37 @@
             android:layout_height="wrap_content"
             android:hint="@string/start_driver"
             android:inputType="textPersonName"
-
+            android:textColor="@color/dark_green"
             android:text="Test" />
 
     </android.support.design.widget.TextInputLayout>
 
     <ImageButton
         android:id="@+id/bt_Go"
-        android:layout_width="136dp"
+        android:layout_width="126dp"
         android:layout_height="124dp"
-        android:layout_marginLeft="124dp"
-        android:layout_marginTop="44dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginLeft="92dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="296dp"
         android:layout_weight="1"
-        android:src="@drawable/start_button"
-        android:background="@android:color/transparent"
+        android:background="@drawable/start_custom"
         android:text="@string/start_go"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Spinner
         android:id="@+id/sp_tripMode"
-        android:layout_width="68dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="72dp"
+        android:layout_width="120dp"
+        android:layout_height="29dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginEnd="184dp"
         android:layout_marginLeft="156dp"
+        android:layout_marginRight="184dp"
         app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />

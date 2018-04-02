@@ -11,82 +11,106 @@
 
     <ImageButton
         android:id="@+id/bt_startTrip"
-        android:layout_width="186dp"
-        android:layout_height="137dp"
+        android:layout_width="115dp"
+        android:layout_height="111dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:alpha="0.95"
-        android:background="@android:color/transparent"
+        android:background="@drawable/start_custom"
         android:enabled="true"
         android:gravity="center"
-        android:src="@drawable/start_button"
+        android:radius="90dp"
         android:text="@string/main_startTrip"
-        app:layout_constraintBottom_toTopOf="@+id/bt_activateBt"
+        app:layout_constraintBottom_toTopOf="@+id/bt_activateGps"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.471" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/bt_activateBt"
-        android:layout_width="99dp"
-        android:layout_height="61dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/bt_button"
+        android:layout_width="85dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bt_custom"
         android:text="@string/main_bt_disabled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.108"
+        app:layout_constraintHorizontal_bias="0.036"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.422" />
+        app:layout_constraintVertical_bias="0.395" />
 
     <ImageButton
         android:id="@+id/bt_selectDev"
-        android:layout_width="99dp"
-        android:layout_height="61dp"
-        android:background="@android:color/transparent"
+        android:layout_width="85dp"
+        android:layout_height="50dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/obd_custom"
         android:enabled="false"
         android:gravity="center"
-        android:src="@drawable/obd_button"
         android:text="@string/main_dev"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.963"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.422" />
+        app:layout_constraintVertical_bias="0.392" />
 
     <ImageButton
         android:id="@+id/bt_activateGps"
-        android:layout_width="99dp"
-        android:layout_height="61dp"
+        android:layout_width="85dp"
+        android:layout_height="50dp"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@android:color/transparent"
-        android:src="@drawable/gps_button"
-        android:text="@string/main_bt_disabled"
+        android:background="@drawable/gps_custom"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/bt_selectDev"
+        app:layout_constraintHorizontal_bias="0.529"
+        app:layout_constraintStart_toEndOf="@+id/bt_activateBt"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.419" />
+        app:layout_constraintVertical_bias="0.392" />
 
 
     <ImageButton
         android:id="@+id/bt_showTrips"
-        android:layout_width="308dp"
-        android:layout_height="58dp"
+        android:layout_width="266dp"
+        android:layout_height="48dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:background="@android:color/transparent"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/alltrips_custom"
         android:text="@string/main_showTrips"
-        android:src="@drawable/alltripsbtn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.985" />
 
-    <android.support.v7.widget.RecyclerView
+    <ListView
         android:id="@+id/rv_currentTrips"
-        android:layout_width="320dp"
-        android:layout_height="184dp"
+        android:layout_width="298dp"
+        android:layout_height="136dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -96,7 +120,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.169" />
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </android.support.constraint.ConstraintLayout>
