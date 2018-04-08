@@ -135,10 +135,11 @@ public class StartTripActivity extends AppCompatActivity {
         // End-Kilometerstand des letzten gespeicherten Trips als Startwert nehmen
         final Cursor cursor;
         cursor = this.getContentResolver().query(TripProvider.CONTENT_URI, null, null, null, null);
-        if (!cursor.moveToLast() || cursor.isLast()) {
-            et_mileageStart.setText(cursor.getString(TripOpenHelper.COL_ID_ENDMIL));
+        if(cursor.getCount() > 0) {
+            if (!cursor.moveToLast() || cursor.isLast()) {
+                et_mileageStart.setText(cursor.getString(TripOpenHelper.COL_ID_ENDMIL));
+            }
         }
-
     }
 
 
@@ -179,7 +180,10 @@ public class StartTripActivity extends AppCompatActivity {
                                         // Die Adresse über den Geocoder ermitteln
                                         List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                                         Log.e(CLASS, "Geocoder: " + addresses.toString());
-                                        record.setStartAddress(addresses.get(0).getAddressLine(0));
+                                        if (addresses == null || addresses.size() == 0)
+                                            record.setStartAddress("NODATA");
+                                        else
+                                            record.setStartAddress(addresses.get(0).getAddressLine(0));
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                         Log.e(CLASS, "Geocoder: " + e.toString());
@@ -233,7 +237,10 @@ public class StartTripActivity extends AppCompatActivity {
                                         // Die Adresse über den Geocoder ermitteln
                                         List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                                         Log.e(CLASS, "Geocoder: " + addresses.toString());
-                                        record.setStartAddress(addresses.get(0).getAddressLine(0));
+                                        if (addresses == null || addresses.size() == 0)
+                                            record.setStartAddress("NODATA");
+                                        else
+                                            record.setStartAddress(addresses.get(0).getAddressLine(0));
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                         Log.e(CLASS, "Geocoder: " + e.toString());
