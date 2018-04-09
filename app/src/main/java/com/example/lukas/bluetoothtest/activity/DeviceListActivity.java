@@ -1,13 +1,21 @@
 package com.example.lukas.bluetoothtest.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -26,10 +34,11 @@ import java.util.Set;
  * Created by Lukas on 06.10.2017.
  */
 
-public class DeviceListActivity extends Activity {
-    private static final String TAG = "DeviceListActivity";
+public class DeviceListActivity extends Activity{
+    private static final String CLASS = "DeviceListActivity";
 
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
+    private static final int REQUEST_ACCESS_COARSE_LOCATION = 1;
 
     private Button bt_scan;
     // Gibt an, ob bereits einmal eine Suche gestartet wurde; falls "true" --> die ermittelten Devices werden in saveInstance gespeichert
@@ -210,7 +219,7 @@ public class DeviceListActivity extends Activity {
      * Start device discover with the BluetoothAdapter
      */
     private void doDiscovery() {
-        Log.d(TAG, "doDiscovery()");
+        Log.d(CLASS, "doDiscovery()");
 
         // Nach dem ersten Suchen nach weiteren Devices wird der Listview der neuen Devices dauerhaft angezeigt
         discoveryDone = true;
@@ -230,9 +239,33 @@ public class DeviceListActivity extends Activity {
             btAdapter.cancelDiscovery();
         }
         // Request discover from BluetoothAdapter
-        btAdapter.startDiscovery();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {  // Only ask for these permissions on runtime when running Android 6.0 or higher
+            switch (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                case PackageManager.PERMISSION_DENIED:
+                    AlertDialog.Builder builder= new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.devList_permission_title);
+                    builder.setMessage(R.string.devList_permission_info);
+                    builder.setNeutralButton(R.string.devList_permission_okay, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (ContextCompat.checkSelfPermission(getBaseContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                        ActivityCompat.requestPermissions(DeviceListActivity.this,
+                                                new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                                                REQUEST_ACCESS_COARSE_LOCATION);
+                                    }
+                                }
+                            });
+                    //builder.setMovementMethod(LinkMovementMethod.getInstance());       // Make the link clickable. Needs to be called after show(), in order to generate hyperlinks
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    break;
+                case PackageManager.PERMISSION_GRANTED:
+                    break;
+            }
+        }
+        //btAdapter.startDiscovery();
 
-        discoveryRunning = true;
+        //discoveryRunning = true;
     }
 
     @Override
@@ -247,6 +280,24 @@ public class DeviceListActivity extends Activity {
             }
             outState.putStringArrayList("devices", devices);
             outState.putBoolean("running", discoveryRunning);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_ACCESS_COARSE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    btAdapter.startDiscovery();
+                    discoveryRunning = true;
+                } else {
+                    Log.d(CLASS, "Permission for disovery denied");
+                }
+                return;
+            }
         }
     }
 }

@@ -32,6 +32,9 @@
     <string name="devList_titleSearch">Other available devices</string>
     <string name="devList_scan">Scan for devices</string>
     <string name="title_activity_start_your_trip_acitivity">Start Your Trip</string>
+    <string name="devList_permission_info">Um die Suche nach Bluetooth-Geräten in der näheren Umgebung zu ermöglichen, müssen Sie die folgende Berechtigungsanfrage bestätigen (Android garantiert somit eine bessere Sicherheit)</string>
+    <string name="devList_permission_title">Fehlende Berechtigung</string>
+    <string name="devList_permission_okay">Okay</string>
 
     <!-- StartTripActivity -->
     <string-array name="start_tripMode">
