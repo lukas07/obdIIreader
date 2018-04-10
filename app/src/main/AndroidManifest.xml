@@ -50,7 +50,7 @@
             android:name=".activity.DeviceListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/devList_selDev"
-            android:theme="@android:style/Theme.Holo.Dialog" />
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog" />
 
         <service
             android:name=".io.ObdService"

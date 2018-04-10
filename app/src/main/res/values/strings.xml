@@ -25,13 +25,16 @@
 
     <!-- DeviceListActivity -->
     <string name="devList_selDev">Select a device to connect</string>
-    <string name="devList_scanning">Scanning for devices...</string>
+    <string name="devList_scanning">Scanning...</string>
     <string name="devList_noPaired">No devices have been paired</string>
     <string name="devList_noFound">No devices found</string>
     <string name="devList_titlePaired">Paired devices</string>
     <string name="devList_titleSearch">Other available devices</string>
     <string name="devList_scan">Scan for devices</string>
     <string name="title_activity_start_your_trip_acitivity">Start Your Trip</string>
+    <string name="devList_permission_info">Um die Suche nach Bluetooth-Geräten in der näheren Umgebung zu ermöglichen, müssen Sie die folgende Berechtigungsanfrage bestätigen (Android garantiert somit eine bessere Sicherheit)</string>
+    <string name="devList_permission_title">Fehlende Berechtigung</string>
+    <string name="devList_permission_okay">Okay</string>
 
     <!-- StartTripActivity -->
     <string-array name="start_tripMode">
