@@ -479,7 +479,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
             //LatLng origin = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
             //LatLng dest = latLng;
 
-            // Getting URL to the Google Directions API
+            // Getting URL to the Google Roads API
             String url = getUrl(origin, dest);
             Log.d("newLocation", url.toString());
             fetchUrl = new FetchUrl();
@@ -556,6 +556,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
