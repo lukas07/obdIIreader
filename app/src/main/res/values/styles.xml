@@ -2,11 +2,7 @@
 
 
     <!-- Button Styles -->
-    <style name="StartButton" parent="Theme.AppCompat.Light">
-        <item name="colorButtonNormal">@color/light_green</item>
-        <item name="colorControlHighlight">@color/dark_green</item>
-        <item name="android:padding">40dip</item>
-    </style>
+
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
@@ -15,17 +11,21 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
     <style name="ListView" parent="@android:style/Widget.ListView">
-        <item name="android:background">@color/light_grey</item>
+        <item name="android:background">@color/dark_green</item>
         <item name="android:cacheColorHint">@android:color/transparent</item>
         <item name="android:divider">@android:color/transparent</item>
         <item name="android:dividerHeight">0dp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:listSelector">@drawable/list_selector</item>
     </style>
 
     <style name="TextView" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/dark_green</item>
         <item name="android:textSize">19dp</item>
-
+    </style>
+    <style name="TextViewSmall" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/dark_green</item>
+        <item name="android:textSize">14dp</item>
     </style>
 
     <style name="AppTheme.NoActionBar">

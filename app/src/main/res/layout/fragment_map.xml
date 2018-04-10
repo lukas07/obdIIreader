@@ -6,10 +6,10 @@
     tools:activity="com.example.lukas.bluetoothtest.fragment.GoogleMapFragment">
 
     <com.google.android.gms.maps.MapView
-    android:id="@+id/map"
-    class="com.google.android.gms.maps.MapFragment"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+        android:id="@+id/map"
+        class="com.google.android.gms.maps.MapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/tv_internet"

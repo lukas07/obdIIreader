@@ -12,6 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
+        android:background="@drawable/list_shape"
         android:listSelector="@drawable/list_selector"
-        style="@style/ListView"/>
+
+       />
 </LinearLayout>
