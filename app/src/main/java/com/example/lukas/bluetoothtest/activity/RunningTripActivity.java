@@ -30,6 +30,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,6 +52,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 import static com.example.lukas.bluetoothtest.activity.MainActivity.btdevice;
 import static com.example.lukas.bluetoothtest.activity.MainActivity.socket;
@@ -75,7 +77,7 @@ public class RunningTripActivity extends AppCompatActivity {
     private TextView tv_consumption;
     private TextView tv_timer;
     private TextView tv_internet;
-    private Button bt_stop;
+    private ImageButton bt_stop;
     private ProgressBar pb_init;
 
     private Context context = this;
@@ -237,14 +239,13 @@ public class RunningTripActivity extends AppCompatActivity {
                                         Log.e(CLASS, "Reconnect...");
                                         BluetoothAdapter.getDefaultAdapter().enable();
                                         try {
-                                            socket = null;
+                                            Thread.sleep(1000);
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                        try {
                                             socket = BluetoothConnector.connectDevice(btdevice);
-                                            //socket.connect();
-                                            try {
-                                                Thread.sleep(5000);
-                                            } catch (InterruptedException e) {
-                                                e.printStackTrace();
-                                            }
+
                                             sendThread = new Thread(new Runnable() {
                                                 @Override
                                                 public void run() {
@@ -258,7 +259,6 @@ public class RunningTripActivity extends AppCompatActivity {
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                             Log.e(CLASS, "Could not connect to socket");
-                                            socket = null;
                                         }
                                     }
                                 });
@@ -359,7 +359,7 @@ public class RunningTripActivity extends AppCompatActivity {
         tv_consumption = (TextView) findViewById(R.id.tv_consumption);
         tv_timer = (TextView) findViewById(R.id.tv_timer);
         tv_internet = (TextView) findViewById(R.id.tv_internet);
-        bt_stop = (Button) findViewById(R.id.bt_stop);
+        bt_stop = (ImageButton) findViewById(R.id.bt_stop);
         pb_init = (ProgressBar) findViewById(R.id.pb_init);
 
 
@@ -471,7 +471,10 @@ public class RunningTripActivity extends AppCompatActivity {
                                 // Die Adresse über den Geocoder ermitteln
                                 List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                                 Log.e(CLASS, "Geocoder: " + addresses.toString());
-                                record.setEndAddress(addresses.get(0).getAddressLine(0));
+                                if (addresses == null || addresses.size() == 0)
+                                    record.setEndAddress("NODATA");
+                                else
+                                    record.setEndAddress(addresses.get(0).getAddressLine(0));
                             } catch (IOException e) {
                                 e.printStackTrace();
                                 Log.e(CLASS, "Geocoder: " + e.toString());

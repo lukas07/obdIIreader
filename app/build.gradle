@@ -36,7 +36,6 @@ dependencies {
     compile 'com.itextpdf:itextpdf:5.0.6'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support.constraint:constraint-layout:1.0.2' //for constraint layout
-    implementation 'com.android.support:recyclerview-v7:25.1.0' // for recyclerview
 
 
 }

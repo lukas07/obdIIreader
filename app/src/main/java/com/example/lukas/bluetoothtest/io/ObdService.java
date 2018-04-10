@@ -228,6 +228,7 @@ public class ObdService extends Service {
         if(!sendThread.isInterrupted())
             sendThread.interrupt();
         // Neuen Thread erzeugen
+        sendThread = null;
         sendThread = new Thread(new Runnable() {
             @Override
             public void run() {

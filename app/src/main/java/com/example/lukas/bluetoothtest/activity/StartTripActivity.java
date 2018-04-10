@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -29,6 +30,9 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.lukas.bluetoothtest.R;
+import com.example.lukas.bluetoothtest.fragment.TripDetailFragment;
+import com.example.lukas.bluetoothtest.trip.TripOpenHelper;
+import com.example.lukas.bluetoothtest.trip.TripProvider;
 import com.example.lukas.bluetoothtest.trip.TripRecord;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -95,8 +99,8 @@ public class StartTripActivity extends AppCompatActivity {
        // setSupportActionBar(toolbar);
 
         // Back-Button hinzufügen
-        ActionBar bar = getSupportActionBar();
-        bar.setDisplayHomeAsUpEnabled(true);
+        //ActionBar bar = getSupportActionBar();
+        //bar.setDisplayHomeAsUpEnabled(true);
 
         // Broadcast-Recevier, um Änderungen des Bluetooth-Status zu registrieren
         IntentFilter filterBt = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
@@ -128,6 +132,14 @@ public class StartTripActivity extends AppCompatActivity {
             }
         });
 
+        // End-Kilometerstand des letzten gespeicherten Trips als Startwert nehmen
+        final Cursor cursor;
+        cursor = this.getContentResolver().query(TripProvider.CONTENT_URI, null, null, null, null);
+        if(cursor.getCount() > 0) {
+            if (!cursor.moveToLast() || cursor.isLast()) {
+                et_mileageStart.setText(cursor.getString(TripOpenHelper.COL_ID_ENDMIL));
+            }
+        }
     }
 
 
@@ -168,7 +180,10 @@ public class StartTripActivity extends AppCompatActivity {
                                         // Die Adresse über den Geocoder ermitteln
                                         List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                                         Log.e(CLASS, "Geocoder: " + addresses.toString());
-                                        record.setStartAddress(addresses.get(0).getAddressLine(0));
+                                        if (addresses == null || addresses.size() == 0)
+                                            record.setStartAddress("NODATA");
+                                        else
+                                            record.setStartAddress(addresses.get(0).getAddressLine(0));
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                         Log.e(CLASS, "Geocoder: " + e.toString());
@@ -222,7 +237,10 @@ public class StartTripActivity extends AppCompatActivity {
                                         // Die Adresse über den Geocoder ermitteln
                                         List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                                         Log.e(CLASS, "Geocoder: " + addresses.toString());
-                                        record.setStartAddress(addresses.get(0).getAddressLine(0));
+                                        if (addresses == null || addresses.size() == 0)
+                                            record.setStartAddress("NODATA");
+                                        else
+                                            record.setStartAddress(addresses.get(0).getAddressLine(0));
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                         Log.e(CLASS, "Geocoder: " + e.toString());

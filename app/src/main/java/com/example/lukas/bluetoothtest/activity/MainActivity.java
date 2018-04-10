@@ -22,6 +22,8 @@ import android.widget.Toast;
 
 import com.example.lukas.bluetoothtest.io.BluetoothConnector;
 import com.example.lukas.bluetoothtest.R;
+import com.github.pires.obd.commands.protocol.AvailablePidsCommand;
+import com.github.pires.obd.commands.protocol.AvailablePidsCommand_01_20;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
