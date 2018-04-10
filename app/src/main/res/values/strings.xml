@@ -81,6 +81,9 @@
     <string name="stop_odometer_missing">Bitte geben zunächst deinen neuen Kilometerstand an</string>
     <string name="stop_button_menu">Menü</string>
     <string name="stop_odometer_low">Ups! Dein aktueller Kilometerstand ist niedriger als der zu Beginn des Trips</string>
+    <string name="stop_back_msg">Wollen Sie den Trip wirklich verwerfen? Bitte beachten Sie, dass dies das Fahrtenbuch für die Verwendung bei dem Finanzamt unbrauchbar machen kann</string>
+    <string name="stop_back_save">Trip speichern</string>
+    <string name="stop_back_menu">Ohne Speichern ins Menu</string>
 
     <!-- Trip Entry -->
     <string name="entry_init">No value found</string>
