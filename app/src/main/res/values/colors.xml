@@ -2,8 +2,11 @@
 <resources>
     <color name="colorPrimary">#1C66B0</color>
     <color name="colorPrimaryDark">#184C8C</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#1C66B0</color>
     <color name="colorBluetooth">#3F51B5</color>
-    <color name="green">#00DB00</color>
-    <color name="darkGreen">#00C800</color>
+    <color name="light_blue">#b7dbff</color>
+    <color name="light_green">#bee084</color>
+    <color name="middle_green">#abd85f</color>
+    <color name="dark_green">#005900</color>
+    <color name="light_grey">#e8e8e8</color>
 </resources>

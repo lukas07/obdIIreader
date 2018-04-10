@@ -64,6 +64,10 @@
     <string name="run_bt_off">The bluetooth connection has been closed!</string>
     <string name="run_reconnect">Reconnect</string>
     <string name="run_gps_off">GPS has been disabled!</string>
+    <string name="run_des_speed">Geschwindigkeit:</string>
+    <string name="run_des_consumption">Verbrauch:</string>
+
+
 
     <!-- OBD-Service -->
     <string name="obd_unsupported">Unsupported</string>
@@ -71,6 +75,7 @@
     <!-- StoppedTripActivity -->
     <string name="stop_odometer">Neuer Kilometerstand</string>
     <string name="stop_save">Trip speichern</string>
+    <string name="back">Zurück in das Menu</string>
     <string name="stop_inserted">Trip wurde gespeichert</string>
     <string name="stop_insert_failed">Ups! Beim Speichern des Trips ist wohl etwas schief gelaufen</string>
     <string name="stop_odometer_missing">Bitte geben zunächst deinen neuen Kilometerstand an</string>
