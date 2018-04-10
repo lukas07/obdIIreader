@@ -25,7 +25,7 @@
 
     <!-- DeviceListActivity -->
     <string name="devList_selDev">Select a device to connect</string>
-    <string name="devList_scanning">Scanning for devices...</string>
+    <string name="devList_scanning">Scanning...</string>
     <string name="devList_noPaired">No devices have been paired</string>
     <string name="devList_noFound">No devices found</string>
     <string name="devList_titlePaired">Paired devices</string>

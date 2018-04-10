@@ -172,6 +172,7 @@ public class DeviceListActivity extends Activity{
             } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 setProgressBarIndeterminateVisibility(false);
                 bt_scan.setEnabled(true);
+                bt_scan.setText(R.string.devList_scan);
                 setTitle(R.string.devList_selDev);
                 discoveryRunning = false;
                 if (newDevicesArrayAdapter.getCount() == 0) {
@@ -260,12 +261,17 @@ public class DeviceListActivity extends Activity{
                     dialog.show();
                     break;
                 case PackageManager.PERMISSION_GRANTED:
+                    btAdapter.startDiscovery();
+                    bt_scan.setText(R.string.devList_scanning);
+                    discoveryRunning = true;
                     break;
             }
-        }
-        //btAdapter.startDiscovery();
+        } else {
+            btAdapter.startDiscovery();
+            bt_scan.setText(R.string.devList_scanning);
 
-        //discoveryRunning = true;
+            discoveryRunning = true;
+        }
     }
 
     @Override
@@ -292,6 +298,7 @@ public class DeviceListActivity extends Activity{
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     btAdapter.startDiscovery();
+                    bt_scan.setText(R.string.devList_scanning);
                     discoveryRunning = true;
                 } else {
                     Log.d(CLASS, "Permission for disovery denied");
