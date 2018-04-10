@@ -1,12 +1,15 @@
 package com.example.lukas.bluetoothtest.activity;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -124,6 +127,34 @@ public class StoppedTripActivity extends AppCompatActivity {
             // Flag, um den Button anzupassen (--> man gelangt anschließend ins Hauptmenü zurück)
             bt_change_menu = true;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        alertDialogBuilder.setCancelable(false);
+        alertDialogBuilder.setMessage(R.string.stop_back_msg);
+        alertDialogBuilder.setPositiveButton(R.string.stop_back_save,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        Log.e(CLASS, "back pressed: Save trip");
+                        saveRecord();
+                    }
+                });
+
+        alertDialogBuilder.setNegativeButton(R.string.stop_back_menu,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.e(CLASS, "back pressed: go to menu without save");
+                        finish();
+                    }
+                });
+
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     private void showToast (int message, int duration) {
