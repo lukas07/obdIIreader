@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.lukas.bluetoothtest.io.BluetoothConnector;
@@ -51,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton bt_startTrip;
     private ImageButton bt_showTrips;
 
+    private ImageView iv_info_bt;
+    private ImageView iv_info_device;
+    private ImageView iv_info_gps;
+
     // Nur wenn beide auf true gesetzt sind, kann die Tripaufzeichnung gestartet werden
     private boolean btEnabled = false;
     private boolean gpsEnabled = false;
@@ -74,14 +79,17 @@ public class MainActivity extends AppCompatActivity {
                 switch(state) {
                     case BluetoothAdapter.STATE_TURNING_OFF:
                         bt_activateBt.setEnabled(true);
+                        iv_info_bt.setBackgroundResource(R.drawable.close_circle_red);
                         //bt_activateBt.setText(getResources().getString(R.string.main_bt_disabled));
                         bt_selectDev.setEnabled(false);
+                        iv_info_device.setBackgroundResource(R.drawable.close_circle_red);
                         bt_startTrip.setEnabled(false);
                         socket = null;
                         btEnabled = false;
                         break;
                     case BluetoothAdapter.STATE_TURNING_ON:
                         bt_activateBt.setEnabled(false);
+                        iv_info_bt.setBackgroundResource(R.drawable.check_circle_green);
                         //bt_activateBt.setText(getResources().getString(R.string.main_bt_enabled));
                         bt_selectDev.setEnabled(true);
                         break;
@@ -107,12 +115,14 @@ public class MainActivity extends AppCompatActivity {
                 if(mode == Settings.Secure.LOCATION_MODE_OFF) {
                     gpsEnabled = false;
                     bt_activateGps.setEnabled(true);
+                    iv_info_gps.setBackgroundResource(R.drawable.close_circle_red);
                     //bt_activateGps.setText(R.string.main_bt_disabled);
                     bt_startTrip.setEnabled(false);
                     showToast(getResources().getString(R.string.main_gps_manual_disabled), Toast.LENGTH_LONG);
                 } else {
                     gpsEnabled = true;
                     bt_activateGps.setEnabled(false);
+                    iv_info_gps.setBackgroundResource(R.drawable.check_circle_green);
                     //bt_activateGps.setText(R.string.main_bt_enabled);
                     checkStartTrip();
                     showToast(getResources().getString(R.string.main_gps_manual_enabled), Toast.LENGTH_LONG);
@@ -144,7 +154,9 @@ public class MainActivity extends AppCompatActivity {
         bt_activateGps = (ImageButton) findViewById(R.id.bt_activateGps);
         bt_startTrip = (ImageButton) findViewById(R.id.bt_startTrip);
         bt_showTrips = (ImageButton) findViewById(R.id.bt_showTrips);
-
+        iv_info_bt = (ImageView) findViewById(R.id.iv_info_bt);
+        iv_info_device = (ImageView) findViewById(R.id.iv_info_device);
+        iv_info_gps = (ImageView) findViewById(R.id.iv_info_gps);
 
         // Clicklistener für die Buttons
         bt_activateBt.setOnClickListener(new View.OnClickListener() {
@@ -290,6 +302,7 @@ public class MainActivity extends AppCompatActivity {
                         checkStartTrip();
                         //bt_selectDev.setText(getResources().getString(R.string.main_sel));
                         bt_selectDev.setEnabled(false);
+                        iv_info_device.setBackgroundResource(R.drawable.check_circle_green);
                     } catch (IOException ioe) {
                         showToast(getResources().getString(R.string.main_con_err), Toast.LENGTH_LONG);
                     }
@@ -302,6 +315,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(CLASS, "GPS enabled");
                     gpsEnabled = true;
                     bt_activateGps.setEnabled(false);
+                    iv_info_gps.setBackgroundResource(R.drawable.check_circle_green);
                     //bt_activateGps.setText(R.string.main_bt_enabled);
                     checkStartTrip();
                 }
@@ -312,38 +326,35 @@ public class MainActivity extends AppCompatActivity {
         // Falls Bluetooth bereits eingeschaltet ist, Buttons setzen
         if (btAdapter.isEnabled()) {
             Log.e(CLASS, "Bluetooth already enabled");
-            //bt_activateBt.setText(getResources().getString(R.string.main_bt_enabled));
             bt_activateBt.setEnabled(false);
             bt_selectDev.setEnabled(true);
+            iv_info_bt.setBackgroundResource(R.drawable.check_circle_green);
         } else {
-            //bt_activateBt.setText(getResources().getString(R.string.main_bt_disabled));
             bt_activateBt.setEnabled(true);
-            //bt_selectDev.setText(getResources().getString(R.string.main_sel));
             bt_selectDev.setEnabled(false);
+            iv_info_bt.setBackgroundResource(R.drawable.close_circle_red);
             socket = null;
-            //sharedPreferences.setObdInitialized(false);
 
         }
         if (socket != null) {
             btEnabled = true;
-            //obd_initialized = true;
-
-            //bt_selectDev.setText(getResources().getString(R.string.main_sel));
             bt_selectDev.setEnabled(false);
+            iv_info_device.setBackgroundResource(R.drawable.check_circle_green);
         } else {
             bt_startTrip.setEnabled(false);
+            iv_info_device.setBackgroundResource(R.drawable.close_circle_red);
         }
 
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             gpsEnabled = true;
             bt_activateGps.setEnabled(false);
-            //bt_activateGps.setText(R.string.main_bt_enabled);
+            iv_info_gps.setBackgroundResource(R.drawable.check_circle_green);
             checkStartTrip();
         } else {
             gpsEnabled = false;
             bt_activateGps.setEnabled(true);
-            //bt_activateGps.setText(R.string.main_bt_disabled);
+            iv_info_gps.setBackgroundResource(R.drawable.close_circle_red);
         }
     }
 

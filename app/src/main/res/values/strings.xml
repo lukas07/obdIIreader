@@ -22,6 +22,9 @@
     <string name="main_bt_manual_disabled">Bluetooth has been disabled</string>
     <string name="main_gps_manual_disabled">GPS has been disabled</string>
     <string name="main_gps_manual_enabled">GPS has been enabled</string>
+    <string name="main_info_bt">Schalten Sie Bluetooth an Ihrem Gerät ein</string>
+    <string name="main_info_device">Verbinden Sie Ihr Gerät mit dem OBD-Adapter</string>
+    <string name="main_info_gps">Schalten Sie GPS an Ihrem Gerät ein</string>
 
     <!-- DeviceListActivity -->
     <string name="devList_selDev">Select a device to connect</string>
