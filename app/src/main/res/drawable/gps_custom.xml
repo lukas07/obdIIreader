@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:drawable="@drawable/gps_button" android:state_enabled="true" />
-    <item android:drawable="@drawable/gps_clicked"
+    <item android:drawable="@drawable/gps_pressed"
           android:state_pressed="true" android:state_enabled="true" />
     <item android:drawable="@drawable/gps_disabled"
           android:state_enabled="false" />

@@ -21,12 +21,23 @@
 
     <style name="TextView" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/dark_green</item>
-        <item name="android:textSize">19dp</item>
+        <item name="android:textSize">25dp</item>
     </style>
     <style name="TextViewSmall" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/dark_green</item>
-        <item name="android:textSize">14dp</item>
+        <item name="android:textSize">20dp</item>
     </style>
+
+    <style name="TextViewDes" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/dark_grey</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+    <style name="TextViewBlue" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textSize">20dp</item>
+    </style>
+
+
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>

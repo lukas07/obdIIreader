@@ -58,7 +58,7 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/car_icon"
         android:layout_width="53dp"
         android:layout_height="51dp"
         android:layout_marginBottom="8dp"
