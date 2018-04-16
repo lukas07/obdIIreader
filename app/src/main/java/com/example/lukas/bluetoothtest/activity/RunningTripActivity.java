@@ -541,7 +541,7 @@ public class RunningTripActivity extends AppCompatActivity {
             serviceBound = false;
         }
         // Falls die Initliasisierung noch läuft abbrechen
-        if(initThread.isAlive())
+       if(initThread.isAlive())
             initThread.interrupt();
 
         if (sendThread != null) {
