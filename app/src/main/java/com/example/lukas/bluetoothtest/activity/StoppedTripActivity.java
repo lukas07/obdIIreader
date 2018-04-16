@@ -26,12 +26,9 @@ public class StoppedTripActivity extends AppCompatActivity {
     private static final String CLASS = StoppedTripActivity.class.getName();
 
     private EditText et_mileageEnd;
-    private TextView tv_tsStart;
-    private TextView tv_tsEnd;
     private ImageButton bt_save;
 
     private TripRecord record;
-    private TripOpenHelper helper;
 
     private boolean bt_change_menu = false;
 
@@ -49,8 +46,6 @@ public class StoppedTripActivity extends AppCompatActivity {
 
         // Referenzvariablen zu den Feldern deklarieren
         et_mileageEnd = (EditText) findViewById(R.id.et_mileageEnd);
-        tv_tsStart = (TextView) findViewById(R.id.tv_tsStart);
-        tv_tsEnd = (TextView) findViewById(R.id.tv_tsEnd);
         bt_save = (ImageButton) findViewById(R.id.bt_save);
 
         // Listener für den Save-Button
@@ -68,13 +63,7 @@ public class StoppedTripActivity extends AppCompatActivity {
             }
         });
 
-        // Felder mit Inhalten füllen
-        record = record.getTripRecord();
 
-        String date = TripsAdapter.convertDate(record.getStartTimestamp());
-        tv_tsStart.setText(date);
-        date = TripsAdapter.convertDate(record.getEndTimestamp());
-        tv_tsEnd.setText(date);
 
         // Google Map hinzufügen
         GoogleMapFragment mapFragment = GoogleMapFragment.newInstance(getApplicationContext(), -1, GoogleMapFragment.MAP_MODE_DISPLAY);
@@ -87,6 +76,7 @@ public class StoppedTripActivity extends AppCompatActivity {
 
     // Überprüfen der Eingaben und ggf. abspeichern des Trips in die DB
     private void saveRecord() {
+        record = TripRecord.getTripRecord();
         String mileageEnd = et_mileageEnd.getText().toString();
         // Der Kilometerstand muss eingegeben werden
         if(mileageEnd.length() == 0) {
@@ -97,6 +87,7 @@ public class StoppedTripActivity extends AppCompatActivity {
         }
 
         else {
+
             // Kilometerstand nach dem Trip noch in den Record schreiben
             record.setEndMileage(Integer.parseInt(mileageEnd));
             // ansonsten Trip in DB schreiben

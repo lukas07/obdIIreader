@@ -38,8 +38,8 @@
 
     <!-- StartTripActivity -->
     <string-array name="start_tripMode">
-        <item>Private Trip</item>
-        <item>Business Trip</item>
+        <item>Privat</item>
+        <item>Geschäftlich</item>
     </string-array>
     <string name="start_go">Go!</string>
     <string name="title_activity_running_trip">Dein aktueller Trip</string>
@@ -47,6 +47,7 @@
     <string name="start_odometer">Aktueller Kilometerstand</string>
     <string name="start_driver_missing">Bitte gebe zunächst den Namen des Fahrers an!</string>
     <string name="start_odometer_missing">Bitte gebe zunächst den aktuellen Kilometerstand an!</string>
+    <string name="start_des_trip_mode">Art der Fahrt:</string>
 
     <!-- RunningTripActivity -->
     <string name="run_stop">Stop!</string>
@@ -81,9 +82,21 @@
     <string name="stop_odometer_missing">Bitte geben zunächst deinen neuen Kilometerstand an</string>
     <string name="stop_button_menu">Menü</string>
     <string name="stop_odometer_low">Ups! Dein aktueller Kilometerstand ist niedriger als der zu Beginn des Trips</string>
+    <string name="stop_des_new_km"> Deine Fahrt wurde erfolgreich aufgezeichnet!
+                                    Bitte gebe hier noch deinen neuen Kilometerstand an:</string>
 
     <!-- Trip Entry -->
     <string name="entry_init">No value found</string>
+
+    <string name="des_detail_driver">Name:  </string>
+    <string name="des_detail_mode">Art der Fahrt:   </string>
+    <string name="des_detail_startTs">Beginn:   </string>
+    <string name="des_detail_endTs">Ende:   </string>
+    <string name="des_detail_startMil">Sart Km: </string>
+    <string name="des_detail_endMil">Ziel Km:   </string>
+    <string name="des_detail_startAdd">Start:   </string>
+    <string name="des_detail_endAdd">Ziel:  </string>
+    <string name="des_space">  </string>
 
 
     <!-- TripListActivity -->

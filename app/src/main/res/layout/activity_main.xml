@@ -35,7 +35,7 @@
     <ImageButton
         android:id="@+id/bt_activateBt"
         android:layout_width="85dp"
-        android:layout_height="50dp"
+        android:layout_height="59dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
@@ -54,7 +54,7 @@
     <ImageButton
         android:id="@+id/bt_selectDev"
         android:layout_width="85dp"
-        android:layout_height="50dp"
+        android:layout_height="61dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
@@ -75,7 +75,7 @@
     <ImageButton
         android:id="@+id/bt_activateGps"
         android:layout_width="85dp"
-        android:layout_height="50dp"
+        android:layout_height="61dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginLeft="8dp"
@@ -89,13 +89,13 @@
         app:layout_constraintHorizontal_bias="0.529"
         app:layout_constraintStart_toEndOf="@+id/bt_activateBt"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.434" />
+        app:layout_constraintVertical_bias="0.438" />
 
 
     <ImageButton
         android:id="@+id/bt_showTrips"
-        android:layout_width="266dp"
-        android:layout_height="48dp"
+        android:layout_width="240dp"
+        android:layout_height="60dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
@@ -106,21 +106,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.985" />
-
-    <ListView
-        android:id="@+id/rv_currentTrips"
-        android:layout_width="298dp"
-        android:layout_height="136dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="248dp"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
 
 
 </android.support.constraint.ConstraintLayout>
