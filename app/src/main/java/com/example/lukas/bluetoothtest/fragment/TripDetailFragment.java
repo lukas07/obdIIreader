@@ -18,12 +18,10 @@ import com.example.lukas.bluetoothtest.trip.TripsAdapter;
 import com.google.android.gms.maps.GoogleMap;
 
 public class TripDetailFragment extends Fragment  {
-    private static final int MAP_CAM_ZOOM = 15;
-    private GoogleMap map;
 
     private TextView tv_detail_driver, tv_detail_mode, tv_detail_startTs,
             tv_detail_endTs, tv_detail_startMil, tv_detail_endMil,
-            tv_detail_startAdd, tv_detail_endAdd, tv_detail_route;
+            tv_detail_startAdd, tv_detail_endAdd, tv_detail_reason;
 
 
     public static TripDetailFragment newInstance(Context context, int position, long rowid) {
@@ -48,6 +46,7 @@ public class TripDetailFragment extends Fragment  {
             args.putString(TripOpenHelper.COL_ADDRESS_START, cursor.getString(TripOpenHelper.COL_ID_STARTADD));
             args.putString(TripOpenHelper.COL_ADDRESS_END, cursor.getString(TripOpenHelper.COL_ID_ENDADD));
             args.putString(TripOpenHelper.COL_ROUTE_POINTS, cursor.getString(TripOpenHelper.COL_ID_ROUTE));
+            args.putString(TripOpenHelper.COL_REASON, cursor.getString(TripOpenHelper.COL_ID_REASON));
         }
 
         detailFragment.setArguments(args);
@@ -64,17 +63,13 @@ public class TripDetailFragment extends Fragment  {
         // Referenzvariablen zu den Feldern deklarieren
         tv_detail_driver = (TextView) v.findViewById(R.id.tv_detail_driver);
         tv_detail_mode = (TextView) v.findViewById(R.id.tv_detail_mode);
+        tv_detail_reason = (TextView) v.findViewById(R.id.tv_detail_reason);
         tv_detail_startTs = (TextView) v.findViewById(R.id.tv_detail_startTs);
         tv_detail_endTs = (TextView) v.findViewById(R.id.tv_detail_endTs);
         tv_detail_startMil = (TextView) v.findViewById(R.id.tv_detail_startMil);
         tv_detail_endMil = (TextView) v.findViewById(R.id.tv_detail_endMil);
         tv_detail_startAdd = (TextView) v.findViewById(R.id.tv_detail_startAdd);
         tv_detail_endAdd = (TextView) v.findViewById(R.id.tv_detail_endAdd);
-        //tv_detail_route = (TextView) v.findViewById(R.id.tv_detail_route);
-        // Karte initialisieren
-        /*MapView mapView = (MapView) v.findViewById(R.id.map_detail);
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);*/
 
 
         // TextViews mit den Werten füllen
@@ -86,59 +81,13 @@ public class TripDetailFragment extends Fragment  {
         tv_detail_endMil.setText(getArguments().getString(TripOpenHelper.COL_MILEAGE_END));
         tv_detail_startAdd.setText(getArguments().getString(TripOpenHelper.COL_ADDRESS_START));
         tv_detail_endAdd.setText(getArguments().getString(TripOpenHelper.COL_ADDRESS_END));
-        //tv_detail_route.setText(getArguments().getString(TripOpenHelper.COL_ROUTE_POINTS));
+        tv_detail_reason.setText(getArguments().getString(TripOpenHelper.COL_REASON));
 
         return v;
     }
-/*
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-/*
-        List<Fragment> fragmentManager = getChildFragmentManager().getFragments();
-        FragmentManager fragmentManager2 = getFragmentManager();
-        FragmentManager fragmentManager3 = getActivity().getSupportFragmentManager();
-        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        transaction.add(new GoogleMapFragment(), "map").commit();
 
-// Die Route als String auslesen und in eine Arraylist konvertieren --> auf Map anzeigen
-        String routeString = getArguments().getString(KEY_ROUTE);
-        Gson gson = new Gson();
-        Type type = new TypeToken<ArrayList<LatLng>>() {}.getType();
-        ArrayList<LatLng> routePoints = gson.fromJson(routeString, type);
-
-        GoogleMapFragment googleMapFragment = (GoogleMapFragment) getFragmentManager().findFragmentByTag("map");
-        googleMapFragment.drawRouteOnMap(routePoints);
-
-    }
-*/
     public int getShownIndex() {
         return getArguments().getInt("position", 0);
     }
-/*
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        this.map = googleMap;
 
-        // Die Route als String auslesen und in eine Arraylist konvertieren --> auf Map anzeigen
-        String routeString = getArguments().getString(KEY_ROUTE);
-        Gson gson = new Gson();
-        Type type = new TypeToken<ArrayList<LatLng>>() {}.getType();
-        ArrayList<LatLng> routePoints = gson.fromJson(routeString, type);
-
-        // Route der Karte hinzufügen
-        PolylineOptions lineOptions = new PolylineOptions();
-
-        lineOptions.addAll(routePoints);
-        lineOptions.width(12);
-        lineOptions.color(Color.RED);
-
-        map.addPolyline(lineOptions);
-
-        Log.e(GoogleMapFragment.class.getName(), "Polyline added to map");
-
-        map.moveCamera(CameraUpdateFactory.newLatLng(routePoints.get(0)));
-        map.animateCamera(CameraUpdateFactory.zoomTo(MAP_CAM_ZOOM));
-    }
-*/
 }

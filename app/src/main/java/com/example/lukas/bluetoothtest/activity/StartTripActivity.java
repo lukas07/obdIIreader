@@ -49,6 +49,7 @@ public class StartTripActivity extends AppCompatActivity {
     private static final int REQUEST_LOCATION = 1;
 
     private EditText et_driverName;
+    private EditText et_reason;
     private EditText et_mileageStart;
     private Spinner sp_tripMode;
     private ImageButton bt_Go;
@@ -115,6 +116,7 @@ public class StartTripActivity extends AppCompatActivity {
 
         // Referenzvariablen zu den Feldern deklarieren
         et_driverName = (EditText) findViewById(R.id.et_driverName);
+        et_reason = (EditText) findViewById(R.id.et_reason);
         et_mileageStart = (EditText) findViewById(R.id.et_mileageStart);
         sp_tripMode = (Spinner) findViewById(R.id.sp_tripMode);
         bt_Go = (ImageButton) findViewById(R.id.bt_Go);
@@ -155,6 +157,7 @@ public class StartTripActivity extends AppCompatActivity {
             int mileage = Integer.parseInt(et_mileageStart.getText().toString());
             record.setStartMileage(mileage);
             record.setDriver(et_driverName.getText().toString());
+            record.setReason(et_reason.getText().toString());
             record.setDriveMode(sp_tripMode.getSelectedItem().toString());
 
 
@@ -192,15 +195,7 @@ public class StartTripActivity extends AppCompatActivity {
                             }
                         });
             }
-/*
-            try {
-                String address = addressDetecter.getCurrentAddress();
-                record.setStartAddress(address);
-            } catch (Exception e) {
-                e.printStackTrace();
-                record.setStartAddress("NO DATA");
-            }
-*/
+
             Intent intent = new Intent(StartTripActivity.this, RunningTripActivity.class);
             startActivity(intent);
             finish();
@@ -212,7 +207,11 @@ public class StartTripActivity extends AppCompatActivity {
         if (et_driverName.getText().length() == 0) {
             Toast.makeText(this, R.string.start_driver_missing, Toast.LENGTH_SHORT).show();
             return false;
-            // Kilometerstand fehlt
+        // Grund der Fahrt fehlt
+        } else if (et_reason.getText().length() == 0) {
+            Toast.makeText(this, R.string.start_reason_missing, Toast.LENGTH_SHORT).show();
+            return false;
+        // Kilometerstand fehlt
         } else if (et_mileageStart.getText().length() == 0) {
             Toast.makeText(this, R.string.start_odometer_missing, Toast.LENGTH_SHORT).show();
             return false;

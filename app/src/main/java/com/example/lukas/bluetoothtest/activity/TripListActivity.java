@@ -214,12 +214,13 @@ public class TripListActivity extends AppCompatActivity {
         document.add(new Paragraph(" "));
 
         // Tabelle einfügen
-        table  = new PdfPTable(9);
+        table  = new PdfPTable(10);
         table.setWidthPercentage(100);
-        table.setWidths(new int[]{1,2,2,1,1,2,2,3,3});
+        table.setWidths(new int[]{1,2,2,2,1,1,2,2,3,3});
         table.addCell(getCell(getResources().getString(R.string.list_pdf_table_counter), times12Bold));
         table.addCell(getCell(getResources().getString(R.string.list_pdf_table_driver), times12Bold));
         table.addCell(getCell(getResources().getString(R.string.list_pdf_table_mode), times12Bold));
+        table.addCell(getCell(getResources().getString(R.string.list_pdf_table_reason), times12Bold));
         table.addCell(getCell(getResources().getString(R.string.list_pdf_table_odo_start), times12Bold));
         table.addCell(getCell(getResources().getString(R.string.list_pdf_table_odo_end), times12Bold));
         table.addCell(getCell(getResources().getString(R.string.list_pdf_table_date_start), times12Bold));
@@ -239,6 +240,7 @@ public class TripListActivity extends AppCompatActivity {
             table.addCell(getCell(String.valueOf(counter), times12));
             table.addCell(getCell(cursor.getString(TripOpenHelper.COL_ID_DRIVER), times12));
             table.addCell(getCell(cursor.getString(TripOpenHelper.COL_ID_MODE), times12));
+            table.addCell(getCell(cursor.getString(TripOpenHelper.COL_ID_REASON), times12));
             table.addCell(getCell(cursor.getString(TripOpenHelper.COL_ID_STARTMIL), times12));
             table.addCell(getCell(cursor.getString(TripOpenHelper.COL_ID_ENDMIL), times12));
             String startts = TripsAdapter.convertDate(cursor.getLong(TripOpenHelper.COL_ID_STARTTS));
