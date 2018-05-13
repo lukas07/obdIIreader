@@ -8,82 +8,85 @@
     android:background="@color/light_grey"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/button_scan"
-        android:layout_width="wrap_content"
-        android:layout_height="49dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/light_green"
-        android:text="@string/devList_scan"
-        android:textColor="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toTopOf="@+id/new_devices"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
 
-    <TextView
-        android:id="@+id/title_new_devices"
-        android:layout_width="wrap_content"
-        android:layout_height="23dp"
-        android:background="@color/colorPrimary"
-        android:paddingLeft="5dp"
-        android:text="@string/devList_titleSearch"
-        android:textColor="#fff"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.137" />
 
-    <TextView
-        android:id="@+id/title_paired_devices"
-        android:layout_width="wrap_content"
-        android:layout_height="23dp"
-        android:background="@color/colorPrimary"
-        android:paddingLeft="5dp"
-        android:text="@string/devList_titlePaired"
-        android:textColor="#fff"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/light_blue"
+        android:padding="10dip">
+        <TableRow>
 
-    <ListView
-        android:id="@+id/paired_devices"
-        android:layout_width="wrap_content"
-        android:layout_height="212dp"
-        android:background="@drawable/list_shape"
-        android:fadingEdge="none"
-        android:stackFromBottom="true"
-        android:textColor="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_paired_devices"
-        app:layout_constraintVertical_bias="0.0" />
+            <TextView
+                android:layout_weight="20"
+                android:id="@+id/space"
+                android:layout_width="3dp"
+                android:layout_height="match_parent"
+               />
 
-    <ListView
-        android:id="@+id/new_devices"
-        android:layout_width="wrap_content"
-        android:layout_height="125dp"
-        android:stackFromBottom="true"
-        android:background="@drawable/list_shape"
-        android:listSelector="@drawable/list_selector"
-        android:textColor="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toTopOf="@+id/title_paired_devices"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_new_devices"
-        app:layout_constraintVertical_bias="0.0" />
+            <Button
+                android:layout_weight="1"
+                android:id="@+id/button_scan"
+                android:layout_width="143dp"
+                android:layout_height="49dp"
+
+                android:background="@color/light_green"
+                android:text="@string/devList_scan"
+                android:textColor="@color/colorPrimaryDark" />
+        </TableRow>
+
+
+    <TableRow
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_weight="3"
+            android:id="@+id/title_paired_devices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="@string/devList_titlePaired"
+            android:textColor="#fff" />
+    </TableRow>
+
+        <TableRow android:layout_height="wrap_content">
+
+            <ListView
+                android:layout_weight="3"
+                android:id="@+id/paired_devices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/list_shape"
+                android:fadingEdge="none"
+                android:stackFromBottom="true"
+                android:textColor="@color/colorPrimaryDark" />
+        </TableRow>
+        <TableRow
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_weight="3"
+                android:id="@+id/title_new_devices"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:text="@string/devList_titleSearch"
+                android:visibility="gone"
+                android:textColor="#fff" />
+        </TableRow>
+    <TableRow
+        android:layout_height="wrap_content">
+        <ListView
+            android:layout_weight="3"
+            android:id="@+id/new_devices"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/list_shape"
+            android:listSelector="@drawable/list_selector"
+            android:stackFromBottom="true"
+            android:textColor="@color/colorPrimaryDark" />
+    </TableRow>
+    </TableLayout>>
 </android.support.constraint.ConstraintLayout>
