@@ -1,40 +1,40 @@
 <resources>
     <string name="app_name">Track your Trips</string>
-    <string name="dev_select">Select Device</string>
-    <string name="dev_selected">Device selected</string>
-    <string name="dev_title">Choose a device</string>
-    <string name="dev_connected">Connected</string>
+    <string name="dev_select">Gerät auswählen</string>
+    <string name="dev_selected">Gerät ausgewählt</string>
+    <string name="dev_title">Wählen Sie ein Gerät</string>
+    <string name="dev_connected">Verbunden</string>
     <string name="sharedPref">com.example.lukas.bluetoothtest.sharedPreferences</string>
-    <string name="pref_obd_initialized">obd_initialized</string>
+    <string name="pref_obd_initialized">obd_initialisiert</string>
 
 
     <!-- MainActivity -->
-    <string name="main_bt_enabled">Enabled</string>
-    <string name="main_bt_support">Your device does not support Bluetooth.</string>
-    <string name="main_bt_disabled">Disabled</string>
-    <string name="main_startTrip">Start your Trip</string>
-    <string name="main_showTrips">Show all Trips</string>
-    <string name="main_sel_dev">You have selected: </string>
-    <string name="main_dev">Device</string>
-    <string name="main_sel">Selected</string>
-    <string name="main_con_err">Could not establish bluetooth connection to the selected device</string>
-    <string name="main_bt_manual_enabled">Bluetooth has been enabled</string>
-    <string name="main_bt_manual_disabled">Bluetooth has been disabled</string>
-    <string name="main_gps_manual_disabled">GPS has been disabled</string>
-    <string name="main_gps_manual_enabled">GPS has been enabled</string>
-    <string name="main_info_bt">Schalten Sie Bluetooth an Ihrem Gerät ein</string>
-    <string name="main_info_device">Verbinden Sie Ihr Gerät mit dem OBD-Adapter</string>
-    <string name="main_info_gps">Schalten Sie GPS an Ihrem Gerät ein</string>
+    <string name="main_bt_enabled">Aktiviert</string>
+    <string name="main_bt_support">Ihr Gerät unterstützt nicht die Verbindung mit Bluetooth</string>
+    <string name="main_bt_disabled">Deaktiviert</string>
+    <string name="main_startTrip">Beginne deinen Trip</string>
+    <string name="main_showTrips">Alle Trips anzeigen</string>
+    <string name="main_sel_dev">Sie haben folgendes ausgewählt: </string>
+    <string name="main_dev">Gerät</string>
+    <string name="main_sel">Gewählt</string>
+    <string name="main_con_err">Zu dem gewählten Gerät konnte leider keine Bluetooth-Verbindung aufgebaut werden</string>
+    <string name="main_bt_manual_enabled">Bluetooth wurde aktiviert</string>
+    <string name="main_bt_manual_disabled">Bluetooth wurde deaktiviert</string>
+    <string name="main_gps_manual_disabled">Standortvermittlung wurde deaktiviert</string>
+    <string name="main_gps_manual_enabled">Standortvermittlung wurde aktiviert</string>
+    <string name="main_info_bt">Aktivierung Bluetooth</string>
+    <string name="main_info_device">Verbindung OBD Adapter</string>
+    <string name="main_info_gps">Aktivierung GPS</string>
 
     <!-- DeviceListActivity -->
-    <string name="devList_selDev">Select a device to connect</string>
-    <string name="devList_scanning">Scanning...</string>
-    <string name="devList_noPaired">No devices have been paired</string>
-    <string name="devList_noFound">No devices found</string>
-    <string name="devList_titlePaired">Paired devices</string>
-    <string name="devList_titleSearch">Other available devices</string>
-    <string name="devList_scan">Scan for devices</string>
-    <string name="title_activity_start_your_trip_acitivity">Start Your Trip</string>
+    <string name="devList_selDev">Gerät für die Verbindung auswählen</string>
+    <string name="devList_scanning">Suche...</string>
+    <string name="devList_noPaired">Kein Gerät gepaired</string>
+    <string name="devList_noFound">Kein Gerät gefunden</string>
+    <string name="devList_titlePaired">Paired Geräte</string>
+    <string name="devList_titleSearch">Andere verfügbare Geräte</string>
+    <string name="devList_scan">Suche nach Geräten</string>
+    <string name="title_activity_start_your_trip_acitivity">Star>Beginne deinen Trip</string>
     <string name="devList_permission_info">Um die Suche nach Bluetooth-Geräten in der näheren Umgebung zu ermöglichen, müssen Sie die folgende Berechtigungsanfrage bestätigen (Android garantiert somit eine bessere Sicherheit)</string>
     <string name="devList_permission_title">Fehlende Berechtigung</string>
     <string name="devList_permission_okay">Okay</string>
@@ -54,27 +54,27 @@
 
     <!-- RunningTripActivity -->
     <string name="run_stop">Stop!</string>
-    <string name="run_title">Review of your Trip</string>
-    <string name="run_init_fail">Could not initialize the connection to OBD-Adapter</string>
-    <string name="run_init_tv">No Data</string>
-    <string name="run_no_data">Your device could not receive any data</string>
-    <string name="run_connect">The connection to the OBD-Adapter has been interrupted</string>
-    <string name="run_bt_stop">Stop Trip</string>
-    <string name="run_bt_menu">Go to menu</string>
-    <string name="run_no_internet">The map couldn\'t be updated since there is no internet connection</string>
-    <string name="run_back_msg">Do you really want to stop tracking the trip?</string>
-    <string name="run_yes">Yes</string>
-    <string name="run_no">No</string>
-    <string name="run_bt_off">The bluetooth connection has been closed!</string>
-    <string name="run_reconnect">Reconnect</string>
-    <string name="run_gps_off">GPS has been disabled!</string>
+    <string name="run_title">Fahrtrückblick</string>
+    <string name="run_init_fail">Der Bluetoothadabter konnte nicht initialisiert werden</string>
+    <string name="run_init_tv">Keine Daten</string>
+    <string name="run_no_data">Ihr Gerät konnte keine Daten empfangen</string>
+    <string name="run_connect">Die Verbindung zu dem OBD-Adapter wurde unterbrochen</string>
+    <string name="run_bt_stop">Trip stoppen</string>
+    <string name="run_bt_menu">Menü</string>
+    <string name="run_no_internet">Die Karte kann wegen fehlender Internetverbindung nicht angezeigt werden</string>
+    <string name="run_back_msg">Wollen Sie die Aufzeichn ung der Trips wirklich unterbrechen?</string>
+    <string name="run_yes">Ja</string>
+    <string name="run_no">Nein</string>
+    <string name="run_bt_off"> Die Bluetooth-Verbindung wurde geschlossen</string>
+    <string name="run_reconnect">Verbindung wiederhergestellt</string>
+    <string name="run_gps_off">GPS wurde deaktiviert!</string>
     <string name="run_des_speed">Geschwindigkeit:</string>
     <string name="run_des_consumption">Verbrauch:</string>
 
 
 
     <!-- OBD-Service -->
-    <string name="obd_unsupported">Unsupported</string>
+    <string name="obd_unsupported">Wird nicht untersützt</string>
 
     <!-- StoppedTripActivity -->
     <string name="stop_odometer">Neuer Kilometerstand</string>
@@ -107,14 +107,14 @@
 
 
     <!-- TripListActivity -->
-    <string name="list_title">Your Trips</string>
-    <string name="list_pdf_title">Ihre Fahrten</string>
+    <string name="list_title">Ihre Trips</string>
+    <string name="list_pdf_title">Ihre Trips</string>
     <string name="list_pdf_doc_name">Trips</string>
-    <string name="list_storage_access">You need to allow access to Storage</string>
+    <string name="list_storage_access">Sie müssen den Speicherzugriff erlauben!</string>
     <string name="list_storage_denied">WRITE_EXTERNAL Permission Denied</string>
     <string name="list_storage_ok">OK</string>
-    <string name="list_storage_cancel">Cancel</string>
-    <string name="list_pdf_table_counter">No.</string>
+    <string name="list_storage_cancel">Abbrechen</string>
+    <string name="list_pdf_table_counter">Nein.</string>
     <string name="list_pdf_table_driver">Fahrer</string>
     <string name="list_pdf_table_mode">Modus</string>
     <string name="list_pdf_table_odo_start">Km. Stand - Start</string>

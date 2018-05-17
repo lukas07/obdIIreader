@@ -118,6 +118,9 @@ public class StoppedTripActivity extends AppCompatActivity {
             // Flag, um den Button anzupassen (--> man gelangt anschließend ins Hauptmenü zurück)
             bt_change_menu = true;
         }
+       if(bt_change_menu == true){
+           bt_save.setBackgroundResource(R.drawable.back_custom);
+       }
     }
 
     @Override
