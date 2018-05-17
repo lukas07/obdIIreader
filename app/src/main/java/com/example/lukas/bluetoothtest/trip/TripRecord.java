@@ -18,7 +18,7 @@ public class TripRecord {
     private String startAddress;
     private String endAddress;
     private String routePoints;
-    // TODO Höchstgeschwindigkeit, GPS, irgendwas mit Spritverbrauch?
+    private String reason;
 
     private TripRecord() {
         super();
@@ -42,6 +42,7 @@ public class TripRecord {
         startAddress = null;
         endAddress = null;
         routePoints = null;
+        reason = null;
     }
 
     public String getDriver() {
@@ -114,6 +115,14 @@ public class TripRecord {
 
     public void setRoutePoints(String routePoints) {
         this.routePoints = routePoints;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 
 }

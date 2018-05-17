@@ -117,6 +117,7 @@ public class StoppedTripActivity extends AppCompatActivity {
             //bt_save.setText(R.string.stop_button_menu);
             // Flag, um den Button anzupassen (--> man gelangt anschließend ins Hauptmenü zurück)
             bt_change_menu = true;
+            et_mileageEnd.setEnabled(false);
         }
     }
 

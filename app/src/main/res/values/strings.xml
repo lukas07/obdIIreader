@@ -47,8 +47,10 @@
     <string name="start_go">Go!</string>
     <string name="title_activity_running_trip">Dein aktueller Trip</string>
     <string name="start_driver">Name des Fahrers:</string>
+    <string name="start_reason">Grund der Fahrt</string>
     <string name="start_odometer">Aktueller Kilometerstand</string>
     <string name="start_driver_missing">Bitte gebe zunächst den Namen des Fahrers an!</string>
+    <string name="start_reason_missing">Bitte gebe zunächst den Grund der Fahrt an!</string>
     <string name="start_odometer_missing">Bitte gebe zunächst den aktuellen Kilometerstand an!</string>
     <string name="start_des_trip_mode">Art der Fahrt:</string>
 
@@ -97,6 +99,7 @@
 
     <string name="des_detail_driver">Name:  </string>
     <string name="des_detail_mode">Art der Fahrt:   </string>
+    <string name="des_detail_reason">Grund: </string>
     <string name="des_detail_startTs">Beginn:   </string>
     <string name="des_detail_endTs">Ende:   </string>
     <string name="des_detail_startMil">Sart Km: </string>
@@ -117,6 +120,7 @@
     <string name="list_pdf_table_counter">No.</string>
     <string name="list_pdf_table_driver">Fahrer</string>
     <string name="list_pdf_table_mode">Modus</string>
+    <string name="list_pdf_table_reason">Grund</string>
     <string name="list_pdf_table_odo_start">Km. Stand - Start</string>
     <string name="list_pdf_table_odo_end">Km. Stand- Ende</string>
     <string name="list_pdf_table_date_start">Datum - Start</string>

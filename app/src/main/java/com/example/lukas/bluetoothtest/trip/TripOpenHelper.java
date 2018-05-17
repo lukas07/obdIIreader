@@ -29,6 +29,7 @@ public class TripOpenHelper extends SQLiteOpenHelper {
     public static final String COL_ADDRESS_START = "addressStart";
     public static final String COL_ADDRESS_END = "addressEnd";
     public static final String COL_ROUTE_POINTS = "routePoints";
+    public static final String COL_REASON = "reason";
 
     public static final int COL_ID_DRIVER = 1;
     public static final int COL_ID_MODE = 2;
@@ -39,6 +40,7 @@ public class TripOpenHelper extends SQLiteOpenHelper {
     public static final int COL_ID_STARTADD = 7;
     public static final int COL_ID_ENDADD= 8;
     public static final int COL_ID_ROUTE = 9;
+    public static final int COL_ID_REASON = 10;
 
     private static final String CREATE_TABLE_TRIPS =
             "CREATE TABLE " + TABLE_NAME_TRIPS +" (" +
@@ -51,7 +53,8 @@ public class TripOpenHelper extends SQLiteOpenHelper {
                     COL_TS_END + " INTEGER NOT NULL, " +
                     COL_ADDRESS_START + " TEXT NOT NULL, " +
                     COL_ADDRESS_END + " TEXT NOT NULL, " +
-                    COL_ROUTE_POINTS + " TEXT NOT NULL);";
+                    COL_ROUTE_POINTS + " TEXT NOT NULL, " +
+                    COL_REASON + " TEXT NOT NULL);";
 
     private static final String DROP_TABLE_TRIPS =
             "DROP TABLE IF EXISTS " + TABLE_NAME_TRIPS + ";";
@@ -71,37 +74,6 @@ public class TripOpenHelper extends SQLiteOpenHelper {
         context = parContext;
     }
 
-    /*
-    // TODO Datensatz in DB schreiben
-    public void insert(String driver, int startMileage, int endMileage, String driveMode, long startTimestamp, long endTimestamp, String startAddress, String endAddress) {
-        try {
-            SQLiteDatabase db = getWritableDatabase();
-            ContentValues values = new ContentValues();
-            values.put(COL_DRIVER_NAME, driver);
-            values.put(COL_MILEAGE_START, startMileage);
-            values.put(COL_MILEAGE_END, endMileage);
-            values.put(COL_DRIVE_MODE, driveMode);
-            values.put(COL_TS_START, startTimestamp);
-            values.put(COL_TS_END, endTimestamp);
-            //values.put(COL_ADDRESS_START, startAddress);
-            //values.put(COL_ADDRESS_END, endAddress);
-            // TODO nur zum Testen, solange keine Adresse ermittelt wird
-            values.put(COL_ADDRESS_START, "start");
-            values.put(COL_ADDRESS_END, "end");
-            db.insertOrThrow(TABLE_NAME_TRIPS, null, values);
-            Toast.makeText(context, R.string.stop_inserted, Toast.LENGTH_SHORT).show();
-        } catch (SQLiteException e) {
-            Toast.makeText(context, R.string.stop_insert_failed, Toast.LENGTH_LONG).show();
-            Log.e(CLASS, "Error while inserting record: " + e.getLocalizedMessage());
-        }
-    }
-
-    // TODO Alle Datensätze aus DB auslesen
-    public Cursor query() {
-        SQLiteDatabase db = getReadableDatabase();
-        return db.query(TABLE_NAME_TRIPS, null, null, null, null, null, COL_TS_START + " DESC");
-    }
-    */
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -110,6 +82,6 @@ public class TripOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO Was muss hier gemacht werden?
+
     }
 }
