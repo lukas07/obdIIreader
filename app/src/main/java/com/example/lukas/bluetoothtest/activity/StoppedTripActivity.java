@@ -104,6 +104,7 @@ public class StoppedTripActivity extends AppCompatActivity {
             values.put(TripOpenHelper.COL_ADDRESS_START, record.getStartAddress());
             values.put(TripOpenHelper.COL_ADDRESS_END, record.getEndAddress());
             values.put(TripOpenHelper.COL_ROUTE_POINTS, record.getRoutePoints());
+            values.put(TripOpenHelper.COL_REASON, record.getReason());
             getContentResolver().insert(TripProvider.CONTENT_URI, values);
             /*helper = helper.getHelper(this);
             helper.insert(record.getDriver(),
