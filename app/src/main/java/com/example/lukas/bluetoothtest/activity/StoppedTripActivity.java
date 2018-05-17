@@ -120,6 +120,9 @@ public class StoppedTripActivity extends AppCompatActivity {
             bt_change_menu = true;
             et_mileageEnd.setEnabled(false);
         }
+       if(bt_change_menu == true){
+           bt_save.setBackgroundResource(R.drawable.back_custom);
+       }
     }
 
     @Override

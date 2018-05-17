@@ -195,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
         checkConnections();
         //sharedPreferences.setObdInitialized(false);
 
+
     }
 
 

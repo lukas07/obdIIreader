@@ -27,10 +27,22 @@
         <item name="android:textColor">@color/dark_green</item>
         <item name="android:textSize">20dp</item>
     </style>
+    <style name="TextViewVerySmall" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/dark_green</item>
+        <item name="android:textSize">10dp</item>
+    </style>
 
     <style name="TextViewDes" parent="@android:style/TextAppearance">
+    <item name="android:textColor">@color/dark_grey</item>
+    <item name="android:textSize">20dp</item>
+</style>
+    <style name="TextViewDesSmall" parent="@android:style/TextAppearance">
+    <item name="android:textColor">@color/dark_grey</item>
+    <item name="android:textSize">15dp</item>
+</style>
+    <style name="TextViewDesVerySmall" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/dark_grey</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">8dp</item>
     </style>
     <style name="TextViewBlue" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/colorPrimaryDark</item>

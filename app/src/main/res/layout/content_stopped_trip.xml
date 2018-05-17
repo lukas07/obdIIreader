@@ -27,7 +27,6 @@
         android:id="@+id/bt_save"
         android:layout_width="84dp"
         android:layout_height="85dp"
-
         android:background="@drawable/save_custom"
         android:text="@string/stop_save"
         app:layout_constraintBottom_toBottomOf="parent"
