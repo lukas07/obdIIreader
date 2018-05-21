@@ -60,10 +60,10 @@
     <string name="run_init_fail">Der Bluetoothadabter konnte nicht initialisiert werden</string>
     <string name="run_init_tv">Keine Daten</string>
     <string name="run_no_data">Ihr Gerät konnte keine Daten empfangen</string>
-    <string name="run_connect">Die Verbindung zu dem OBD-Adapter wurde unterbrochen</string>
+    <string name="run_connect">Die Verbindung zu dem OBD-Adapter kann nicht hergestellt werden. Stellen Sie sicher, dass die Zündung Ihres Autos an ist</string>
     <string name="run_bt_stop">Trip stoppen</string>
     <string name="run_bt_menu">Menü</string>
-    <string name="run_no_internet">Die Karte kann wegen fehlender Internetverbindung nicht angezeigt werden</string>
+    <string name="run_no_internet">Die Route kann wegen fehlender Internetverbindung nicht angezeigt werden</string>
     <string name="run_back_msg">Wollen Sie die Aufzeichn ung der Trips wirklich unterbrechen?</string>
     <string name="run_yes">Ja</string>
     <string name="run_no">Nein</string>
