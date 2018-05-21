@@ -483,6 +483,9 @@ public class RunningTripActivity extends AppCompatActivity {
                         }
                     }
                 });
+        if(record.getEndAddress() == null)
+            record.setEndAddress("Keine Informationen");
+
 
         // Arraylist der Locations wird in einen String gepackt, um diesen in die DB zu schreiben
         Gson gsonRoutePoints = new Gson();

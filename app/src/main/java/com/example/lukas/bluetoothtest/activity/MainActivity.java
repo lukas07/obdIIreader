@@ -294,6 +294,13 @@ public class MainActivity extends AppCompatActivity {
                     String deviceAddress = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
                     // Adresse des zu verbindenden Gerätes
                     btdevice = btAdapter.getRemoteDevice(deviceAddress);
+                    // Falls die Pairing-Anfrage noch nicht bestätigt wurde, 2 Sekunden warten bevor versucht wird die Verbindung aufzubauen
+                    if(btdevice.getBondState() == BluetoothDevice.BOND_BONDING)
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     Log.e(CLASS, "Selected device:" + btdevice.getAddress() + "; " + btdevice.getAddress());
                     try{
                         // Verbindung aufbauen

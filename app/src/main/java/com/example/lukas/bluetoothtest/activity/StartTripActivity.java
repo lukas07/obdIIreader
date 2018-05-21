@@ -196,6 +196,9 @@ public class StartTripActivity extends AppCompatActivity {
                         });
             }
 
+            if(record.getStartAddress() == null)
+                record.setStartAddress("Keine Informationen");
+
             Intent intent = new Intent(StartTripActivity.this, RunningTripActivity.class);
             startActivity(intent);
             finish();
