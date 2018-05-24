@@ -60,8 +60,7 @@ import java.util.List;
 
 public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        GoogleApiClient.OnConnectionFailedListener {
     private static final String CLASS = GoogleMapFragment.class.getName();
 
     // Modus der Kartenanzeige
@@ -157,12 +156,6 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         return v;
     }
 
-    public void stopLocationUpdates() {
-        if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        }
-    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -176,11 +169,11 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
                 if (ContextCompat.checkSelfPermission(getContext(),
                         android.Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
-                    buildGoogleApiClient();
+                    //buildGoogleApiClient();
                     mMap.setMyLocationEnabled(true);
                 }
             } else {
-                buildGoogleApiClient();
+                //buildGoogleApiClient();
                 mMap.setMyLocationEnabled(true);
             }
         } else if (mapMode == MAP_MODE_DISPLAY) {
@@ -420,17 +413,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onConnected(Bundle bundle) {
-
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000);
-        mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        if (ContextCompat.checkSelfPermission(getContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        }
-
+        Log.d(CLASS, "onConnected");
     }
 
     @Override
@@ -438,12 +421,13 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         Log.e(CLASS, "ConnectionSuspended");
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
+    public void locationChanged(Location location) {
         // Map wird nur aktualisiert, wenn der Standort 10 Meter entfernt von dem vorherigen liegt
         //if (routePoints.isEmpty() || mLastLocation.distanceTo(location) > 5) {
 
         //mLastLocation = location;
+        Log.d(CLASS, "LOCATIONUPDATE FRAGMENT: " + location);
+
         if (mCurrLocationMarker != null) {
             mCurrLocationMarker.remove();
         }
@@ -470,7 +454,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
 
         // Checks, whether start and end locations are captured
-        if (routePoints.size() >= 1 && mLastLocation.distanceTo(location) > 10) {
+        if (routePoints.size() >= 1 && mLastLocation.distanceTo(location) > 10 && mLastLocation.distanceTo(location) < 1000) {
             // Adding new item to the ArrayList
             routePoints.add(latLng);
 
@@ -496,19 +480,19 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        Log.d(CLASS, "onConnectionFailed");
     }
 
     // Wenn keine Internetverbindung besteht, kann die Karte nicht aktualisiert werden --> TextView anzeigen
     private void missingInternetConnection(boolean value) {
         if (value == true) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if(tv_internet != null)
-                        tv_internet.setVisibility(View.VISIBLE);
-                }
-            });
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(tv_internet != null)
+                            tv_internet.setVisibility(View.VISIBLE);
+                    }
+                });
         } else if (value == false ) {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
@@ -609,10 +593,6 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         super.onDestroy();
         //mapView.onDestroy();
 
-        // Updaten der GPS-Daten stoppen
-        if (mGoogleApiClient != null) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
-        }
         // Laufende Asynk-Tasks stoppen
         if(fetchUrl != null)
             fetchUrl.cancel(true);

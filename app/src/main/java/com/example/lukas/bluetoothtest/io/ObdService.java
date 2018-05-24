@@ -161,6 +161,9 @@ public class ObdService extends Service {
         String test = Thread.currentThread().getName();
 
         while(!sendThread.isInterrupted()) {
+            if (sendThread.isInterrupted() || !sendThread.isAlive()) {
+                break;
+            }
             for (int i=0; i<sendCmds.length; i++) {
                 try {
                     sendCmds[i].run(socket.getInputStream(), socket.getOutputStream());
@@ -259,8 +262,17 @@ public class ObdService extends Service {
         super.onDestroy();
         Log.e(CLASS, "Destroying service");
 
+        Log.e(CLASS, "SEND INTERRUPTED: " + sendThread.isInterrupted());
+        sendThread.interrupt();
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Log.e(CLASS, "SEND INTERRUPTED 2: " + sendThread.isInterrupted());
         if(!sendThread.isInterrupted()) {
             sendThread.interrupt();
+            Log.e(CLASS, "SEND INTERRUPTED");
         }
     }
 

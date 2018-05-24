@@ -30,7 +30,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -38,6 +37,7 @@ import android.widget.Toast;
 
 import com.example.lukas.bluetoothtest.io.BluetoothConnector;
 import com.example.lukas.bluetoothtest.fragment.GoogleMapFragment;
+import com.example.lukas.bluetoothtest.io.LocationService;
 import com.example.lukas.bluetoothtest.io.ObdService;
 import com.example.lukas.bluetoothtest.R;
 import com.example.lukas.bluetoothtest.io.Stopwatch;
@@ -53,10 +53,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 import static com.example.lukas.bluetoothtest.activity.MainActivity.btdevice;
 import static com.example.lukas.bluetoothtest.activity.MainActivity.socket;
+import static com.example.lukas.bluetoothtest.io.LocationService.KEY_LAT;
+import static com.example.lukas.bluetoothtest.io.LocationService.KEY_LNG;
 
 public class RunningTripActivity extends AppCompatActivity {
 
@@ -83,8 +84,8 @@ public class RunningTripActivity extends AppCompatActivity {
 
     private Context context = this;
 
-    private ObdService service;
-    private boolean serviceBound = false;
+    private ObdService obdService;
+    private boolean obdServiceBound = false;
     private Thread initThread;
     private Thread sendThread;
     private int orientation;
@@ -93,6 +94,10 @@ public class RunningTripActivity extends AppCompatActivity {
 
 
     // Google Map und GPS-Daten
+    private LocationService locationService;
+    private boolean locationServiceBound = false;
+
+
     private GoogleMapFragment mapFragment;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Geocoder geocoder;
@@ -184,29 +189,40 @@ public class RunningTripActivity extends AppCompatActivity {
         }
     };
 
+    private Handler locationHandler = new Handler() {
+        @Override
+        public void handleMessage(Message message) {
+            Bundle bundle = message.getData();
+            Double lat = bundle.getDouble(KEY_LAT);
+            Double lng = bundle.getDouble(KEY_LNG);
+            Location location = new Location("locationService");
+            location.setLatitude(lat);
+            location.setLongitude(lng);
+            Log.d(CLASS, "LOCATIONUPDATE HANDLER: " + location.toString());
+            mapFragment.locationChanged(location);
+        }
+    };
+
     // Stellt Verbindung mit dem OBD-Service her und startet diesen
-    private ServiceConnection serviceConnection = new ServiceConnection() {
+    private ServiceConnection obdServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder serviceBinder) {
-            orientation = getRequestedOrientation();
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-
-            Log.e(CLASS, "Service connected");
+            Log.e(CLASS, "OBD-Service connected");
             ObdService.ObdServiceBinder binder = (ObdService.ObdServiceBinder) serviceBinder;
-            service = binder.getService();
-            serviceBound = true;
-            service.setHandler(obdHandler);
+            obdService = binder.getService();
+            obdServiceBound = true;
+            obdService.setHandler(obdHandler);
             // Auslagerung der Initialisierung in eigenen Thread, um UI gleichzeitig updaten zu können
             initThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
 
-                        service.startObdConnection();
+                        obdService.startObdConnection();
                     } catch (IOException ioe) {
-                        //unbindService(serviceConnection);
-                        serviceBound = false;
-                        Log.e(CLASS, "Service disconnected");
+                        //unbindService(obdServiceConnection);
+                        obdServiceBound = false;
+                        Log.e(CLASS, "OBD-Service disconnected");
                         finish();
                     }
                 }
@@ -216,8 +232,26 @@ public class RunningTripActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Log.e(CLASS, "Service disconnected");
-            serviceBound = false;
+            Log.e(CLASS, "OBD-Service disconnected");
+            obdServiceBound = false;
+        }
+    };
+
+    private ServiceConnection locationServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder serviceBinder) {
+            Log.e(CLASS, "Location-Service connected");
+            LocationService.LocationServiceBinder binder = (LocationService.LocationServiceBinder) serviceBinder;
+            locationService = binder.getService();
+            locationServiceBound = true;
+            locationService.setHandler(locationHandler);
+            locationService.startLocationUpdates();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.e(CLASS, "Location-Service disconnected");
+            locationServiceBound = false;
         }
     };
 
@@ -250,13 +284,13 @@ public class RunningTripActivity extends AppCompatActivity {
                                             sendThread = new Thread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    service.startSendOBDCommands();
+                                                    obdService.startSendOBDCommands();
                                                     Log.e(CLASS, "Test");
                                                 }
                                             });
                                             sendThread.start();
                                             Log.e(CLASS, "Send thread started...");
-                                            //service.startSendOBDCommands();
+                                            //obdService.startSendOBDCommands();
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                             Log.e(CLASS, "Could not connect to socket");
@@ -278,7 +312,7 @@ public class RunningTripActivity extends AppCompatActivity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         Log.e(CLASS, "Go back to menu...");
-                                        service.stopSendOBDCommands();
+                                        obdService.stopSendOBDCommands();
                                         mapFragment.onDestroy();
                                         finish();
                                     }
@@ -331,7 +365,7 @@ public class RunningTripActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Log.e(CLASS, "Go back to menu...");
-                                    service.stopSendOBDCommands();
+                                    obdService.stopSendOBDCommands();
                                     mapFragment.onDestroy();
                                     finish();
                                 }
@@ -352,6 +386,9 @@ public class RunningTripActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_running_trip);
 
+
+        orientation = getRequestedOrientation();
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         //sharedPref = new SharedPref(this);
 
         // Referenzvariablen zu den Feldern deklarieren
@@ -385,7 +422,9 @@ public class RunningTripActivity extends AppCompatActivity {
         // OBD-Service zum Auslesen der Daten des Adapters starten
         Log.e(CLASS, "Bind OBD-Service");
         Intent serviceIntent = new Intent(getApplicationContext(), ObdService.class);
-        bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+        bindService(serviceIntent, obdServiceConnection, Context.BIND_AUTO_CREATE);
+
+
 
         if(savedInstanceState != null) {
             // Falls der Timer bereits gelaufen ist, den Wert übernehmen
@@ -399,6 +438,9 @@ public class RunningTripActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.running_container, mapFragment);
         fragmentTransaction.commit();
 
+        // Location Service verbinden
+        serviceIntent = new Intent(getApplicationContext(), LocationService.class);
+        bindService(serviceIntent, locationServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     // Wenn der Adapter einen Fehler zurück gibt, wird ein Dialogfenster geöffnet, in dem der User entscheidet,
@@ -422,7 +464,7 @@ public class RunningTripActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        service.stopSendOBDCommands();
+                        obdService.stopSendOBDCommands();
                         mapFragment.onDestroy();
                         finish();
                     }
@@ -441,10 +483,10 @@ public class RunningTripActivity extends AppCompatActivity {
 
         Log.e(CLASS, "Unbind Service");
         //OBD-Service stoppen
-        service.stopSendOBDCommands();
+        obdService.stopSendOBDCommands();
         try {
-            unbindService(serviceConnection);
-            serviceBound = false;
+            unbindService(obdServiceConnection);
+            obdServiceBound = false;
         } catch (Exception e) {
             Log.e(CLASS, "Couldnt unbind");
         }
@@ -511,7 +553,7 @@ public class RunningTripActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface arg0, int arg1) {
                         Log.e(CLASS, "Stop tracking...");
-                        service.stopSendOBDCommands();
+                        obdService.stopSendOBDCommands();
                         mapFragment.onDestroy();
                         finish();
                     }
@@ -540,9 +582,16 @@ public class RunningTripActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         setRequestedOrientation(orientation);
-        if(serviceBound) {
-            unbindService(serviceConnection);
-            serviceBound = false;
+
+        //mapFragment.onDestroy();
+
+        if(obdServiceBound) {
+            unbindService(obdServiceConnection);
+            obdServiceBound = false;
+        }
+        if(locationServiceBound) {
+            unbindService(locationServiceConnection);
+            locationServiceBound = false;
         }
         // Falls die Initliasisierung noch läuft abbrechen
        if(initThread.isAlive())

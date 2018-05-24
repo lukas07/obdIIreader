@@ -56,6 +56,11 @@
             android:enabled="true"
             android:exported="false" />
 
+        <service
+            android:name=".io.LocationService"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity
             android:name=".activity.StartTripActivity"
             android:label="@string/title_activity_start_your_trip_acitivity"
