@@ -17,20 +17,16 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.lukas.bluetoothtest.R;
-import com.example.lukas.bluetoothtest.fragment.TripDetailFragment;
 import com.example.lukas.bluetoothtest.trip.TripOpenHelper;
 import com.example.lukas.bluetoothtest.trip.TripProvider;
 import com.example.lukas.bluetoothtest.trip.TripRecord;
@@ -43,6 +39,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+/**
+ * Author: Lukas Breit
+ *
+ * Description:  The StartTripAcitivity captures some necessary information that is requested for a valid driver's log.
+ *
+ */
 
 public class StartTripActivity extends AppCompatActivity {
     private static final String CLASS = StartTripActivity.class.getName();
@@ -96,37 +99,28 @@ public class StartTripActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_your_trip_acitivity);
-      //  Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-       // setSupportActionBar(toolbar);
 
-        // Back-Button hinzufügen
-        //ActionBar bar = getSupportActionBar();
-        //bar.setDisplayHomeAsUpEnabled(true);
-
-        // Broadcast-Recevier, um Änderungen des Bluetooth-Status zu registrieren
         IntentFilter filterBt = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(bluetoothReceiver, filterBt);
-        // Broadcast-Recevier, um Änderungen des GPS-Status zu registrieren
+
         IntentFilter filterGps = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
         registerReceiver(gpsReceiver, filterGps);
 
-        // Werden zur Ermittlung der Startadresse benötigt, wenn der Trip gestartet wird
+        // Used to determine the start address
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
-        // Referenzvariablen zu den Feldern deklarieren
         et_driverName = (EditText) findViewById(R.id.et_driverName);
         et_reason = (EditText) findViewById(R.id.et_reason);
         et_mileageStart = (EditText) findViewById(R.id.et_mileageStart);
         sp_tripMode = (Spinner) findViewById(R.id.sp_tripMode);
         bt_Go = (ImageButton) findViewById(R.id.bt_Go);
 
-        // Adapter für das DropDown Menü der Trip-Art hinzufügen
+        // Adapter for the spinner of the trip mode
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.start_tripMode, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_tripMode.setAdapter(spinnerAdapter);
 
-        // Go-Button, der die Trip-Aufzeichnung startet
         bt_Go.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,7 +128,7 @@ public class StartTripActivity extends AppCompatActivity {
             }
         });
 
-        // End-Kilometerstand des letzten gespeicherten Trips als Startwert nehmen
+        // Take the end mileage of the last saved trip as the start value of this one
         final Cursor cursor;
         cursor = this.getContentResolver().query(TripProvider.CONTENT_URI, null, null, null, null);
         if(cursor.getCount() > 0) {
@@ -148,12 +142,11 @@ public class StartTripActivity extends AppCompatActivity {
     private void startTripRecording() {
         if (checkInput()) {
 
-            // Instanz des Triprecords
+            // Instance of the trip record
             record = record.getTripRecord();
-            // Record zurücksetzen
             record.resetRecord();
 
-            // Eingabewerte im Recordobjekt speichern
+            // Save input values into record
             int mileage = Integer.parseInt(et_mileageStart.getText().toString());
             record.setStartMileage(mileage);
             record.setDriver(et_driverName.getText().toString());
@@ -166,7 +159,7 @@ public class StartTripActivity extends AppCompatActivity {
             record.setStartTimestamp(timestamp);
 
 
-            // Die Startadresse ermitteln und im Record speichern
+            // Determine and save the start address
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
@@ -205,16 +198,17 @@ public class StartTripActivity extends AppCompatActivity {
         }
     }
 
+    // Checks weather all fields are filled with data by the user
     private boolean checkInput() {
-        // Fahrername fehlt
+        // Name is missing
         if (et_driverName.getText().length() == 0) {
             Toast.makeText(this, R.string.start_driver_missing, Toast.LENGTH_SHORT).show();
             return false;
-        // Grund der Fahrt fehlt
+        // Reason of the trip is missing
         } else if (et_reason.getText().length() == 0) {
             Toast.makeText(this, R.string.start_reason_missing, Toast.LENGTH_SHORT).show();
             return false;
-        // Kilometerstand fehlt
+        // Mileage is missing
         } else if (et_mileageStart.getText().length() == 0) {
             Toast.makeText(this, R.string.start_odometer_missing, Toast.LENGTH_SHORT).show();
             return false;

@@ -1,14 +1,16 @@
 package com.example.lukas.bluetoothtest.trip;
 
 /**
- * Created by Lukas on 26.11.2017.
+ * Author: Lukas Breit
+ *
+ * Description: The TripRecord is the data model of a recorded trip.
+ *
  */
-
 public class TripRecord {
     private static TripRecord instance;
 
 
-    // Attribute
+    // Attributes
     private String driver;
     private String driveMode;
     private int startMileage;
@@ -31,7 +33,7 @@ public class TripRecord {
         return instance;
     }
 
-    // Setzt alle Attributwerte zurück
+    // Reset all attributes
     public void resetRecord () {
         driver = null;
         driveMode = null;

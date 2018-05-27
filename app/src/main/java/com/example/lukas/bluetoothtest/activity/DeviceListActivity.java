@@ -31,7 +31,11 @@ import java.util.ArrayList;
 import java.util.Set;
 
 /**
- * Created by Lukas on 06.10.2017.
+ * Author: Lukas Breit
+ *
+ * Description:  In the DeviceListActivity are all bounded bluetooth devices listed, you can search for available new devices
+ *               and select a device. The selected one is returned to the caller.
+ *
  */
 
 public class DeviceListActivity extends Activity{
@@ -41,12 +45,9 @@ public class DeviceListActivity extends Activity{
     private static final int REQUEST_ACCESS_COARSE_LOCATION = 1;
 
     private Button bt_scan;
-    // Gibt an, ob bereits einmal eine Suche gestartet wurde; falls "true" --> die ermittelten Devices werden in saveInstance gespeichert
-    // und bei Erzeugung der neuen Activity angezeigt
+    // Indicates wheather a search has already been completed once; if true --> save new devices in saveInstance and add them to the new created activity
     private boolean discoveryDone = false;
-    // Die Variable wird auf "true" gesetzt, falls eine Suche (startDiscovery()) gerade läuft. Nach Beenden der Suche (ACTION_DISCOVERY_FINISHED)
-    // wird die Variable wieder auf false gesetzt. Wird benötigt, da bei Status "true" die Suche in der onDestroy-Methode nicht gestoppt wird und
-    // diverse Anpassungen bei der Erzeugung der neuen Activity durchgeführt werden (Bsp.:anderer Titel, Scan-Button gesperrt,...)
+    // The variable is set to true if a search is still running. It is necessary, because in the case that a search has not finished it is stopped in onDestroy. Furthermore it influences the creation of the new Activity (different title,...)
     private boolean discoveryRunning = false;
 
     private BluetoothAdapter btAdapter;
@@ -61,15 +62,15 @@ public class DeviceListActivity extends Activity{
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.device_list);
 
-        // Receiver zur Bluetooth-Status Überwachung registrieren
+        // Receiver for recognizing changes of the bluetooth status
         IntentFilter filterBt = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(bluetoothReceiver, filterBt);
 
-        // Broadcast, wenn neue Geräte erkannt werden
+        // Broadcast, if new devices are found
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         this.registerReceiver(deviceReceiver, filter);
 
-        // Broadcast, wenn Suche nach Geräten beendet wurde
+        // Broadcast, if a search has finished
         filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.registerReceiver(deviceReceiver, filter);
 
@@ -89,13 +90,13 @@ public class DeviceListActivity extends Activity{
         ArrayAdapter<String> pairedDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_name);
         newDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_name);
 
-        // ListView für gekoppelte Geräte
+        // ListView for bounded devices
         ListView pairedListView = (ListView) findViewById(R.id.paired_devices);
         pairedListView.setAdapter(pairedDevicesArrayAdapter);
         pairedListView.setOnItemClickListener(deviceClickListener);
         pairedListView.setSelectionFromTop(0, 0);
 
-        // ListView für neue Geräte
+        // ListView for new devices
         ListView newDevicesListView = (ListView) findViewById(R.id.new_devices);
         newDevicesListView.setAdapter(newDevicesArrayAdapter);
         newDevicesListView.setOnItemClickListener(deviceClickListener);
@@ -104,13 +105,12 @@ public class DeviceListActivity extends Activity{
         btAdapter = BluetoothAdapter.getDefaultAdapter();
 
 
-        // Falls bereits nach neuen Devices gesucht wurde den Listview mit den Ergebnissen anzeigen
+        // If it has been already searched for new devices --> display results in the ListView
         if(savedInstanceState != null) {
             discoveryDone = savedInstanceState.getBoolean("discovery");
             if(discoveryDone) {
                 // Turn on sub-title for new devices
                 findViewById(R.id.title_new_devices).setVisibility(View.VISIBLE);
-                // Listview füllen
                 ArrayList<String> devices = savedInstanceState.getStringArrayList("devices");
                 for(int i=0; i<devices.size(); i++) {
                     newDevicesArrayAdapter.add(devices.get(i));
@@ -127,8 +127,6 @@ public class DeviceListActivity extends Activity{
                 }
             }
         }
-
-
 
         Set<BluetoothDevice> pairedDevices = btAdapter.getBondedDevices();
 
@@ -158,7 +156,7 @@ public class DeviceListActivity extends Activity{
         }
     };
 
-    // Receiver zur Suche weiterer Devices
+    // Receiver for searching for new devices
     private BroadcastReceiver deviceReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -183,7 +181,7 @@ public class DeviceListActivity extends Activity{
         }
     };
 
-    // Receiver, der Veränderungen des Bluetooth-Status registriert
+    // Receiver that recognizes changes of the bluetooth state
     private final BroadcastReceiver bluetoothReceiver = new BroadcastReceiver() {
 
         @Override
@@ -206,7 +204,7 @@ public class DeviceListActivity extends Activity{
     protected void onDestroy() {
         super.onDestroy();
 
-        // Falls eine Suche noch läuft, obwohl die das Kennzeichen discoveryRunning auf false gesetzt ist, die Suche stoppen
+        // If a saerch is still running, but discoveryRunning is set to false
         if (btAdapter != null && discoveryRunning == false) {
             btAdapter.cancelDiscovery();
         }
@@ -222,7 +220,6 @@ public class DeviceListActivity extends Activity{
     private void doDiscovery() {
         Log.d(CLASS, "doDiscovery()");
 
-        // Nach dem ersten Suchen nach weiteren Devices wird der Listview der neuen Devices dauerhaft angezeigt
         discoveryDone = true;
 
         // Indicate scanning in the title
@@ -232,7 +229,7 @@ public class DeviceListActivity extends Activity{
         // Turn on sub-title for new devices
         findViewById(R.id.title_new_devices).setVisibility(View.VISIBLE);
 
-        // Die Elemente des Adapters vor der Suche löschen
+        // Clean up the adapter just before the search is started
         newDevicesArrayAdapter.clear();
 
         // If we're already discovering, stop it
@@ -256,7 +253,6 @@ public class DeviceListActivity extends Activity{
                                     }
                                 }
                             });
-                    //builder.setMovementMethod(LinkMovementMethod.getInstance());       // Make the link clickable. Needs to be called after show(), in order to generate hyperlinks
                     AlertDialog dialog = builder.create();
                     dialog.show();
                     break;

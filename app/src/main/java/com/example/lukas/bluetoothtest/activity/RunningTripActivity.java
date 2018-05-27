@@ -59,18 +59,27 @@ import static com.example.lukas.bluetoothtest.activity.MainActivity.socket;
 import static com.example.lukas.bluetoothtest.io.LocationService.KEY_LAT;
 import static com.example.lukas.bluetoothtest.io.LocationService.KEY_LNG;
 
+/**
+ * Author: Lukas Breit
+ *
+ * Description:  The RunningTripActivity is responsible for the recording of a trip. It has bounded the service for receiving
+ *               the OBD data and a service for location updates. Furthermore a fragment with the Google Map is included. The
+ *               location information are transferred to this fragment to update the map continuously.
+ *
+ *
+ */
+
 public class RunningTripActivity extends AppCompatActivity {
 
     private static final String CLASS = RunningTripActivity.class.getName();
-    // Konstanten: SaveInstance
+    // Constants: SaveInstance
     private static final String STATE_TIMER = "timerValue";
-    private static final String STATE_MARKERPOINTS = "marker";
-    // Konstanten: obdHandler
-        // Steuerung des Ladebalken
+    // Constants: obdHandler
+        // Constants for the progress bar
     private static final int INIT_STARTED = 1;
     private static final int INIT_SUCCESS = 2;
     private static final int INIT_STOPPED = 3;
-        // Exception-Meldungen für UI-Activity
+        // Exception-messages for the UI-Activity
     private static final int NODATA_EXCEPTION = 10;
     private static final int CONNECT_EXCEPTION = 11;
 
@@ -82,7 +91,6 @@ public class RunningTripActivity extends AppCompatActivity {
     private ImageButton bt_stop;
     private ProgressBar pb_init;
 
-    private Context context = this;
 
     private ObdService obdService;
     private boolean obdServiceBound = false;
@@ -90,10 +98,9 @@ public class RunningTripActivity extends AppCompatActivity {
     private Thread sendThread;
     private int orientation;
     private TripRecord record = TripRecord.getTripRecord();
-    //private SharedPref sharedPref;
 
 
-    // Google Map und GPS-Daten
+    // Google Map and  GPS-Data
     private LocationService locationService;
     private boolean locationServiceBound = false;
 
@@ -102,7 +109,7 @@ public class RunningTripActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Geocoder geocoder;
 
-    // Fahrtzeit
+    // driving time
     final int MSG_START_TIMER = 0;
     final int MSG_STOP_TIMER = 1;
     final int MSG_UPDATE_TIMER = 2;
@@ -110,7 +117,8 @@ public class RunningTripActivity extends AppCompatActivity {
     Stopwatch timer = new Stopwatch();
     final int REFRESH_RATE = 1000;
     private long timerValue = 0;
-    // Handler, um den Timer auf der Oberfläche zu aktualisieren
+
+    // Handler for updating the timer on the GUI
     private Handler clockHandler = new Handler()
     {
         @Override
@@ -141,7 +149,7 @@ public class RunningTripActivity extends AppCompatActivity {
         }
     };
 
-    // Handler, um die Daten des OBDII-Adapters zu empfangen und Aktualisierung der UI durchzuführen
+    // Handler for receiving the OBD data and update the UI
     private Handler obdHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -153,13 +161,10 @@ public class RunningTripActivity extends AppCompatActivity {
                     pb_init.setVisibility(View.GONE);
                     Log.e(CLASS, "Toast");
                     Toast.makeText(RunningTripActivity.this, getResources().getString(R.string.run_init_fail), Toast.LENGTH_LONG).show();
-                    // Sonst wird der Timer noch kurz angezeigt
-                    //tv_timer.setVisibility(View.INVISIBLE);
                     break;
                 case INIT_SUCCESS:
                     pb_init.setVisibility(View.GONE);
                     bt_stop.setEnabled(true);
-                    // Timer zur Anzeige der Fahrzeit starten
                     startTimer();
                     break;
                 case NODATA_EXCEPTION:
@@ -174,21 +179,20 @@ public class RunningTripActivity extends AppCompatActivity {
                     Bundle bundle = message.getData();
                     String speed = bundle.getString(AvailableCommandNames.SPEED.getValue());
                     String fuel = bundle.getString(AvailableCommandNames.MAF.getValue());
-                    //String consumption = bundle.getString(AvailableCommandNames.FUEL_CONSUMPTION_RATE.getValue());
 
                     if(speed != null)
                         tv_speed.setText(speed);
                     if(fuel != null)
                         tv_fuel.setText(fuel);
 
-                    //if(consumption != null)
                     if (tv_internet.getVisibility() == View.VISIBLE)
                         tv_internet.setVisibility(View.GONE);
-                    //  tv_consumption.setText(consumption);
+
             }
         }
     };
 
+    // Handler for receiving the location updates and inform the GoogleMapFragment
     private Handler locationHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -203,7 +207,7 @@ public class RunningTripActivity extends AppCompatActivity {
         }
     };
 
-    // Stellt Verbindung mit dem OBD-Service her und startet diesen
+    // Establishs the connection to the OBD Service and starts the service
     private ServiceConnection obdServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder serviceBinder) {
@@ -212,15 +216,13 @@ public class RunningTripActivity extends AppCompatActivity {
             obdService = binder.getService();
             obdServiceBound = true;
             obdService.setHandler(obdHandler);
-            // Auslagerung der Initialisierung in eigenen Thread, um UI gleichzeitig updaten zu können
+            // Start the service in a new Thread to make it possible to update the UI simultaneously
             initThread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
-
                         obdService.startObdConnection();
                     } catch (IOException ioe) {
-                        //unbindService(obdServiceConnection);
                         obdServiceBound = false;
                         Log.e(CLASS, "OBD-Service disconnected");
                         finish();
@@ -290,7 +292,6 @@ public class RunningTripActivity extends AppCompatActivity {
                                             });
                                             sendThread.start();
                                             Log.e(CLASS, "Send thread started...");
-                                            //obdService.startSendOBDCommands();
                                         } catch (IOException e) {
                                             e.printStackTrace();
                                             Log.e(CLASS, "Could not connect to socket");
@@ -322,8 +323,6 @@ public class RunningTripActivity extends AppCompatActivity {
                         AlertDialog alertDialog = alertDialogBuilder.create();
                         alertDialog.show();
 
-//                        showToast(getResources().getString(R.string.main_bt_manual_disabled), Toast.LENGTH_LONG);
-//                        finish();
                         break;
                 }
 
@@ -375,8 +374,6 @@ public class RunningTripActivity extends AppCompatActivity {
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.show();
                 }
-                    //showToast(getResources().getString(R.string.main_gps_manual_disabled), Toast.LENGTH_LONG);
-                //finish();
             }
         }
     };
@@ -389,9 +386,7 @@ public class RunningTripActivity extends AppCompatActivity {
 
         orientation = getRequestedOrientation();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-        //sharedPref = new SharedPref(this);
 
-        // Referenzvariablen zu den Feldern deklarieren
         tv_speed = (TextView) findViewById(R.id.tv_speed);
         tv_fuel = (TextView) findViewById(R.id.tv_fuel);
         tv_consumption = (TextView) findViewById(R.id.tv_consumption);
@@ -408,18 +403,17 @@ public class RunningTripActivity extends AppCompatActivity {
             }
         });
 
-        // Broadcast-Recevier, um Änderungen des Bluetooth-Status zu registrieren
         IntentFilter filterBt = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(bluetoothReceiver, filterBt);
-        // Broadcast-Recevier, um Änderungen des GPS-Status zu registrieren
+
         IntentFilter filterGps = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
         registerReceiver(gpsReceiver, filterGps);
 
-        // Werden zur Ermittlung der Endadresse benötigt, wenn der Trip gestoppt wird
+        // Used for getting the address when the trip is stopped
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
-        // OBD-Service zum Auslesen der Daten des Adapters starten
+        // Binding OBD-Service
         Log.e(CLASS, "Bind OBD-Service");
         Intent serviceIntent = new Intent(getApplicationContext(), ObdService.class);
         bindService(serviceIntent, obdServiceConnection, Context.BIND_AUTO_CREATE);
@@ -427,24 +421,24 @@ public class RunningTripActivity extends AppCompatActivity {
 
 
         if(savedInstanceState != null) {
-            // Falls der Timer bereits gelaufen ist, den Wert übernehmen
+            // If the timer was already running, set the saved value
             timerValue = savedInstanceState.getLong(STATE_TIMER);
         }
 
-        // Google Map hinzufügen
+        // Add Google Map
         mapFragment = GoogleMapFragment.newInstance(getApplicationContext(), 0, GoogleMapFragment.MAP_MODE_LIVE);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.running_container, mapFragment);
         fragmentTransaction.commit();
 
-        // Location Service verbinden
+        // Bind Location Service
         serviceIntent = new Intent(getApplicationContext(), LocationService.class);
         bindService(serviceIntent, locationServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
-    // Wenn der Adapter einen Fehler zurück gibt, wird ein Dialogfenster geöffnet, in dem der User entscheidet,
-    // ob er den Trip regulär stoppen will oder abbrechen
+    // If the adapter returns an error, a dialog window pops up, where the user has to decide weather
+    // he wants to stop the trip or cancel it
     private void showErrorDialog(int errorType) {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setCancelable(false);
@@ -473,16 +467,15 @@ public class RunningTripActivity extends AppCompatActivity {
         AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
 
-        // Adapter muss bei nächster Aufzeichnung neu initialisiert werden ??
-        //sharedPref.setObdInitialized(false);
     }
 
+    // When a trip is stopped the services are unbinded and the data is saved to the trip record
     private void stopTrip() {
-        // Timer der Fahrzeit stoppen
+        // Stop timer
         clockHandler.sendEmptyMessage(MSG_STOP_TIMER);
 
         Log.e(CLASS, "Unbind Service");
-        //OBD-Service stoppen
+        // stop OBD-Service
         obdService.stopSendOBDCommands();
         try {
             unbindService(obdServiceConnection);
@@ -491,17 +484,17 @@ public class RunningTripActivity extends AppCompatActivity {
             Log.e(CLASS, "Couldnt unbind");
         }
 
-        // Updaten der GPS-Daten stoppen
+        // Destroy Google Map
         mapFragment.onDestroy();
 
-        // Daten in Triprecord schreiben (Stopzeitpunkt, Endadresse,...)
+        // Write data into trip record
         record = record.getTripRecord();
 
         SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyyMMddHHmmss");
         Long timestamp = Long.parseLong(timestampFormat.format(new Date()));
         record.setEndTimestamp(timestamp);
 
-        // Die Startadresse ermitteln und im Record speichern
+        // Determine the end address
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -511,7 +504,7 @@ public class RunningTripActivity extends AppCompatActivity {
                     public void onSuccess(Location location) {
                         if (location != null) {
                             try {
-                                // Die Adresse über den Geocoder ermitteln
+                                // Determine address by a geocoder
                                 List<Address> addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                                 Log.e(CLASS, "Geocoder: " + addresses.toString());
                                 if (addresses == null || addresses.size() == 0)
@@ -529,7 +522,7 @@ public class RunningTripActivity extends AppCompatActivity {
             record.setEndAddress("Keine Informationen");
 
 
-        // Arraylist der Locations wird in einen String gepackt, um diesen in die DB zu schreiben
+        // Arrraylist of the locations is converted into a string, which is saved in the record
         Gson gsonRoutePoints = new Gson();
         String routeString = gsonRoutePoints.toJson(mapFragment.getRoutePoints());
         Log.e(CLASS, "Route points: " + routeString);
@@ -543,8 +536,6 @@ public class RunningTripActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
-
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder.setCancelable(false);
         alertDialogBuilder.setMessage(R.string.run_back_msg);
@@ -583,8 +574,6 @@ public class RunningTripActivity extends AppCompatActivity {
         super.onDestroy();
         setRequestedOrientation(orientation);
 
-        //mapFragment.onDestroy();
-
         if(obdServiceBound) {
             unbindService(obdServiceConnection);
             obdServiceBound = false;
@@ -593,7 +582,7 @@ public class RunningTripActivity extends AppCompatActivity {
             unbindService(locationServiceConnection);
             locationServiceBound = false;
         }
-        // Falls die Initliasisierung noch läuft abbrechen
+        // If the initialisation is still running --> interrupt
        if(initThread.isAlive())
             initThread.interrupt();
 
@@ -609,7 +598,7 @@ public class RunningTripActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState (Bundle savedInstanceState) {
-        // Den aktuellen Wert des Timers speichern
+        // Save the current value of the timer
         savedInstanceState.putLong(STATE_TIMER, timer.getStartTime());
 
         super.onSaveInstanceState(savedInstanceState);
@@ -619,10 +608,6 @@ public class RunningTripActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         mapFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    private void showToast(String message, int duration) {
-        Toast.makeText(this, message, duration).show();
     }
 
 }

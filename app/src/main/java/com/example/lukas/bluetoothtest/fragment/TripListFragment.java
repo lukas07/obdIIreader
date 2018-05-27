@@ -21,18 +21,24 @@ import com.example.lukas.bluetoothtest.trip.TripOpenHelper;
 import com.example.lukas.bluetoothtest.trip.TripProvider;
 import com.example.lukas.bluetoothtest.trip.TripsAdapter;
 
-public class TripListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, FragmentManager.OnBackStackChangedListener {
-    private ListView lv_trips;
+/**
+ * Author: Lukas Breit, Berit Grasemann
+ *
+ * Description:  The TripListFragment contains a ListView that shows all recorded trips. By selecting one you get detailed information.
+ *               If the device is in landscape mode a different layout is loaded. It contains beneath the ListView also detailed infos
+ *               and the map.
+ *
+ */
 
-    private TripOpenHelper helper;
+public class TripListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>, FragmentManager.OnBackStackChangedListener {
+
     private TripsAdapter adapter;
-    private Cursor cursor;
 
     private FragmentManager fm;
     private int curCheckPosition = 0;
     private long curCheckRowid = 0;
     private boolean dualPane;
-    private boolean uselessStackState = true;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +61,7 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
         setListAdapter(adapter);
         getLoaderManager().initLoader(0, null, this);
 
-        // Im Landscape-Modus den Bildschirm geteilt anzeigen
+        // Landscape-Mode: Show list and details of one trip simultaneously
         dualPane = getActivity().findViewById(R.id.details) != null;
         if(dualPane) {
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -77,7 +83,7 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
             getListView().setItemChecked(details.getShownIndex(), true);
     }
 
-
+    // Open details of a trip
     private void showDetails(int position, long rowid) {
         curCheckPosition = position;
         curCheckRowid = rowid;
@@ -89,8 +95,6 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out);
                 ft.replace(R.id.details, detailFragment);
-                //if(!uselessStackState)
-                  //   ft.addToBackStack(null);
                 ft.commit();
 
                 GoogleMapFragment mapFragment = GoogleMapFragment.newInstance(getActivity().getApplicationContext(), rowid, GoogleMapFragment.MAP_MODE_DISPLAY );
@@ -104,7 +108,6 @@ public class TripListFragment extends ListFragment implements LoaderManager.Load
             intent.putExtra("position", position);
             startActivity(intent);
         }
-        uselessStackState = false;
     }
 
     @Override

@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.print.PrintHelper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -33,7 +32,6 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfDocument;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfPageEventHelper;
@@ -50,7 +48,12 @@ import java.util.List;
 
 
 /**
- * Created by Lukas on 30.12.2017.
+ * Author: Lukas Breit
+ *
+ * Description:  The TripListActivity is just a kind of wrapper activity that contains the Triplist Fragment
+ *               (resp. also the Detail and Google Map Fragment in landscape mode). Furthermore the PDF-Export is
+ *               implemented here.
+ *
  */
 
 public class TripListActivity extends AppCompatActivity {
@@ -90,7 +93,7 @@ public class TripListActivity extends AppCompatActivity {
         }
     }
 
-    // Vor der PDF-Erzeugung werden Berechtigungen für das Lesen/Schreiben des Speichers überprüft
+    // Before the PDF is created, permissions for reading/writing  of memory is checked
     private void createPdfWrapper() throws FileNotFoundException {
 
         int hasWriteStoragePermission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -155,6 +158,8 @@ public class TripListActivity extends AppCompatActivity {
                 .show();
     }
 
+
+    // Created the PDF and fills it with the trip data
     private void createPdf() throws DocumentException {
 
         File docsFolder = new File(String.valueOf(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)));
@@ -174,18 +179,18 @@ public class TripListActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         document = new Document();
-        // Dokument-Eigenschaften
+        // document settings
         document.setPageSize(PageSize.A4.rotate());
         document.setMargins(20, 20, 40, 20);
 
-        // Header des PDF's
+        // Header of the PDF
         PdfWriter writer = PdfWriter.getInstance(document, output);
         PdfHeader header = new PdfHeader();
         writer.setPageEvent(header);
 
         document.open();
 
-        // Inhalt einfügen
+        // Add content
         try {
             pdfAddContent();
         } catch (IOException e) {
@@ -199,21 +204,21 @@ public class TripListActivity extends AppCompatActivity {
 
     }
 
-
+    // Reads the data from the database and adds it to the document
     private void pdfAddContent() throws IOException, DocumentException {
-        // Schriftarten des Dokumentes
+        // fonts of the document
         times16Bold = new Font(Font.FontFamily.TIMES_ROMAN, 18, Font.BOLD);
         times12Bold = new Font(Font.FontFamily.TIMES_ROMAN, 12, Font.BOLD);
         times12 = new Font(Font.FontFamily.TIMES_ROMAN, 12);
 
-        // Titel einfügen
+        // Add title
         Paragraph title = new Paragraph(getResources().getString(R.string.list_pdf_title), times16Bold);
         title.setAlignment(Element.ALIGN_CENTER);
         document.add(title);
-        // Leerzeile einfügen
+        // Add empty line
         document.add(new Paragraph(" "));
 
-        // Tabelle einfügen
+        // Add table frame
         table  = new PdfPTable(10);
         table.setWidthPercentage(100);
         table.setWidths(new int[]{1,2,2,2,1,1,2,2,3,3});
@@ -229,7 +234,7 @@ public class TripListActivity extends AppCompatActivity {
         table.addCell(getCell(getResources().getString(R.string.list_pdf_table_address_end), times12Bold));
         table.setHeaderRows(1);
 
-        // DB auslesen
+        // Read database
         final Cursor cursor;
         cursor = this.getContentResolver().query(TripProvider.CONTENT_URI, null, null, null, null);
 
@@ -251,7 +256,7 @@ public class TripListActivity extends AppCompatActivity {
             table.addCell(getCell(cursor.getString(TripOpenHelper.COL_ID_ENDADD), times12));
 
         }
-        // Falls noch keine Trips aufgezeichnet wurden
+        // If no trips have been recorded
         if (counter == 0) {
             PdfPCell cell = new PdfPCell(new Phrase(getResources().getString(R.string.list_pdf_table_noData)));
             cell.setColspan(9);
@@ -264,7 +269,7 @@ public class TripListActivity extends AppCompatActivity {
         document.add(table);
     }
 
-    // Erzeugt eine Zelle des Tabellenkopfes und formatiert diese
+    // Creates one cell of the table and does some formatting
     private PdfPCell getCell (String string, Font font) {
         PdfPCell cell = new PdfPCell(new Phrase(string, font));
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -272,7 +277,7 @@ public class TripListActivity extends AppCompatActivity {
     }
 
 
-    // Anzeige des erzeugten PDF's
+    // Display the created PDF
     private void previewPdf() {
         PackageManager packageManager = getPackageManager();
         Intent testIntent = new Intent(Intent.ACTION_VIEW);
@@ -291,13 +296,13 @@ public class TripListActivity extends AppCompatActivity {
     }
 
 
-    // Erstellt die Kopfzeile des PDF'S, die dem Dokument beigefügt werden kann
+    // Creates the header of the PDF
     class PdfHeader extends PdfPageEventHelper {
         Font timesHeader = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.ITALIC, BaseColor.GRAY);
 
         public void onEndPage(PdfWriter writer, Document document) {
             PdfContentByte cb = writer.getDirectContent();
-            // Aktuelles Datum einfügen (links)
+            // Add current date (on the left)
             Date date = new Date() ;
             String timeStamp = new SimpleDateFormat("dd.MM.yyyy").format(date);
             Phrase headerDate = new Phrase(timeStamp, timesHeader);
@@ -305,13 +310,13 @@ public class TripListActivity extends AppCompatActivity {
                     headerDate,
                     (document.left() + document.leftMargin() * 2),
                     (document.top() + 15), 0);
-            // App-Name einfügen (zentriert)
+            // Add app name (centered)
             Phrase headerName = new Phrase(getResources().getString(R.string.list_pdf_header_app), timesHeader);
             ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,
                     headerName,
                     (document.right() - document.left()) / 2 + document.leftMargin(),
                     document.top() + 15, 0);
-            // Seitenzahl einfügen (rechts)
+            // Add page number (on the right)
             String page = String.valueOf(document.getPageNumber());
             Phrase headerPage = new Phrase(page, timesHeader);
             ColumnText.showTextAligned(cb, Element.ALIGN_CENTER,

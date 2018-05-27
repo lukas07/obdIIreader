@@ -5,7 +5,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
- * Created by Lukas on 28.11.2017.
+ * Author: Lukas Breit
+ *
+ * Description: The TripOpenHelper implements the database scheme and is responsible for creating the database.
+ *
  */
 
 public class TripOpenHelper extends SQLiteOpenHelper {
@@ -17,7 +20,7 @@ public class TripOpenHelper extends SQLiteOpenHelper {
 
     private static TripOpenHelper instance;
 
-    // Trips-Tabelle
+    // Trips table
     public static final String TABLE_NAME_TRIPS = "trips";
     public static final String ROWID = "_id";
     public static final String COL_DRIVER_NAME = "driver";
