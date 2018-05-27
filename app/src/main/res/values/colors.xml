@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!-- Author: Berit Grasemann -->
+
 <resources>
     <color name="light_blue">#d7e0e8</color>
     <color name="colorAccent">#759dce</color>

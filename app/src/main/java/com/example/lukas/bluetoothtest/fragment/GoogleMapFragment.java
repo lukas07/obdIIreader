@@ -26,8 +26,6 @@ import com.example.lukas.bluetoothtest.trip.TripProvider;
 import com.example.lukas.bluetoothtest.trip.TripRecord;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -55,7 +53,12 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Created by Lukas on 09.01.2018.
+ * Author: Lukas Breit
+ *
+ * Description:  The GoogleMapFragment is resposible for displaying the map. Furthermore the connection to the Google Services
+ *               for receiving the route information is implemented here. The downloaded data is added to the map by drawing lines
+ *               which show the driven route.
+ *
  */
 
 public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
@@ -63,22 +66,21 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.OnConnectionFailedListener {
     private static final String CLASS = GoogleMapFragment.class.getName();
 
-    // Modus der Kartenanzeige
+    // Mode the map is used (see constants below)
     private int mapMode;
-    // Nur Anzeige einer Route (in StoppedTrip und TripDetail)
+    // Only display a recorded route
     public static final int MAP_MODE_DISPLAY = 1;
-    // Live-Anzeige des aktuellen Trips
+    // Live-View of the current trip
     public static final int MAP_MODE_LIVE = 2;
 
 
-    // Google Map und GPS-Daten
+    // Google Map
     private static final int MAP_CAM_ZOOM = 15;
     private GoogleMap mMap;
     private ArrayList<LatLng> routePoints;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private Marker mCurrLocationMarker;
-    private LocationRequest mLocationRequest;
     private FetchUrl fetchUrl;
     private ParserTask parserTask;
 
@@ -89,11 +91,13 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
     }
 
+    // Constructor
     public static GoogleMapFragment newInstance (Context context, long rowid, int mode) {
         GoogleMapFragment mapFragment = new GoogleMapFragment();
         Bundle args = new Bundle();
         args.putInt("mode", mode);
 
+        // Data is already saved in the database
         if(rowid > 0) {
             final Cursor cursor;
             cursor = context.getContentResolver().query(TripProvider.CONTENT_URI, null, "_id=?", new String[]{Long.toString(rowid)}, null);
@@ -102,15 +106,15 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
                 return null;
             }
 
-            // Die Route als String auslesen und in eine Arraylist konvertieren --> auf Map anzeigen
+            // Get the route data and convert it into an arraylist that is used for the map
             String routeString = cursor.getString(TripOpenHelper.COL_ID_ROUTE);
             Gson gson = new Gson();
             Type type = new TypeToken<ArrayList<LatLng>>() {}.getType();
             ArrayList<LatLng> routePoints = gson.fromJson(routeString, type);
             args.putParcelableArrayList(TripOpenHelper.COL_ROUTE_POINTS, routePoints);
 
+        // Data is saved in the current trip record
         } else if (rowid == -1) {
-            // Die Route als String auslesen und in eine Arraylist konvertieren --> auf Map anzeigen
             String routeString = TripRecord.getTripRecord().getRoutePoints();
             Gson gson = new Gson();
             Type type = new TypeToken<ArrayList<LatLng>>() {}.getType();
@@ -135,16 +139,6 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
             checkLocationPermission();
         }
 
-
-        /*mLastLocation = new Location("");
-        mLastLocation.setLatitude(0);
-        mLastLocation.setLongitude(0);*/
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);*/
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used
         View v = inflater.inflate(R.layout.fragment_map, container, false);
         mapView = (MapView) v.findViewById(R.id.map);
@@ -160,7 +154,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Map clearen, damit die Route vom vorherigen Trip nicht mehr angezeigt wird
+        // Clear map to delete map data from previous trip
         mMap.clear();
 
         if(mapMode == MAP_MODE_LIVE) {
@@ -169,11 +163,9 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
                 if (ContextCompat.checkSelfPermission(getContext(),
                         android.Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
-                    //buildGoogleApiClient();
                     mMap.setMyLocationEnabled(true);
                 }
             } else {
-                //buildGoogleApiClient();
                 mMap.setMyLocationEnabled(true);
             }
         } else if (mapMode == MAP_MODE_DISPLAY) {
@@ -183,7 +175,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
-    // Fügt die Route des Trips auf der Karte ein
+    // Adds the recorded route on the map creating the Google Service URL and starting the process
     public void drawRouteOnMap() {
         int index = 1;
         while(index<routePoints.size()) {
@@ -213,20 +205,20 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
         }
 
-        // Startposition Marker setzen
+        // Add marker for starting position
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(routePoints.get(0));
         markerOptions.title("Start Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         mCurrLocationMarker = mMap.addMarker(markerOptions);
         mMap.addMarker(markerOptions);
-        // Endposition Marker setzen
+        // Add marker for ending position
         markerOptions.position(routePoints.get(routePoints.size()-1));
         markerOptions.title("End Position");
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         mMap.addMarker(markerOptions);
 
-        // Kamera auf der Karte positionieren
+        // Position camera on the map on the starting point
         mMap.moveCamera(CameraUpdateFactory.newLatLng(routePoints.get(0)));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(MAP_CAM_ZOOM));
 
@@ -234,6 +226,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     }
 
 
+    // Creates the URL that is send to the Google API to get the route information
     private String getUrl(LatLng origin, LatLng dest) {
 
         // Origin of route
@@ -315,7 +308,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
                 Log.d("Background Task data", data.toString());
             } catch (Exception e) {
                 Log.d("Background Task", e.toString());
-                // Es können keine Daten empfangen werden
+                // No data can be downloaded because of a missing internet connection
                 missingInternetConnection(true);
                 this.cancel(true);
             }
@@ -381,8 +374,6 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
 
                 points.add(position);
             }
-
-            //routePoints.addAll(points);
 
             // Adding all the points in the route to LineOptions
             Log.d("onPostExecute", "onPostExecute: Points: " + points.toString());
@@ -483,7 +474,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
         Log.d(CLASS, "onConnectionFailed");
     }
 
-    // Wenn keine Internetverbindung besteht, kann die Karte nicht aktualisiert werden --> TextView anzeigen
+    // If there is no internet connection the map couldn't be updated --> show info on UI
     private void missingInternetConnection(boolean value) {
         if (value == true) {
                 getActivity().runOnUiThread(new Runnable() {
@@ -554,7 +545,7 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
                             == PackageManager.PERMISSION_GRANTED) {
 
                         if (mGoogleApiClient == null) {
-                            buildGoogleApiClient();
+                            //buildGoogleApiClient();
                         }
                         mMap.setMyLocationEnabled(true);
                     }
@@ -591,9 +582,8 @@ public class GoogleMapFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onDestroy() {
         super.onDestroy();
-        //mapView.onDestroy();
 
-        // Laufende Asynk-Tasks stoppen
+        // Stop running Asnyc-Tasks
         if(fetchUrl != null)
             fetchUrl.cancel(true);
         if(parserTask != null)

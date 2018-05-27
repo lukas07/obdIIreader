@@ -15,7 +15,13 @@ import com.example.lukas.bluetoothtest.R;
 import com.example.lukas.bluetoothtest.trip.TripOpenHelper;
 import com.example.lukas.bluetoothtest.trip.TripProvider;
 import com.example.lukas.bluetoothtest.trip.TripsAdapter;
-import com.google.android.gms.maps.GoogleMap;
+
+/**
+ * Author: Lukas Breit
+ *
+ * Description: The TripDetailFragment is responsible for displaying all the data of a recorded trip.
+ *
+ */
 
 public class TripDetailFragment extends Fragment  {
 
@@ -24,12 +30,13 @@ public class TripDetailFragment extends Fragment  {
             tv_detail_startAdd, tv_detail_endAdd, tv_detail_reason;
 
 
+    // Constructor
     public static TripDetailFragment newInstance(Context context, int position, long rowid) {
         TripDetailFragment detailFragment = new TripDetailFragment();
         Bundle args = new Bundle();
         args.putInt("position", position);
         args.putLong("rowid", rowid);
-        // Daten des Trips aus DB lesen
+        // Read trip data from the database
         if(rowid != 0) {
             final Cursor cursor;
             cursor = context.getContentResolver().query(TripProvider.CONTENT_URI, null, "_id=?", new String[]{Long.toString(rowid)}, null);
@@ -60,7 +67,6 @@ public class TripDetailFragment extends Fragment  {
         }
         View v = inflater.inflate(R.layout.fragment_trip_detail, container, false);
 
-        // Referenzvariablen zu den Feldern deklarieren
         tv_detail_driver = (TextView) v.findViewById(R.id.tv_detail_driver);
         tv_detail_mode = (TextView) v.findViewById(R.id.tv_detail_mode);
         tv_detail_reason = (TextView) v.findViewById(R.id.tv_detail_reason);
@@ -72,7 +78,7 @@ public class TripDetailFragment extends Fragment  {
         tv_detail_endAdd = (TextView) v.findViewById(R.id.tv_detail_endAdd);
 
 
-        // TextViews mit den Werten füllen
+        // Fill TextViews with data
         tv_detail_driver.setText(getArguments().getString(TripOpenHelper.COL_DRIVER_NAME));
         tv_detail_mode.setText(getArguments().getString(TripOpenHelper.COL_DRIVE_MODE));
         tv_detail_startTs.setText(getArguments().getString(TripOpenHelper.COL_TS_START));

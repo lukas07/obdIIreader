@@ -12,6 +12,13 @@ import android.widget.Toast;
 
 import com.example.lukas.bluetoothtest.R;
 
+/**
+ * Author: Lukas Breit
+ *
+ * Description: By the TripProvider the database can be accessed (insert and read data).
+ *
+ */
+
 public class TripProvider extends ContentProvider {
     private static final String AUTHORITY = "com.example.lukas.bluetoothtest.provider";
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TripOpenHelper.TABLE_NAME_TRIPS);
@@ -21,9 +28,9 @@ public class TripProvider extends ContentProvider {
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        // Typ 1 für den URI com.example.lukas.bluetoothtest.provider/trips
+        // Typ 1 for the URI com.example.lukas.bluetoothtest.provider/trips
         uriMatcher.addURI(AUTHORITY, TripOpenHelper.TABLE_NAME_TRIPS, 1);
-        // Typ 2 für URIs, die eine Zeile der Trips-Tabelle ansprechen
+        // Typ 2 for URIs that want to access one record
         uriMatcher.addURI(AUTHORITY, TripOpenHelper.TABLE_NAME_TRIPS + "/#", 2);
     }
 

@@ -37,15 +37,25 @@ import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 
+/**
+ * Author: Lukas Breit
+ *
+ * Description: The MainActivity is the entry point of the application. From there you are able to open the overview of the trips
+ *              and start a new trip recording. For starting a new one, bluetooth and GPS must be enabled. Furthermore the OBD Adapter
+ *              has to be selected. Each of the last three aspects can be initiated from the MainActivity.
+ *
+ *
+ */
+
 
 public class MainActivity extends AppCompatActivity {
-    // Konstanten
+    // Constants
     private static final String CLASS = MainActivity.class.getName();
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_BLUETOOTH_DEVICE = 2;
     private static final int REQUEST_CHECK_SETTINGS = 10;
 
-    // Attribute
+    // Attributes
     private ImageButton bt_activateBt;
     private ImageButton bt_selectDev;
     private ImageButton bt_activateGps;
@@ -56,18 +66,15 @@ public class MainActivity extends AppCompatActivity {
     private ImageView iv_info_device;
     private ImageView iv_info_gps;
 
-    // Nur wenn beide auf true gesetzt sind, kann die Tripaufzeichnung gestartet werden
+    // Only if both are set to true a recording can be started
     private boolean btEnabled = false;
     private boolean gpsEnabled = false;
-    public static boolean obd_initialized = false;
-    //private SharedPref sharedPreferences;
-
 
     private BluetoothAdapter btAdapter = BluetoothAdapter.getDefaultAdapter();;
     public static BluetoothDevice btdevice;
     public static BluetoothSocket socket;
 
-    // Receiver, der Veränderungen des Bluetooth-Status registriert
+    // Receiver that recognizes changes of the bluetooth state
     private final BroadcastReceiver bluetoothReceiver = new BroadcastReceiver() {
 
         @Override
@@ -80,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
                     case BluetoothAdapter.STATE_TURNING_OFF:
                         bt_activateBt.setEnabled(true);
                         iv_info_bt.setBackgroundResource(R.drawable.close_circle_red);
-                        //bt_activateBt.setText(getResources().getString(R.string.main_bt_disabled));
                         bt_selectDev.setEnabled(false);
                         iv_info_device.setBackgroundResource(R.drawable.close_circle_red);
                         bt_startTrip.setEnabled(false);
@@ -90,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
                     case BluetoothAdapter.STATE_TURNING_ON:
                         bt_activateBt.setEnabled(false);
                         iv_info_bt.setBackgroundResource(R.drawable.check_circle_green);
-                        //bt_activateBt.setText(getResources().getString(R.string.main_bt_enabled));
                         bt_selectDev.setEnabled(true);
                         break;
                     case BluetoothAdapter.STATE_ON:
@@ -105,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    // Receiver that recognizes changes of the GPS state
     private BroadcastReceiver gpsReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -116,14 +122,12 @@ public class MainActivity extends AppCompatActivity {
                     gpsEnabled = false;
                     bt_activateGps.setEnabled(true);
                     iv_info_gps.setBackgroundResource(R.drawable.close_circle_red);
-                    //bt_activateGps.setText(R.string.main_bt_disabled);
                     bt_startTrip.setEnabled(false);
                     showToast(getResources().getString(R.string.main_gps_manual_disabled), Toast.LENGTH_LONG);
                 } else {
                     gpsEnabled = true;
                     bt_activateGps.setEnabled(false);
                     iv_info_gps.setBackgroundResource(R.drawable.check_circle_green);
-                    //bt_activateGps.setText(R.string.main_bt_enabled);
                     checkStartTrip();
                     showToast(getResources().getString(R.string.main_gps_manual_enabled), Toast.LENGTH_LONG);
                 }
@@ -138,17 +142,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //sharedPreferences = new SharedPref(this);
 
-
-        // Broadcast-Recevier, um Änderungen des Bluetooth-Status zu registrieren
+        // Receiver that recognizes changes of the bluetooth state
         IntentFilter filterBt = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
         registerReceiver(bluetoothReceiver, filterBt);
-        // Broadcast-Recevier, um Änderungen des GPS-Status zu registrieren
+        // Receiver that recognizes changes of the GPS state
         IntentFilter filterGps = new IntentFilter(LocationManager.PROVIDERS_CHANGED_ACTION);
         registerReceiver(gpsReceiver, filterGps);
 
-        // Referenzvariablen zu den Feldern deklarieren
         bt_activateBt = (ImageButton) findViewById(R.id.bt_activateBt);
         bt_selectDev = (ImageButton) findViewById(R.id.bt_selectDev);
         bt_activateGps = (ImageButton) findViewById(R.id.bt_activateGps);
@@ -158,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
         iv_info_device = (ImageView) findViewById(R.id.iv_info_device);
         iv_info_gps = (ImageView) findViewById(R.id.iv_info_gps);
 
-        // Clicklistener für die Buttons
         bt_activateBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,8 +193,6 @@ public class MainActivity extends AppCompatActivity {
         btAdapter = BluetoothAdapter.getDefaultAdapter();
 
         checkConnections();
-        //sharedPreferences.setObdInitialized(false);
-
 
     }
 
@@ -204,33 +202,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // Bluetooth-Verbindung wird aktiviert
+    // Bluetooth connection gets established
     private void activateBt () {
-        // Prüfen, ob das Gerät Bluetooth unterstützt
+        // Check wheather the device supports bluetooth
         if(btAdapter == null) {
             showToast(getResources().getString(R.string.main_bt_support), Toast.LENGTH_SHORT);
             Log.e(CLASS, "No Bluetooth support");
         } else {
-            // Bluetooth ggf. aktivieren
+            // Enable Bluetooth
             if (!btAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             } else {
                 Log.e(CLASS, "Bluetooth already enabled");
-                //bt_activateBt.setText(getResources().getString(R.string.main_bt_enabled));
                 bt_activateBt.setEnabled(false);
             }
         }
     }
 
 
-    // Liste der gekoppelten Geräte anzeigen und Verbindung zu ausgewähltem Gerät aufbauen
+    // Show List of bounded devices, search for new ones and select a device to connect
     private void selectDevice() {
-        // Nachdem Bluetooth erfolgreich aktiviert wurde, das Dialogfenster zur Geräteauswahl anzeigen
         Intent btIntent = new Intent(MainActivity.this, DeviceListActivity.class);
         startActivityForResult(btIntent, REQUEST_BLUETOOTH_DEVICE);
     }
 
+    // Enables GPS on the device
     private void activateGps() {
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
@@ -279,22 +276,18 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case REQUEST_ENABLE_BT:
                 if(resultCode == RESULT_OK) {
-                    // Bluetooth erfolgreich aktiviert
+                    // Bluetooth successfully enabled
                     Log.e(CLASS, "Bluetooth enabled");
-                    /*bt_activateBt.setEnabled(false);
-                    bt_activateBt.setText(getResources().getString(R.string.main_bt_enabled));
-                    bt_selectDev.setEnabled(true);*/
                 } else if (resultCode == RESULT_CANCELED) {
-                    //showToast(getResources().getString(R.string.main_bt_disabled), Toast.LENGTH_SHORT);
                     Log.e(CLASS, "Error while enabling Bluetooth");
                 }
                 break;
             case REQUEST_BLUETOOTH_DEVICE:
                 if(resultCode == RESULT_OK) {
                     String deviceAddress = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-                    // Adresse des zu verbindenden Gerätes
+                    // Address of the bluetooth device
                     btdevice = btAdapter.getRemoteDevice(deviceAddress);
-                    // Falls die Pairing-Anfrage noch nicht bestätigt wurde, 2 Sekunden warten bevor versucht wird die Verbindung aufzubauen
+                    // If the pairing request has not been accepted --> wait 2 seconds and afterwards try to establish the connection
                     if(btdevice.getBondState() == BluetoothDevice.BOND_BONDING)
                         try {
                             Thread.sleep(2000);
@@ -303,12 +296,11 @@ public class MainActivity extends AppCompatActivity {
                         }
                     Log.e(CLASS, "Selected device:" + btdevice.getAddress() + "; " + btdevice.getAddress());
                     try{
-                        // Verbindung aufbauen
+                        //Establish connecntion
                         socket = BluetoothConnector.connectDevice(btdevice);
                         showToast(getResources().getString(R.string.main_sel_dev) + btdevice.getName(), Toast.LENGTH_SHORT);
                         btEnabled = true;
                         checkStartTrip();
-                        //bt_selectDev.setText(getResources().getString(R.string.main_sel));
                         bt_selectDev.setEnabled(false);
                         iv_info_device.setBackgroundResource(R.drawable.check_circle_green);
                     } catch (IOException ioe) {
@@ -324,12 +316,12 @@ public class MainActivity extends AppCompatActivity {
                     gpsEnabled = true;
                     bt_activateGps.setEnabled(false);
                     iv_info_gps.setBackgroundResource(R.drawable.check_circle_green);
-                    //bt_activateGps.setText(R.string.main_bt_enabled);
                     checkStartTrip();
                 }
         }
     }
 
+    // Checks the connections and sets up the Buttons, etc.
     private void checkConnections () {
         // Falls Bluetooth bereits eingeschaltet ist, Buttons setzen
         if (btAdapter.isEnabled()) {
@@ -366,19 +358,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Falls sowohl GPS als auch Bluetooth eingeschaltet sind und eine Bt-Verbindung zu einem Gerät besteht,
-    // wird der StartYourTrip-Button aktiviert
+    // If GPS and bluetooth is enabled and a connection is established to a device --> allow to start a trip recording
     private void checkStartTrip() {
         if(btEnabled && gpsEnabled)
             bt_startTrip.setEnabled(true);
     }
 
-    // Activity starten, in der der Nutzer zusätzliche Angaben machen muss
+    // Open activity where additional information are processed
     private void startTrip() {
         Intent intent = new Intent(this, StartTripActivity.class);
         startActivity(intent);
     }
 
+    // Opens the overview of all recorded trips
     private void showTrips() {
         Intent intent = new Intent(this, TripListActivity.class);
         startActivity(intent);

@@ -1,4 +1,6 @@
-package com.example.lukas.bluetoothtest.io;/*
+package com.example.lukas.bluetoothtest.io;
+
+/*
  *  Copyright 2006 Corey Goldberg (cgoldberg _at_ gmail.com)
  *
  *  This file is part of NetPlot.
@@ -12,12 +14,14 @@ package com.example.lukas.bluetoothtest.io;/*
  *  but without any warranty; without even the implied warranty of
  *  merchantability or fitness for a particular purpose.  See the
  *  GNU General Public License for more details.
+ *
+ *
+ *  Adapted: Lukas Breit
+ *
+ *  Description: The Stopwatch can start, stop and set a timer.
  */
 
 
-import java.sql.Time;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class Stopwatch {
@@ -47,7 +51,7 @@ public class Stopwatch {
         return this.startTime;
     }
 
-    //elaspsed time in milliseconds
+    // elapsed time in milliseconds
     public long getElapsedTimeMili() {
         long elapsed = 0;
         if (running) {
@@ -56,7 +60,7 @@ public class Stopwatch {
         return elapsed;
     }
 
-    //elaspsed time in seconds
+    // elapsed time in seconds
     public long getElapsedTimeSecs() {
         long elapsed = 00;
         if (running) {
@@ -65,7 +69,7 @@ public class Stopwatch {
         return elapsed;
     }
 
-    //elaspsed time in minutes
+    // elapsed time in minutes
     public long getElapsedTimeMin() {
         long elapsed = 00;
         if (running) {
@@ -74,7 +78,7 @@ public class Stopwatch {
         return elapsed;
     }
 
-    //elaspsed time in hours
+    // elapsed time in hours
     public long getElapsedTimeHour() {
         long elapsed = 00;
         if (running) {

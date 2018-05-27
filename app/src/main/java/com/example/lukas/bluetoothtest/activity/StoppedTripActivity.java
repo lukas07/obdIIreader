@@ -5,16 +5,12 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lukas.bluetoothtest.fragment.GoogleMapFragment;
@@ -24,6 +20,14 @@ import com.example.lukas.bluetoothtest.trip.TripProvider;
 import com.example.lukas.bluetoothtest.trip.TripRecord;
 import com.example.lukas.bluetoothtest.trip.TripsAdapter;
 
+/**
+ * Author: Lukas Breit, Berit Grasemann
+ *
+ * Description:  The StoppedTripActivity is used after a trip recording is finished. The user has to add some additional mandatory
+ *               information. Furthermore a Google Map is displayed with the recorded route. Here the trip record is saved in the
+ *               database.
+ *
+ */
 
 public class StoppedTripActivity extends AppCompatActivity {
     private static final String CLASS = StoppedTripActivity.class.getName();
@@ -40,27 +44,20 @@ public class StoppedTripActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stopped_trip);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
 
-        // Back-Button hinzufügen
-        ActionBar bar = getSupportActionBar();
-        //bar.setDisplayHomeAsUpEnabled(true);
 
-        // Referenzvariablen zu den Feldern deklarieren
         et_mileageEnd = (EditText) findViewById(R.id.et_mileageEnd);
         bt_save = (ImageButton) findViewById(R.id.bt_save);
 
-        // Listener für den Save-Button
         bt_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(bt_change_menu) {
-                    // Zurück zum Hauptmenü
+                    // Back to main menu
                     finish();
                     bt_change_menu = false;
                 } else {
-                    // Trip speichern und auf der Oberfläche bleiben
+                    // Save trip and stay on the screen
                     saveRecord();
                 }
             }
@@ -68,7 +65,7 @@ public class StoppedTripActivity extends AppCompatActivity {
 
 
 
-        // Google Map hinzufügen
+        // Add Google Map
         GoogleMapFragment mapFragment = GoogleMapFragment.newInstance(getApplicationContext(), -1, GoogleMapFragment.MAP_MODE_DISPLAY);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -77,23 +74,21 @@ public class StoppedTripActivity extends AppCompatActivity {
 
     }
 
-    // Überprüfen der Eingaben und ggf. abspeichern des Trips in die DB
+    // Check weather the input is valid and save the record into the database
     private void saveRecord() {
         record = TripRecord.getTripRecord();
         String mileageEnd = et_mileageEnd.getText().toString();
-        // Der Kilometerstand muss eingegeben werden
+        // end mileage is missing
         if(mileageEnd.length() == 0) {
             showToast(R.string.stop_odometer_missing, Toast.LENGTH_SHORT);
-        // Der Kilometerstand nach der Fahrt muss höher als der Startkilometerstand sein
+        // The end mileage must be greater than start mileage
         } else if(Integer.parseInt(mileageEnd) <= record.getStartMileage()) {
             showToast(R.string.stop_odometer_low, Toast.LENGTH_SHORT);
         }
 
         else {
-
-            // Kilometerstand nach dem Trip noch in den Record schreiben
             record.setEndMileage(Integer.parseInt(mileageEnd));
-            // ansonsten Trip in DB schreiben
+            // Save trip record into database
             ContentValues values = new ContentValues();
             values.put(TripOpenHelper.COL_DRIVER_NAME, record.getDriver());
             values.put(TripOpenHelper.COL_MILEAGE_START, record.getStartMileage());
@@ -106,17 +101,8 @@ public class StoppedTripActivity extends AppCompatActivity {
             values.put(TripOpenHelper.COL_ROUTE_POINTS, record.getRoutePoints());
             values.put(TripOpenHelper.COL_REASON, record.getReason());
             getContentResolver().insert(TripProvider.CONTENT_URI, values);
-            /*helper = helper.getHelper(this);
-            helper.insert(record.getDriver(),
-                    record.getStartMileage(),
-                    record.getEndMileage(),
-                    record.getDriveMode(),
-                    record.getStartTimestamp(),
-                    record.getEndTimestamp(),
-                    record.getStartAddress(),
-                    record.getEndAddress());*/
-            //bt_save.setText(R.string.stop_button_menu);
-            // Flag, um den Button anzupassen (--> man gelangt anschließend ins Hauptmenü zurück)
+
+            // Flag to change the funtion of the button --> after a trip is saved you get back to main menu
             bt_change_menu = true;
             et_mileageEnd.setEnabled(false);
         }

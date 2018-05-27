@@ -30,22 +30,26 @@ import java.io.IOException;
 import static com.example.lukas.bluetoothtest.activity.MainActivity.socket;
 
 /**
- * Created by Lukas on 08.10.2017.
+ * Author: Lukas Breit
+ *
+ * Description: The OBDService is responsible for sending the OBD commands to the adapter and receiving the responses of it.
+ *              The received data is send to the bounded activity (RunningTripActivity).
+ *
  */
 
 public class ObdService extends Service {
     private static final String CLASS = ObdService.class.getName();
 
-    // Konstanten für den Handler
-    // Steuerung des Ladebalken
+    // Constants of the handler
+    // Progress Bar
     private static final int INIT_STARTED = 1;
     private static final int INIT_SUCCESS = 2;
     private static final int INIT_STOPPED = 3;
-    // Exception-Meldungen für UI-Activity
+    // Exception messages for the UI activity
     private static final int NODATA_EXCEPTION = 10;
     private static final int CONNECT_EXCEPTION = 11;
 
-    // Kennzeichen, ob der Initialisierungs-Thread erfolgreich durchlaufen ist
+    // Flag weather the initialisation has been completed successfully
     private boolean initReturn = false;
 
 
@@ -58,7 +62,7 @@ public class ObdService extends Service {
     private ObdCommand[] initCmds = {new ObdResetCommand(), new EchoOffCommand(), new LineFeedOffCommand(), new TimeoutCommand(60), new SelectProtocolCommand(ObdProtocols.AUTO)};
     private ObdCommand[] sendCmds = {new SpeedCommand(), new MassAirFlowCommand()};
 
-    // Thread, der das dauerhafte Senden der OBD Commands übernimmt
+    // Thread for sending the OBD commands
     Thread sendThread = new Thread(new Runnable() {
         @Override
         public void run() {
@@ -71,8 +75,8 @@ public class ObdService extends Service {
         }
     });
 
-    // Beim erstmaligen Aufruf wird die OBD-Schnittstelle initialisiert und anschließend die dauerhafte Abfrage der Daten gestartet;
-    // bei wiederholenden Aufrufen wird nur die dauerhafte Abfrage gestartet (da Initialisierung nur einmal nötig ist)
+    // Before starting the data exchange with the interface the OBD adapter has to be initialized. Afterwards the permanent exchange
+    // is started
     public void startObdConnection() throws IOException{
         if (socket != null) {
             this.btSocket = socket;
@@ -96,7 +100,7 @@ public class ObdService extends Service {
                 }
             });
             sendThread.start();
-            // Nach dem ersten, erfolgreichen Auslesen von Daten wird der Ladebalken ausgeschaltet
+            // After the adapter is initialized successfully the progress bar is set unvisible
             initSuccess = true;
         } else {
             Log.e(CLASS, "OBD-Adapter could not be initialized successfully");
@@ -105,6 +109,7 @@ public class ObdService extends Service {
         }
     }
 
+    // Initialize the OBD adapter
     private boolean runInitCmds() {
         final Thread initThread = new Thread(new Runnable() {
             @Override
@@ -127,13 +132,11 @@ public class ObdService extends Service {
                        initReturn = false;
                     }
                 }
-                //return true;
             }
         });
         initThread.start();
         try {
-            // 10 Sekunden abwarten, ob Initialisierung abgeschlossen werden kann
-            // TODO: Prüfen wie weit niedrig die Zeit gesetzt werden kann
+            // Wait 5 seconds weather the initialisation is completed. Is necessary, because it won't be stopped if it is not possible to complete it
             initThread.join(5000);
             Log.e(CLASS, "Thread came out of join");
         } catch (InterruptedException e) {
@@ -141,12 +144,12 @@ public class ObdService extends Service {
             Log.e(CLASS, "Error in Thread.join");
         }
 
-        // Falls der Thread nach 10 Sekunden immer noch läuft --> abbrechen
+        // If the Thread is still running after 5 seconds interrupt it
         if(initThread.isAlive()) {
             Log.e(CLASS, "Initialization still alive-->interrupt");
             initThread.interrupt();
             return false;
-        // anders wird das dauerhafte Senden der OBD-Commands gestartet
+        // Otherwise the process has finished
         } else if (initReturn == false){
             return false;
         } else {
@@ -154,16 +157,12 @@ public class ObdService extends Service {
         }
     }
 
-    // Sendet die OBD-Befehle an den Adapter und meldet die Ergebnisse an die UI-Activity
+    // Sends permanently the OBD commands to the adapter and sends the results to the UI activity
     private void sendObdCommands() throws InterruptedException {
         Bundle bundle = new Bundle();
         Message message;
-        String test = Thread.currentThread().getName();
 
         while(!sendThread.isInterrupted()) {
-            if (sendThread.isInterrupted() || !sendThread.isAlive()) {
-                break;
-            }
             for (int i=0; i<sendCmds.length; i++) {
                 try {
                     sendCmds[i].run(socket.getInputStream(), socket.getOutputStream());
@@ -177,7 +176,7 @@ public class ObdService extends Service {
                     }
                     bundle.putString(sendCmds[i].getName(), value);
 
-                    // Nach der Initialisierung den Ladebalken abschalten + Timer starten
+                    // After the init process hide the progress bar and start timer
                     if (initSuccess) {
                         handler.sendEmptyMessage(INIT_SUCCESS);
                         initSuccess = false;
@@ -186,8 +185,9 @@ public class ObdService extends Service {
                 } catch (NoDataException nde) {
                     nde.printStackTrace();
                     Log.e(CLASS, "No Data Exception thrown");
-                    //Thread.currentThread().interrupt();
                     cnt_NoData++;
+                    // In some situations the adapter is not available (e.g. when starting the car)
+                    // --> wait 5 times the exception is thrown until the init process is restarted
                     if (cnt_NoData > 5) {
                         if(runInitCmds()) {
                             Log.e(CLASS, "OBD has been re-inited");
@@ -195,8 +195,6 @@ public class ObdService extends Service {
                             Log.e(CLASS, "OBD couldn't be inited again --> NO_DATA-Exception");
                             handler.sendEmptyMessage(NODATA_EXCEPTION);
                         }
-                        //Thread.currentThread().interrupt();
-                        //handler.sendEmptyMessage(NODATA_EXCEPTION);
                     }
                 } catch (UnsupportedCommandException uce) {
                     uce.printStackTrace();
@@ -213,7 +211,6 @@ public class ObdService extends Service {
                     Log.e(CLASS, "Error while sending OBD commands");
                     sendThread.interrupt();
                     throw new InterruptedException();
-                    //Thread.currentThread().interrupt();
                 }
             }
             message = new Message();
@@ -227,10 +224,11 @@ public class ObdService extends Service {
             sendThread.interrupt();
     }
 
+    // Starts the permanent sending of the OBD commands (used when bluetooth connection has been disconnected)
     public void startSendOBDCommands() {
         if(!sendThread.isInterrupted())
             sendThread.interrupt();
-        // Neuen Thread erzeugen
+        // Create new thread
         sendThread = null;
         sendThread = new Thread(new Runnable() {
             @Override
